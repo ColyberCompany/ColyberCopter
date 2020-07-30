@@ -8,7 +8,7 @@
 #ifndef IACCELEROMETER_H
 #define IACCELEROMETER_H
 
-#include "Vector3.h"
+#include "Common/Vector3.h"
 
 
 namespace Interfaces

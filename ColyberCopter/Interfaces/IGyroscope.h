@@ -8,7 +8,7 @@
 #ifndef IGYROSCOPE_H
 #define IGYROSCOPE_H
 
-#include "Vector3.h"
+#include "Common/Vector3.h"
 
 
 namespace Interfaces

@@ -8,7 +8,7 @@
 #ifndef ISENSORDATA_H
 #define ISENSORDATA_H
 
-#include "Vector3.h"
+#include "Common/Vector3.h"
 
 
 namespace Interfaces
