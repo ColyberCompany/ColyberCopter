@@ -1,22 +1,22 @@
 /**
- * @file ISensorData.h
+ * @file ISensorsData.h
  * @author Jan Wielgus
  * @date 2020-07-30
  * 
  */
 
-#ifndef ISENSORDATA_H
-#define ISENSORDATA_H
+#ifndef ISENSORSDATA_H
+#define ISENSORSDATA_H
 
 #include "Common/Vector3.h"
 
 
 namespace Interfaces
 {
-    class ISensorData
+    class ISensorsData
     {
     public:
-        virtual ~ISensorData() {}
+        virtual ~ISensorsData() {}
 
         virtual vector3Float getAcc_normVector() = 0;
         virtual vector3Float getGyro_degPerSec() = 0;
