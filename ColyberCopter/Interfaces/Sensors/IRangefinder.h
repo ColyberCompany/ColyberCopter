@@ -18,6 +18,7 @@ namespace Interfaces
 
         virtual bool initializeRangefinder() = 0;
         virtual float getRangefinderDistance_m() = 0;
+        virtual bool isOutOfRange() = 0;
     };
 }
 
