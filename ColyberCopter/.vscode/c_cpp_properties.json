@@ -8,7 +8,8 @@
                 "C:\\Users\\janwi\\Documents\\GitHub\\ColyberCompany\\ColyberFlightController\\ColyberCopter",
 
                 "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\ByteTypes",
-                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\FilteringLibraries"
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\FilteringLibraries",
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\PID"
             ],
             "forcedInclude": [
                 "C:\\Users\\janwi\\AppData\\Local\\Arduino15\\packages\\STM32\\hardware\\stm32\\1.9.0\\cores\\arduino\\Arduino.h"
