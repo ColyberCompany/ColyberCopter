@@ -17,9 +17,39 @@ ControlSticks FlightMode::virtualSticks;
 FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMode, IVirtualPilot* virtualPilot)
     : type(flightModeType), baseFlightMode(baseFlightMode)
 {
-    // self-add this flight mode after instantiation
-    virtualPilot->addFlightMode(this);
+    virtualPilotPtr = virtualPilot;
 }
 
 
-// TODO: implementation of the rest of the class
+bool FlightMode::initializeFlightMode()
+{
+    // self-add this flight mode after instantiation
+    virtualPilotPtr->addFlightMode(this);
+
+    return true;
+}
+
+
+bool FlightMode::checkIfRelated(const FlightMode* flightModeToCheck)
+{
+    if (flightModeToCheck == this)
+        return true;
+
+    else if (baseFlightMode != nullptr)
+        return baseFlightMode->checkIfRelated(flightModeToCheck);
+
+    else
+        return false;
+}
+
+
+Enums::FlightModeTypes FlightMode::getType()
+{
+    return type;
+}
+
+
+ControlSticks* FlightMode::getVirtualSticksPtr()
+{
+    return &virtualSticks;
+}

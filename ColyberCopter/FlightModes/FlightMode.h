@@ -21,14 +21,45 @@ private:
 
 protected:
     FlightMode* const baseFlightMode;
+    IVirtualPilot* virtualPilotPtr;
     static ControlSticks virtualSticks;
 
 
 public:
+    /**
+     * @brief Construct a new Flight Mode object
+     * 
+     * @param flightModeType Enum type of created flight mode (if new, update enum file)
+     * @param baseFlightMode Pointer to flight mode that class extends
+     * (nullptr if don't extend any current flight mode)
+     * @param virtualPilot Pointer to VirtualPilot instance
+     */
     FlightMode(Enums::FlightModeTypes flightModeType, FlightMode* baseFlightMode, Interfaces::IVirtualPilot* virtualPilot);
 
-    bool initializeFlightMode();
+    // Disable copying instances of this class
+    FlightMode(const FlightMode&) = delete;
+    FlightMode& operator=(const FlightMode&) = delete;
+
+    /**
+     * @brief Adds this flight mode to VirtualPilot.
+     * Can be overriden by concrete flight modes classes.
+     */
+    virtual bool initializeFlightMode();
+
+    /**
+     * @brief Check if passed flight is used by this flight mode indirectly (through base flight mode)
+     * or is it current one
+     * 
+     * @param flightModeToCheck pointer to flight mode instance
+     * to check if is used by this flight mode
+     * @return true if passed flight mode is this flight mode
+     * or this flight mode uses passed flight mode through base flight mode
+     */
     bool checkIfRelated(const FlightMode* flightModeToCheck);
+
+    /**
+     * @return Enums::FlightModeTypes - type of this flight mode
+     */
     Enums::FlightModeTypes getType();
 
     /**
@@ -38,17 +69,20 @@ public:
 
 
     /**
-     * @brief Called with the main frequency when selected in virtual pilot
+     * @brief Called with the main frequency when selected in virtual pilot.
+     * Have to be overriden by concrete flight mode class.
      */
     virtual void run() = 0;
 
     /**
-     * @brief Called when virtual pilot or any flight mode stops using this flight mode (leave from it)
+     * @brief Called when virtual pilot or any flight mode stops using this flight mode (leave from it).
+     * Have to be overriden by concrete flight mode class.
      */
     virtual void leave() = 0;
 
     /**
-     * @brief Called when virtual pilot didn't use but will be using now this flight mode (entering to it)
+     * @brief Called when virtual pilot didn't use but will be using now this flight mode (entering to it).
+     * Have to be overriden by concrete flight mode class.
      */
     virtual void prepare() = 0;
 };
