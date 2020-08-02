@@ -60,3 +60,10 @@ void FlightMode::runBaseFlightMode()
     if (baseFlightMode != nullptr)
         baseFlightMode->run();
 }
+
+
+void FlightMode::runBaseFlightModeIdleLoop()
+{
+    if (baseFlightMode != nullptr)
+        baseFlightMode->idleLoop();
+}

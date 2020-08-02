@@ -69,19 +69,30 @@ public:
 
 
     /**
+     * @brief Called frequently when this flight mode is selected but drone
+     * is idle. Don't have to be overriden.
+     * Execute runBaseFlightModeIdleLoop() method inside to execute base flight mode code.
+     */
+    virtual void idleLoop()
+    {
+        runBaseFlightModeIdleLoop();
+    }
+
+    /**
      * @brief Called with the main frequency when selected in virtual pilot.
      * Have to be overriden by concrete flight mode class.
+     * INSIDE EXECUTE runBaseFlightMode() METHOD SOMEWHERE !!
      */
     virtual void run() = 0;
 
     /**
-     * @brief Called when virtual pilot or any flight mode stops using this flight mode (leave from it).
+     * @brief Called one time when virtual pilot or any flight mode stops using this flight mode (leave from it).
      * Have to be overriden by concrete flight mode class.
      */
     virtual void leave() = 0;
 
     /**
-     * @brief Called when virtual pilot didn't use but will be using now this flight mode (entering to it).
+     * @brief Called one time when virtual pilot didn't use but will be using now this flight mode (entering to it).
      * Have to be overriden by concrete flight mode class.
      */
     virtual void prepare() = 0;
@@ -89,10 +100,16 @@ public:
 
 protected:
     /**
-     * @brief Used by concrete flight modes classes. Execute base flight mode.
+     * @brief Used by concrete flight modes classes. Execute base flight mode code.
      * Use it at the beginning or at the end of run() method.
      */
     void runBaseFlightMode();
+    
+    /**
+     * @brief Used by concrete flight modes to exedute idle loop
+     * of their base flight modes.
+     */
+    void runBaseFlightModeIdleLoop();
 };
 
 
