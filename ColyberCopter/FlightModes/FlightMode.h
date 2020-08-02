@@ -25,12 +25,15 @@ protected:
 
 
 public:
-    FlightMode(Enums::FlightModeTypes type, FlightMode* baseFlightMode, Interfaces::IVirtualPilot* virtualPilot);
+    FlightMode(Enums::FlightModeTypes flightModeType, FlightMode* baseFlightMode, Interfaces::IVirtualPilot* virtualPilot);
 
     bool initializeFlightMode();
     bool checkIfRelated(const FlightMode* flightModeToCheck);
     Enums::FlightModeTypes getType();
 
+    /**
+     * @return Pointer to the only instance of control sticks shared by all flight modes
+     */
     static ControlSticks* getVirtualSticksPtr();
 
 

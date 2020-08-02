@@ -13,10 +13,10 @@
 class ControlSticks
 {
 private:
-    uint16_t throttle;
-    int16_t rotation;
-    int16_t tb; // top-back
-    int16_t lr; // left-right
+    uint16_t throttle = 0;
+    int16_t rotation = 0;
+    int16_t tb = 0; // top-back
+    int16_t lr = 0; // left-right
 
 
 public:
