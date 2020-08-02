@@ -18,16 +18,16 @@ class FlightMode
 {
 private:
     const Enums::FlightModeTypes type;
-
-protected:
     FlightMode* const baseFlightMode;
     IVirtualPilot* virtualPilotPtr;
-    static ControlSticks virtualSticks;
+
+protected:
+    static ControlSticks virtualSticks; // shared by all flight modes instance of virtual sticks
 
 
 public:
     /**
-     * @brief Construct a new Flight Mode object
+     * @brief Construct a new Flight Mode object.
      * 
      * @param flightModeType Enum type of created flight mode (if new, update enum file)
      * @param baseFlightMode Pointer to flight mode that class extends
@@ -48,7 +48,7 @@ public:
 
     /**
      * @brief Check if passed flight is used by this flight mode indirectly (through base flight mode)
-     * or is it current one
+     * or is it current one.
      * 
      * @param flightModeToCheck pointer to flight mode instance
      * to check if is used by this flight mode
@@ -63,7 +63,7 @@ public:
     Enums::FlightModeTypes getType();
 
     /**
-     * @return Pointer to the only instance of control sticks shared by all flight modes
+     * @return Pointer to the only instance of control sticks shared by all flight modes.
      */
     static ControlSticks* getVirtualSticksPtr();
 
@@ -85,6 +85,14 @@ public:
      * Have to be overriden by concrete flight mode class.
      */
     virtual void prepare() = 0;
+
+
+protected:
+    /**
+     * @brief Used by concrete flight modes classes. Execute base flight mode.
+     * Use it at the beginning or at the end of run() method.
+     */
+    void runBaseFlightMode();
 };
 
 

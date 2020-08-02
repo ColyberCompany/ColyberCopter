@@ -53,3 +53,10 @@ ControlSticks* FlightMode::getVirtualSticksPtr()
 {
     return &virtualSticks;
 }
+
+
+void FlightMode::runBaseFlightMode()
+{
+    if (baseFlightMode != nullptr)
+        baseFlightMode->run();
+}
