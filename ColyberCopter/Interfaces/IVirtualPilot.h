@@ -9,6 +9,9 @@
 #ifndef IVIRTUALPILOT_H
 #define IVIRTUALPILOT_H
 
+#include "FlightModes/FlightMode.h"
+#include "Enums/FlightModeTypes.h"
+
 
 namespace Interfaces
 {
@@ -19,7 +22,9 @@ namespace Interfaces
 
         virtual bool initializeFlightModes() = 0;
         virtual void runVirtualPilot() = 0;
-        //TODO: create flight mode class and flight mode types enum and finish this interface
+        virtual bool addFlightMode(FlightMode* flightModeToAdd) = 0;
+        virtual bool setFlightMode(Enums::FlightModeTypes flightModeToSet) = 0;
+        virtual Enums::FlightModeTypes getCurrentFlightModeType() = 0;
     };
 }
 
