@@ -8,6 +8,8 @@
 #ifndef IFAILSAFE_H
 #define IFAILSAFE_H
 
+#include <IExecutable.h>
+
 
 namespace Interfaces
 {
@@ -17,11 +19,8 @@ namespace Interfaces
         virtual ~IFailsafe() {}
 
         virtual bool initializeFailsafe() = 0;
-
-        // TODO: add IExecutable interface first (in Tasker library)
-        //virtual void addFailsafeEvent(...)
-        //virtual void removeFailsafeEvent(...)
-
+        virtual void addFailsafeEvent(IExecutable* failsafeEvent);
+        virtual void removeFailsafeEvent(IExecutable* failsafeEvent);
         virtual void runFailsafeCheckLoop() = 0;
     };
 }
