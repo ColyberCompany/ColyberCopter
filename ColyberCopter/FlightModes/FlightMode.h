@@ -10,7 +10,6 @@
 #define FLIGHTMODE_H
 
 #include "Enums/FlightModeTypes.h"
-#include "Interfaces/IVirtualPilot.h"
 #include "Common/ControlSticks.h"
 
 
@@ -19,7 +18,6 @@ class FlightMode
 private:
     const Enums::FlightModeTypes type;
     FlightMode* const baseFlightMode;
-    IVirtualPilot* virtualPilotPtr;
 
 protected:
     static ControlSticks virtualSticks; // shared by all flight modes instance of virtual sticks
@@ -34,17 +32,17 @@ public:
      * (nullptr if don't extend any current flight mode)
      * @param virtualPilot Pointer to VirtualPilot instance
      */
-    FlightMode(Enums::FlightModeTypes flightModeType, FlightMode* baseFlightMode, Interfaces::IVirtualPilot* virtualPilot);
+    FlightMode(Enums::FlightModeTypes flightModeType, FlightMode* baseFlightMode);
 
     // Disable copying instances of this class
     FlightMode(const FlightMode&) = delete;
     FlightMode& operator=(const FlightMode&) = delete;
 
     /**
-     * @brief Adds this flight mode to VirtualPilot.
+     * @brief Does nothing.
      * Can be overriden by concrete flight modes classes.
      */
-    virtual bool initializeFlightMode();
+    virtual bool initializeFlightMode() = 0;
 
     /**
      * @brief Check if passed flight is used by this flight mode indirectly (through base flight mode)

@@ -8,24 +8,19 @@
 #include "FlightMode.h"
 
 using Enums::FlightModeTypes;
-using Interfaces::IVirtualPilot;
 
 
 ControlSticks FlightMode::virtualSticks;
 
 
-FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMode, IVirtualPilot* virtualPilot)
+FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMode)
     : type(flightModeType), baseFlightMode(baseFlightMode)
 {
-    virtualPilotPtr = virtualPilot;
 }
 
 
 bool FlightMode::initializeFlightMode()
 {
-    // self-add this flight mode after instantiation
-    virtualPilotPtr->addFlightMode(this);
-
     return true;
 }
 
