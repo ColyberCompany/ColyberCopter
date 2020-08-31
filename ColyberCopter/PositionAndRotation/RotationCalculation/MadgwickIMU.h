@@ -18,9 +18,9 @@ class MadgwickIMU : protected MadgwickBase, public Interfaces::IRotationCalculat
 {
 private:
     float _2q0, _2q1, _2q2, _2q3,
-		_4q0, _4q1, _4q2,
-		_8q1, _8q2,
-		q0q0, q1q1, q2q2, q3q3;
+        _4q0, _4q1, _4q2,
+        _8q1, _8q2,
+        q0q0, q1q1, q2q2, q3q3;
 
 
     vector3Float angles_deg; // x-pitch, y-roll, z-yaw
@@ -28,7 +28,7 @@ private:
     Interfaces::ISensorsData* sensorsData;
 
     float ax, ay, az;
-	float gx, gy, gz;
+    float gx, gy, gz;
 
 
 public:
