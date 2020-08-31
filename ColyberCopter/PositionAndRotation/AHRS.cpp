@@ -7,32 +7,40 @@
 
 #include "AHRS.h"
 
+using Interfaces::IPositionCalculation;
+using Interfaces::IRotationCalculation;
 
-// TODO: implement constructor
+
+AHRS::AHRS(IPositionCalculation* positionCalculation, IRotationCalculation* rotationCalculation)
+{
+    this->positionCalculation = positionCalculation;
+    this->rotationCalculation = rotationCalculation;
+}
 
 
 void AHRS::execute()
 {
+    // update rotation calculation first, because position calculation could use rotation
     rotationCalculation->updateRotationCalculation();
-    // TODO: implement other calculations
+    positionCalculation->updatePositionCalculation();
 }
 
 
 double AHRS::getLongitude_deg()
 {
-    // TODO: implement
+    return positionCalculation->getLongitude_deg();
 }
 
 
 double AHRS::getLatitude_deg()
 {
-    // TODO: implement getLongitude_deg
+    return positionCalculation->getLatitude_deg();
 }
 
 
 float AHRS::getAltitude_m()
 {
-    // TODO: implement getAltitude_m
+    return positionCalculation->getAltitude_m();
 }
 
 

@@ -8,10 +8,6 @@
  * 
  */
 
-// TODO: design this class in the uml diagram first
-// TODO: implement ahrs (h and cpp file)
-
-
 #ifndef AHRS_H
 #define AHRS_H
 
@@ -19,16 +15,17 @@
 #include "Interfaces/I3DRotation.h"
 #include <Task.h>
 #include "Interfaces/IRotationCalculation.h"
-// TODO: maybe position calculation interface will be merged, make according to that
+#include "Interfaces/IPositionCalculation.h"
 
 
 class AHRS : public Interfaces::I3DPosition, public Interfaces::I3DRotation, public Task
 {
 private:
+    Interfaces::IPositionCalculation* positionCalculation;
     Interfaces::IRotationCalculation* rotationCalculation;
 
 public:
-    AHRS(Interfaces::IRotationCalculation* rotationCalculation /* other calculation according to change in interface */);
+    AHRS(Interfaces::IPositionCalculation* positionCalculation, Interfaces::IRotationCalculation* rotationCalculation);
 
     void execute() override;
 

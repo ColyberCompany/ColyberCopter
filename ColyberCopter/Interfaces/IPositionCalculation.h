@@ -10,16 +10,19 @@
 #define IPOSITIONCALCULATION_H
 
 
-class IPositionCalculation
+namespace Interfaces
 {
-public:
-    virtual ~IPositionCalculation() {}
+    class IPositionCalculation
+    {
+    public:
+        virtual ~IPositionCalculation() {}
 
-    virtual void updatePositionCalculation() = 0;
-    virtual double getLongitude_deg() = 0;
-    virtual double getLatitude_deg() = 0;
-    virtual float getAltitude_m() = 0;
-};
+        virtual void updatePositionCalculation() = 0;
+        virtual double getLongitude_deg() = 0;
+        virtual double getLatitude_deg() = 0;
+        virtual float getAltitude_m() = 0;
+    };
+}
 
 
 #endif
