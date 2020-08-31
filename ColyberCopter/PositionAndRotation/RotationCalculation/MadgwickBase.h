@@ -37,7 +37,7 @@ public:
      * @param x Number which square root will be extracted.
      * @return Square root of parameter x.
      */
-    static float invertedSquareRoot(float x);
+    static float invSqrt(float x);
 };
 
 

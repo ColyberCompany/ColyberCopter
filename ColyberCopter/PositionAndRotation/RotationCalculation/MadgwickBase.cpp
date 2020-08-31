@@ -11,7 +11,7 @@
 const float MadgwickBase::DefaultBeta = 0.1;
 
 
-MadgwickBase::MadgwickBase(float sampleFrequency, float beta = DefaultBeta)
+MadgwickBase::MadgwickBase(float sampleFrequency, float beta)
 {
     invSampleFreq = 1.0f / sampleFrequency;
     this->beta = beta;
@@ -22,7 +22,12 @@ MadgwickBase::MadgwickBase(float sampleFrequency, float beta = DefaultBeta)
 }
 
 
-float MadgwickBase::invertedSquareRoot(float x)
+MadgwickBase::~MadgwickBase()
+{
+}
+
+
+float MadgwickBase::invSqrt(float x)
 {
     float halfx = 0.5f * x;
 	float y = x;
