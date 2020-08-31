@@ -45,7 +45,7 @@ void MadgwickIMU::updateRotationCalculation()
 	//if (!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) // Should never occur, so skip
 	{
 		// Normalise accelerometer measurement.
-        /* Skip, measurements are already normalized
+        /* Skip, accelerometer measurements are already normalized
 		recipNorm = invSqrt(ax * ax + ay * ay + az * az);
 		ax *= recipNorm;
 		ay *= recipNorm;
