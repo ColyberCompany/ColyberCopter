@@ -17,13 +17,13 @@
 class Failsafe : public Interfaces::IFailsafe, public Task
 {
 private:
-    IList<IExecutable*>* failsafeEventsList;
+    IList<IExecutable*>* failsafeScenariosList;
 
 public:
     Failsafe();
     bool initializeFailsafe() override;
-    void addFailsafeEvent(IExecutable* failsafeEvent) override;
-    void removeFailsafeEvent(IExecutable* failsafeEvent) override;
+    void addFailsafeScenario(IExecutable* failsafeScenario) override;
+    void removeFailsafeScenario(IExecutable* failsafeScenario) override;
     void runFailsafeCheckLoop() override;
     void execute() override;
 };

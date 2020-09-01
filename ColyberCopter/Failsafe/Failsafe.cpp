@@ -11,7 +11,7 @@
 
 Failsafe::Failsafe()
 {
-    failsafeEventsList = new LinkedList<IExecutable*>();
+    failsafeScenariosList = new LinkedList<IExecutable*>();
 }
 
 
@@ -21,15 +21,15 @@ bool Failsafe::initializeFailsafe()
 }
 
 
-void Failsafe::addFailsafeEvent(IExecutable* failsafeEvent)
+void Failsafe::addFailsafeScenario(IExecutable* failsafeScenario)
 {
-    failsafeEventsList->add(failsafeEvent);
+    failsafeScenariosList->add(failsafeScenario);
 }
 
 
-void Failsafe::removeFailsafeEvent(IExecutable* failsafeEvent)
+void Failsafe::removeFailsafeScenario(IExecutable* failsafeScenario)
 {
-    // TODO: implement removeFailsafeEvent method
+    // TODO: implement removeFailsafeScenario method
     // figure out how to add remove method to IList interface
     // this will cause that IArray interface will also have remove method
     // this is cool, but this also is some work to do :)
@@ -38,9 +38,9 @@ void Failsafe::removeFailsafeEvent(IExecutable* failsafeEvent)
 
 void Failsafe::runFailsafeCheckLoop()
 {
-    size_t amtOfFailsafeEvents = failsafeEventsList->getSize();
+    size_t amtOfFailsafeEvents = failsafeScenariosList->getSize();
     for (size_t i = 0; i < amtOfFailsafeEvents; i++)
-        failsafeEventsList->get(i)->execute();
+        failsafeScenariosList->get(i)->execute();
 }
 
 
