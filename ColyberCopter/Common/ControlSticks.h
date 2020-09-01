@@ -1,7 +1,9 @@
 /**
  * @file ControlSticks.h
  * @author Jan Wielgus
- * @brief Class that represents sticks that are on drone remote controller
+ * @brief Class that represents sticks that are on drone remote controller.
+ * Throttle: 0 : 1000
+ * Rotation, TB, LR: -500 : 500
  * @date 2020-07-31
  * 
  */
