@@ -8,13 +8,15 @@
 #include "CommunicationLost.h"
 
 
-CommunicationLost::CommunicationLost()
+CommunicationLost::CommunicationLost(IConnectionStatus* connectionStatus, IExecutable* failsafeAction)
+    : FailsafeScenario(failsafeAction)
 {
-
+    this->connectionStatus = connectionStatus;
 }
 
 
 void CommunicationLost::execute()
 {
-    
+    if (connectionStatus->getConnectionStability() > ConnectionStabilityThreshold)
+        runFailsafeAction();
 }

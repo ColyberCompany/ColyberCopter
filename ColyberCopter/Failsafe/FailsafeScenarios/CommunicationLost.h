@@ -9,18 +9,20 @@
 #ifndef COMMUNICATIONLOST_H
 #define COMMUNICATIONLOST_H
 
-#include <IExecutable.h>
-// TODO: create way to disarm motors, this something have to consider different motors configuration
+#include "FailsafeScenario.h"
+#include <IConnectionStatus.h>
+#include "Interfaces/IMotors.h"
 
 
-class CommunicationLost : public IExecutable
-{ // TODO: implement CommunicationLost failsafe class.
-public:
-    CommunicationLost();
-    void execute() override;
-
+class CommunicationLost : public FailsafeScenario
+{
 private:
-    bool getCommunicationState();
+    const uint8_t ConnectionStabilityThreshold = 60;
+    IConnectionStatus* connectionStatus;
+
+public:
+    CommunicationLost(IConnectionStatus* connectionStatus, IExecutable* failsafeAction);
+    void execute() override;
 };
 
 
