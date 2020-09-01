@@ -19,8 +19,8 @@ namespace Interfaces
         virtual ~IFailsafe() {}
 
         virtual bool initializeFailsafe() = 0;
-        virtual void addFailsafeEvent(IExecutable* failsafeEvent);
-        virtual void removeFailsafeEvent(IExecutable* failsafeEvent);
+        virtual void addFailsafeScenario(IExecutable* failsafeScenario) = 0;
+        virtual void removeFailsafeScenario(IExecutable* failsafeScenario) = 0;
         virtual void runFailsafeCheckLoop() = 0;
     };
 }
