@@ -14,17 +14,17 @@
 #include <IList.h>
 
 
-class Failsafe : public Interfaces::IFailsafe, public Task
+class Failsafe : public Task
 {
 private:
     IList<IExecutable*>* failsafeScenariosList;
 
 public:
     Failsafe();
-    bool initializeFailsafe() override;
-    void addFailsafeScenario(IExecutable* failsafeScenario) override;
-    void removeFailsafeScenario(IExecutable* failsafeScenario) override;
-    void runFailsafeCheckLoop() override;
+    bool initializeFailsafe();
+    void addFailsafeScenario(IExecutable* failsafeScenario);
+    void removeFailsafeScenario(IExecutable* failsafeScenario);
+    void runFailsafeCheckLoop();
     void execute() override;
 };
 
