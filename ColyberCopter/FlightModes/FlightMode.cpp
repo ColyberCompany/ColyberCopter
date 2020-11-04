@@ -13,8 +13,8 @@ using Enums::FlightModeTypes;
 ControlSticks FlightMode::virtualSticks;
 
 
-FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMode)
-    : type(flightModeType), baseFlightMode(baseFlightMode)
+FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMode, float deltaTime)
+    : type(flightModeType), baseFlightMode(baseFlightMode), DeltaTime(deltaTime)
 {
 }
 
@@ -61,4 +61,13 @@ void FlightMode::runBaseFlightModeIdleLoop()
 {
     if (baseFlightMode != nullptr)
         baseFlightMode->idleLoop();
+}
+
+
+void FlightMode::resetSticks()
+{
+    virtualSticks.setThrottle(0);
+    virtualSticks.setRotation(0);
+    virtualSticks.setTB(0);
+    virtualSticks.setLR(0);
 }

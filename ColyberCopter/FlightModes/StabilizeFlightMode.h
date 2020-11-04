@@ -22,16 +22,14 @@ private:
     PID& levelingYPID;
     PID& headingHoldPID;
     Interfaces::I3DRotation& rotationData;
-    float deltaTime;
 
     float headingToHold;
     float headingError;
 
 
 public:
-    StabilizeFlightMode(Interfaces::IVirtualPilot* virtualPilot,
-        PID* levelingX_PID, PID* levelingY_PID, PID* headingHold_PID,
-        Interfaces::I3DRotation* rotationDataPtr, float deltaTime);
+    StabilizeFlightMode(PID& levelingX_PID, PID& levelingY_PID, PID& headingHold_PID,
+        Interfaces::I3DRotation& rotationData, float deltaTime);
 
     void idleLoop() override;
     void run() override;
@@ -43,8 +41,16 @@ private:
     void updateLeveling();
     void updateHeadingHolding();
     void integrateHeadingToHold();
-    void resetSticks();
+    void calculateHeadingError();
     void setHeadingToHoldToCurrentReading();
+
+    /**
+     * @brief Makes value from parameter to be from range 0 - 360 deg.
+     * Don't constrain value but makes modulo on float.
+     * @param headingToCorrect Heading angle to correct.
+     * @return Heading from range 0 - 360 deg.
+     */
+    static float correctHeading(float headingToCorrect);
 };
 
 
