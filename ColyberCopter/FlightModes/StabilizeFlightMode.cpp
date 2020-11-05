@@ -61,8 +61,8 @@ void StabilizeFlightMode::leave()
 
 void StabilizeFlightMode::updateLeveling()
 {
-    virtualSticks.setTB(levelingXPID.update(virtualSticks.getTB() / 10.f, rotationData.getPitch_deg()) + 0.5f);
-    virtualSticks.setLR(levelingYPID.update(virtualSticks.getLR() / 10.f, rotationData.getRoll_deg()) + 0.5f);
+    virtualSticks.setPitch(levelingXPID.update(virtualSticks.getPitch() / 10.f, rotationData.getPitch_deg()) + 0.5f);
+    virtualSticks.setRoll(levelingYPID.update(virtualSticks.getRoll() / 10.f, rotationData.getRoll_deg()) + 0.5f);
 }
 
 
@@ -70,13 +70,13 @@ void StabilizeFlightMode::updateHeadingHolding()
 {
     integrateHeadingToHold();
     calculateHeadingError();
-    virtualSticks.setRotation(headingHoldPID.update(headingError));
+    virtualSticks.setYaw(headingHoldPID.update(headingError));
 }
 
 
 void StabilizeFlightMode::integrateHeadingToHold()
 {
-    headingToHold += ((float)(virtualSticks.getRotation() / 2.f) * DeltaTime);
+    headingToHold += ((float)(virtualSticks.getYaw() / 2.f) * DeltaTime);
     headingToHold = correctHeading(headingToHold);
 }
 

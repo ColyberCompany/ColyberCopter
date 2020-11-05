@@ -19,12 +19,6 @@ FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMod
 }
 
 
-bool FlightMode::initializeFlightMode()
-{
-    return true;
-}
-
-
 bool FlightMode::checkIfRelated(const FlightMode* flightModeToCheck)
 {
     if (flightModeToCheck == this)
@@ -50,6 +44,12 @@ ControlSticks* FlightMode::getVirtualSticksPtr()
 }
 
 
+bool FlightMode::initializeFlightMode()
+{
+    return true;
+}
+
+
 void FlightMode::runBaseFlightMode()
 {
     if (baseFlightMode != nullptr)
@@ -67,7 +67,7 @@ void FlightMode::runBaseFlightModeIdleLoop()
 void FlightMode::resetSticks()
 {
     virtualSticks.setThrottle(0);
-    virtualSticks.setRotation(0);
-    virtualSticks.setTB(0);
-    virtualSticks.setLR(0);
+    virtualSticks.setYaw(0);
+    virtualSticks.setPitch(0);
+    virtualSticks.setRoll(0);
 }

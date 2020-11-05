@@ -41,12 +41,6 @@ public:
     FlightMode& operator=(const FlightMode&) = delete;
 
     /**
-     * @brief Does nothing.
-     * Can be overriden by concrete flight modes classes.
-     */
-    virtual bool initializeFlightMode() = 0;
-
-    /**
      * @brief Check if passed flight is used by this flight mode indirectly (through base flight mode)
      * or is it current one.
      * @param flightModeToCheck pointer to flight mode instance
@@ -57,15 +51,22 @@ public:
     bool checkIfRelated(const FlightMode* flightModeToCheck);
 
     /**
-     * @return Enums::FlightModeTypes - type of this flight mode
+     * @return Type of this flight mode
      */
     Enums::FlightModeTypes getType();
 
     /**
      * @return Pointer to the only instance of control sticks shared by all flight modes.
+     * Virtual pilot should assign this values with received control sticks
+     * before calling run() method of a flight mode.
      */
     static ControlSticks* getVirtualSticksPtr();
 
+    /**
+     * @brief Can be overriden by concrete flight modes classes.
+     * Prepare flight mode 
+     */
+    virtual bool initializeFlightMode();
 
     /**
      * @brief Called frequently when this flight mode is selected as current flight mode,

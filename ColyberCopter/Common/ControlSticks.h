@@ -16,9 +16,9 @@ class ControlSticks
 {
 private:
     uint16_t throttle = 0;
-    int16_t rotation = 0;
-    int16_t tb = 0; // top-back
-    int16_t lr = 0; // left-right
+    int16_t yaw = 0; // heading control
+    int16_t pitch = 0; // top-back
+    int16_t roll = 0; // left-right
 
 
 public:
@@ -29,21 +29,21 @@ public:
 
 
     /**
-     * @brief Return the rotation stick value [-500 : 500]
+     * @brief Return the yaw stick value [-500 : 500]
      */
-    int16_t getRotation() const { return rotation; }
+    int16_t getYaw() const { return yaw; }
 
 
     /**
      * @brief Return the top/back stick value [-500 : 500]
      */
-    int16_t getTB() const { return tb; }
+    int16_t getPitch() const { return pitch; }
 
 
     /**
      * @brief Return the left/right stick value [-500 : 500]
      */
-    int16_t getLR() const { return lr; }
+    int16_t getRoll() const { return roll; }
 
 
     /**
@@ -59,14 +59,14 @@ public:
     
 
     /**
-     * @brief Set the rotation stick value.
+     * @brief Set the yaw stick value (heading control).
      * Value will be constrained to range from -500 to 500.
      * 
      * @param value Rotation stick value.
      */
-    void setRotation(int16_t value)
+    void setYaw(int16_t value)
     {
-        rotation = constrain(value, -500, 500);
+        yaw = constrain(value, -500, 500);
     }
 
 
@@ -76,9 +76,9 @@ public:
      * 
      * @param value Top/back stick value.
      */
-    void setTB(int16_t value)
+    void setPitch(int16_t value)
     {
-        tb = constrain(value, -500, 500);
+        pitch = constrain(value, -500, 500);
     }
 
 
@@ -88,9 +88,9 @@ public:
      * 
      * @param value Left/right stick value.
      */
-    void setLR(int16_t value)
+    void setRoll(int16_t value)
     {
-        lr = constrain(value, -500, 500);
+        roll = constrain(value, -500, 500);
     }
 
 
@@ -100,16 +100,16 @@ public:
      * other sticks to range from -500 to 500.
      * 
      * @param throttle Throttle stick value.
-     * @param rotation Rotation stick value.
-     * @param tb Top/back stick value.
-     * @param lr Left/right stick value.
+     * @param yaw Rotation stick value.
+     * @param pitch Top/back stick value.
+     * @param roll Left/right stick value.
      */
-    void set(uint16_t throttle, int16_t rotation, int16_t tb, int16_t lr)
+    void set(uint16_t throttle, int16_t yaw, int16_t pitch, int16_t roll)
     {
         setThrottle(throttle);
-        setRotation(rotation);
-        setTB(tb);
-        setLR(lr);
+        setYaw(yaw);
+        setPitch(pitch);
+        setRoll(roll);
     }
 };
 
