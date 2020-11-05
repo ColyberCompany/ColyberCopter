@@ -14,8 +14,8 @@ namespace Enums
 {
     enum class StateType
     {
-        Enabled,
-        Disabled
+        Disabled,
+        Enabled
     };
 }
 
