@@ -1,15 +1,15 @@
 /**
- * @file RemoteControllerCommunication.cpp
+ * @file RmtCtrlCommunication.cpp
  * @author Jan Wielgus
  * @brief In this file data packets are constructed.
  * @date 2020-11-09
  * 
  */
 
-#include "RemoteControllerCommunication.h"
+#include "RmtCtrlCommunication.h"
 
 
-RemoteControllerCommunication::RemoteControllerCommunication()
+RmtCtrlCommunication::RmtCtrlCommunication()
 {
 // receive:
 

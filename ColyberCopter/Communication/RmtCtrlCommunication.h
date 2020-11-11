@@ -1,5 +1,5 @@
 /**
- * @file RemoteControllerCommunication.h
+ * @file RmtCtrlCommunication.h
  * @author Jan Wielgus
  * @brief This (Singleton) class is used to communicate with remote controller.
  * Way of communication could be changed here. This class also contains 
@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef REMOTECONTROLLERCOMMUNICATION_H
-#define REMOTECONTROLLERCOMMUNICATION_H
+#ifndef RMTCTRLCOMMUNICATION_H
+#define RMTCTRLCOMMUNICATION_H
 
 #include <StreamComm.h>
 #include <PacketCommunicationWithQueue.h>
@@ -20,14 +20,18 @@
 #include "config.h"
 
 
-class RemoteControllerCommunication
+/**
+ * @brief Remote Controller Communication
+ * (communication with the remote controller).
+ */
+class RmtCtrlCommunication
 {
 // Singleton
 private:
-    RemoteControllerCommunication();
-    RemoteControllerCommunication& instance = RemoteControllerCommunication();
+    RmtCtrlCommunication();
+    RmtCtrlCommunication& instance = RmtCtrlCommunication();
 public:
-    RemoteControllerCommunication& getInstance()
+    RmtCtrlCommunication& getInstance()
     {
         return instance;
     }
