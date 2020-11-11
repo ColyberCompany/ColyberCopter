@@ -48,7 +48,7 @@ public:
      * @return true if passed flight mode is this flight mode
      * or this flight mode uses passed flight mode through base flight mode
      */
-    bool checkIfRelated(const FlightMode* flightModeToCheck);
+    bool checkIfRelated(const FlightMode* flightModeToCheck) const;
 
     /**
      * @return Type of this flight mode
@@ -58,7 +58,8 @@ public:
     /**
      * @return Pointer to the only instance of control sticks shared by all flight modes.
      * Virtual pilot should assign this values with received control sticks
-     * before calling run() method of a flight mode.
+     * before calling armedLoop() method of a flight mode.
+     * After execution of flight modes there are values ready to put on motors.
      */
     static ControlSticks* getVirtualSticksPtr();
 
@@ -66,24 +67,25 @@ public:
      * @brief Can be overriden by concrete flight modes classes.
      * Prepare flight mode 
      */
-    virtual bool initializeFlightMode();
+    virtual bool initializeFlightMode(); // TODO: This method probably can be removed. All things needed to be done before any action could be inside prepare()
 
     /**
      * @brief Called frequently when this flight mode is selected as current flight mode,
-     * but drone is idle. Don't have to be overriden
-     * (execute base flight mode idleLoop by default).
+     * but drone is disarmed. Don't have to be overriden
+     * (execute base flight mode disarmedLoop by default).
      */
-    virtual void idleLoop()
+    virtual void disarmedLoop() // TODO: check if this method is used by any flight mode. Maybe it is not needed.
     {
-        runBaseFlightModeIdleLoop();
+        runBaseFlightModeDisarmedLoop();
     }
 
     /**
-     * @brief Called with the main frequency when selected in virtual pilot.
+     * @brief Called with the main frequency when selected in virtual pilot
+     * when motors are armed. When drone is disarmed, disarmedLoop() method is called.
      * Have to be overriden by concrete flight mode class.
-     * CALL runBaseFlightMode() METHOD INSIDE!!
+     * CALL runBaseFlightModeArmedLoop() METHOD INSIDE!!
      */
-    virtual void run() = 0;
+    virtual void armedLoop() = 0;
 
     /**
      * @brief Called one time when virtual pilot or any flight mode stops using this flight mode (leave from it).
@@ -101,16 +103,16 @@ public:
 protected:
     /**
      * @brief Used by concrete flight modes classes. Execute base flight mode code.
-     * Use it at the beginning or at the end of run() method.
+     * Use it at the beginning or at the end of armedLoop() method.
      */
-    void runBaseFlightMode();
+    void runBaseFlightModeArmedLoop();
     
     /**
-     * @brief Used by concrete flight modes to execute idle loop
+     * @brief Used by concrete flight modes to execute disarmed loop
      * of their base flight modes.
-     * Use in idleLoop() method.
+     * Use in disarmedLoop() method.
      */
-    void runBaseFlightModeIdleLoop();
+    void runBaseFlightModeDisarmedLoop();
 
     /**
      * @brief Set all stick values to 0.

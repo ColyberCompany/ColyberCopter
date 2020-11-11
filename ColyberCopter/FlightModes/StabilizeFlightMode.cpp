@@ -28,18 +28,18 @@ StabilizeFlightMode::StabilizeFlightMode(PID& levelingX_PID, PID& levelingY_PID,
 }
 
 
-void StabilizeFlightMode::idleLoop()
+void StabilizeFlightMode::disarmedLoop()
 {
-    runBaseFlightModeIdleLoop(); // remember in other flight modes
+    runBaseFlightModeDisarmedLoop(); // remember in other flight modes
 }
 
 
-void StabilizeFlightMode::run()
+void StabilizeFlightMode::armedLoop()
 {
     updateLeveling();
     updateHeadingHolding();
 
-    // runBaseFlightMode(); - not needed there, but remember in other flight modes
+    // runBaseFlightModeArmedLoop(); - not needed there, but remember in other flight modes
 }
 
 

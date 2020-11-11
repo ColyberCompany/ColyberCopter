@@ -31,8 +31,8 @@ public:
     StabilizeFlightMode(PID& levelingX_PID, PID& levelingY_PID, PID& headingHold_PID,
         Interfaces::I3DRotation& rotationData, float deltaTime);
 
-    void idleLoop() override;
-    void run() override;
+    void disarmedLoop() override;
+    void armedLoop() override;
     void prepare() override;
     void leave() override;
 

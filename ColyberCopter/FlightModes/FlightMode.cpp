@@ -19,7 +19,7 @@ FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMod
 }
 
 
-bool FlightMode::checkIfRelated(const FlightMode* flightModeToCheck)
+bool FlightMode::checkIfRelated(const FlightMode* flightModeToCheck) const
 {
     if (flightModeToCheck == this)
         return true;
@@ -50,17 +50,17 @@ bool FlightMode::initializeFlightMode()
 }
 
 
-void FlightMode::runBaseFlightMode()
+void FlightMode::runBaseFlightModeArmedLoop()
 {
     if (baseFlightMode != nullptr)
-        baseFlightMode->run();
+        baseFlightMode->armedLoop();
 }
 
 
-void FlightMode::runBaseFlightModeIdleLoop()
+void FlightMode::runBaseFlightModeDisarmedLoop()
 {
     if (baseFlightMode != nullptr)
-        baseFlightMode->idleLoop();
+        baseFlightMode->disarmedLoop();
 }
 
 
