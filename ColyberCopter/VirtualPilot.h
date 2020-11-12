@@ -15,21 +15,25 @@
 #include <Task.h>
 #include "FlightModes/FlightMode.h"
 #include "Communication/ReceiveData.h"
+#include <GrowingArray.h>
 
 
 // TODO: implement VirtualPilot class
 class VirtualPilot : public Interfaces::IVirtualPilot, public Task
 {
 private:
-Interfaces::IMotors* motors;
-FlightMode* currentFlightMode;
-const DataFromRmtCtrl* steeringData;
+    Interfaces::IMotors* motors;
+    FlightMode* currentFlightMode;
+    const DataFromRmtCtrl* steeringData;
+    GrowingArray<FlightMode*> flightModesArray;
 
 public:
     VirtualPilot(Interfaces::IMotors* motors, FlightMode* initialFlightMode, const DataFromRmtCtrl* steeringData);
 
+    bool addFlightMode(FlightMode* flightMode) override;
+    bool initializeFlightModes() override;
+    bool setFlightMode(Enums::FlightModeTypes flightModeToSetType) override;
     void runVirtualPilot() override;
-    bool setFlightMode(FlightMode* flightModeToSet) override;
     Enums::FlightModeTypes getCurrentFlightModeType() override;
 
 
