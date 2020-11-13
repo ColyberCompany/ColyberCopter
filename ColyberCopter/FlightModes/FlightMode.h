@@ -48,7 +48,7 @@ public:
      * @return true if passed flight mode is this flight mode
      * or this flight mode uses passed flight mode through base flight mode
      */
-    bool checkIfRelated(const FlightMode* flightModeToCheck) const;
+    bool checkIfSuperiorOrEqualOf(const FlightMode* flightModeToCheck) const; // TODO: this name could be better
 
     /**
      * @return Type of this flight mode
@@ -67,25 +67,17 @@ public:
      * @brief Can be overriden by concrete flight modes classes.
      * Prepare flight mode 
      */
-    virtual bool initializeFlightMode(); // TODO: This method probably can be removed. All things needed to be done before any action could be inside prepare()
+    virtual bool initializeFlightMode();
 
     /**
-     * @brief Called frequently when this flight mode is selected as current flight mode,
-     * but drone is disarmed. Don't have to be overriden
-     * (execute base flight mode disarmedLoop by default).
+     * @brief Execute armedLoop() of this flight mode and then of the base flight mode.
      */
-    virtual void disarmedLoop() // TODO: check if this method is used by any flight mode. Maybe it is not needed.
-    {
-        runBaseFlightModeDisarmedLoop();
-    }
+    void executeArmedLoop();
 
     /**
-     * @brief Called with the main frequency when selected in virtual pilot
-     * when motors are armed. When drone is disarmed, disarmedLoop() method is called.
-     * Have to be overriden by concrete flight mode class.
-     * CALL runBaseFlightModeArmedLoop() METHOD INSIDE!!
+     * @brief Execute disarmedLoop() of this flight mode and then of the base flight mode.
      */
-    virtual void armedLoop() = 0;
+    void executeDisarmedLoop();
 
     /**
      * @brief Called one time when virtual pilot or any flight mode stops using this flight mode (leave from it).
@@ -99,20 +91,22 @@ public:
      */
     virtual void prepare() = 0;
 
-
 protected:
     /**
-     * @brief Used by concrete flight modes classes. Execute base flight mode code.
-     * Use it at the beginning or at the end of armedLoop() method.
+     * @brief Called with main frequency when this flight mode is selected as current flight mode,
+     * but drone is disarmed. Don't have to be overriden (empty by default).
+     * Don't use executeDisarmedLoop() method inside.
      */
-    void runBaseFlightModeArmedLoop();
-    
+    virtual void disarmedLoop(); // TODO: check if this method is used by any flight mode. Maybe it is not needed.
+
     /**
-     * @brief Used by concrete flight modes to execute disarmed loop
-     * of their base flight modes.
-     * Use in disarmedLoop() method.
+     * @brief Called with the main frequency when used as current flight mode
+     * (or is used by current flight mode) when motors are armed.
+     * Have to be overriden by concrete flight mode class.
+     * Don't use executeArmedLoop() method inside.
      */
-    void runBaseFlightModeDisarmedLoop();
+    virtual void armedLoop() = 0;
+
 
     /**
      * @brief Set all stick values to 0.
