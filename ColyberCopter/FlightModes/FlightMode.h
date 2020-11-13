@@ -48,7 +48,7 @@ public:
      * @return true if passed flight mode is this flight mode
      * or this flight mode uses passed flight mode through base flight mode
      */
-    bool checkIfRelated(const FlightMode* flightModeToCheck);
+    bool checkIfSuperiorOrEqualOf(const FlightMode* flightModeToCheck) const; // TODO: this name could be better
 
     /**
      * @return Type of this flight mode
@@ -58,7 +58,8 @@ public:
     /**
      * @return Pointer to the only instance of control sticks shared by all flight modes.
      * Virtual pilot should assign this values with received control sticks
-     * before calling run() method of a flight mode.
+     * before calling armedLoop() method of a flight mode.
+     * After execution of flight modes there are values ready to put on motors.
      */
     static ControlSticks* getVirtualSticksPtr();
 
@@ -69,21 +70,14 @@ public:
     virtual bool initializeFlightMode();
 
     /**
-     * @brief Called frequently when this flight mode is selected as current flight mode,
-     * but drone is idle. Don't have to be overriden
-     * (execute base flight mode idleLoop by default).
+     * @brief Execute armedLoop() of this flight mode and then of the base flight mode.
      */
-    virtual void idleLoop()
-    {
-        runBaseFlightModeIdleLoop();
-    }
+    void executeArmedLoop();
 
     /**
-     * @brief Called with the main frequency when selected in virtual pilot.
-     * Have to be overriden by concrete flight mode class.
-     * CALL runBaseFlightMode() METHOD INSIDE!!
+     * @brief Execute disarmedLoop() of this flight mode and then of the base flight mode.
      */
-    virtual void run() = 0;
+    void executeDisarmedLoop();
 
     /**
      * @brief Called one time when virtual pilot or any flight mode stops using this flight mode (leave from it).
@@ -97,20 +91,22 @@ public:
      */
     virtual void prepare() = 0;
 
-
 protected:
     /**
-     * @brief Used by concrete flight modes classes. Execute base flight mode code.
-     * Use it at the beginning or at the end of run() method.
+     * @brief Called with main frequency when this flight mode is selected as current flight mode,
+     * but drone is disarmed. Don't have to be overriden (empty by default).
+     * Don't use executeDisarmedLoop() method inside.
      */
-    void runBaseFlightMode();
-    
+    virtual void disarmedLoop(); // TODO: check if this method is used by any flight mode. Maybe it is not needed.
+
     /**
-     * @brief Used by concrete flight modes to execute idle loop
-     * of their base flight modes.
-     * Use in idleLoop() method.
+     * @brief Called with the main frequency when used as current flight mode
+     * (or is used by current flight mode) when motors are armed.
+     * Have to be overriden by concrete flight mode class.
+     * Don't use executeArmedLoop() method inside.
      */
-    void runBaseFlightModeIdleLoop();
+    virtual void armedLoop() = 0;
+
 
     /**
      * @brief Set all stick values to 0.

@@ -42,6 +42,14 @@ namespace Interfaces
          * StateType::Disabled - motors are disarmed.
          */
         virtual void setMotorsState(Enums::StateType state) = 0;
+
+        /**
+         * @brief Checks current state of the motors.
+         * 
+         * @return Current state of the motors
+         * (Enabled - armed, Disabled - disarmed)
+         */
+        virtual Enums::StateType getMotorsState() = 0;
     };
 }
 
