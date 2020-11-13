@@ -28,18 +28,13 @@ StabilizeFlightMode::StabilizeFlightMode(PID& levelingX_PID, PID& levelingY_PID,
 }
 
 
-void StabilizeFlightMode::disarmedLoop()
+void StabilizeFlightMode::leave()
 {
-    runBaseFlightModeDisarmedLoop(); // remember in other flight modes
-}
+    resetSticks();
 
-
-void StabilizeFlightMode::armedLoop()
-{
-    updateLeveling();
-    updateHeadingHolding();
-
-    // runBaseFlightModeArmedLoop(); - not needed there, but remember in other flight modes
+    levelingXPID.reset();
+    levelingYPID.reset();
+    headingHoldPID.reset();
 }
 
 
@@ -49,14 +44,18 @@ void StabilizeFlightMode::prepare()
 }
 
 
-void StabilizeFlightMode::leave()
+void StabilizeFlightMode::disarmedLoop()
 {
-    resetSticks();
-
-    levelingXPID.reset();
-    levelingYPID.reset();
-    headingHoldPID.reset();
+    // nothing here
 }
+
+
+void StabilizeFlightMode::armedLoop()
+{
+    updateLeveling();
+    updateHeadingHolding();
+}
+
 
 
 void StabilizeFlightMode::updateLeveling()

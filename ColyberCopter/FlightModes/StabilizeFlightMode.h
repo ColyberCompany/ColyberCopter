@@ -18,7 +18,7 @@
 class StabilizeFlightMode : public FlightMode
 {
 private:
-    PID& levelingXPID;
+    PID& levelingXPID; // TODO: maybe flight modes should be created inside stabilize flight mode and accessed through it's instance
     PID& levelingYPID;
     PID& headingHoldPID;
     Interfaces::I3DRotation& rotationData;
@@ -31,10 +31,11 @@ public:
     StabilizeFlightMode(PID& levelingX_PID, PID& levelingY_PID, PID& headingHold_PID,
         Interfaces::I3DRotation& rotationData, float deltaTime);
 
+    void leave() override;
+    void prepare() override;
+protected:
     void disarmedLoop() override;
     void armedLoop() override;
-    void prepare() override;
-    void leave() override;
 
 
 private:
