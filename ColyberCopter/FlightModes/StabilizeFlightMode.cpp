@@ -15,16 +15,33 @@ using Consts::RoundAngle;;
 using Consts::StraightAngle;
 
 
-StabilizeFlightMode::StabilizeFlightMode(PID& levelingX_PID, PID& levelingY_PID, PID& headingHold_PID,
-        I3DRotation& rotationData, float deltaTime)
+StabilizeFlightMode::StabilizeFlightMode(I3DRotation& rotationData, float deltaTime)
     : FlightMode(FlightModeTypes::STABILIZE, nullptr, deltaTime),
-    levelingXPID(levelingX_PID),
-    levelingYPID(levelingY_PID),
-    headingHoldPID(headingHold_PID),
+    levelingXPID(deltaTime),
+    levelingYPID(deltaTime),
+    headingHoldPID(deltaTime),
     rotationData(rotationData)
 {
     headingToHold = 0;
     headingError = 0;
+}
+
+
+void StabilizeFlightMode::setLevelingXPIDGains(float kP, float kI, float kD, uint16_t Imax)
+{
+    levelingXPID.setGains(kP, kI, kD, Imax);
+}
+
+
+void StabilizeFlightMode::setLevelingYPIDGains(float kP, float kI, float kD, uint16_t Imax)
+{
+    levelingYPID.setGains(kP, kI, kD, Imax);
+}
+
+
+void StabilizeFlightMode::setHeadingHoldPIDGains(float kP, float kI, float kD, uint16_t Imax)
+{
+    headingHoldPID.setGains(kP, kI, kD, Imax);
 }
 
 

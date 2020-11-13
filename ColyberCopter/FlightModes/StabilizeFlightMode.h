@@ -18,18 +18,21 @@
 class StabilizeFlightMode : public FlightMode
 {
 private:
-    PID& levelingXPID; // TODO: maybe flight modes should be created inside stabilize flight mode and accessed through it's instance
-    PID& levelingYPID;
-    PID& headingHoldPID;
     Interfaces::I3DRotation& rotationData;
+    PID levelingXPID;
+    PID levelingYPID;
+    PID headingHoldPID;
 
     float headingToHold;
     float headingError;
 
 
 public:
-    StabilizeFlightMode(PID& levelingX_PID, PID& levelingY_PID, PID& headingHold_PID,
-        Interfaces::I3DRotation& rotationData, float deltaTime);
+    StabilizeFlightMode(Interfaces::I3DRotation& rotationData, float deltaTime);
+
+    void setLevelingXPIDGains(float kP, float kI, float kD, uint16_t Imax);
+    void setLevelingYPIDGains(float kP, float kI, float kD, uint16_t Imax);
+    void setHeadingHoldPIDGains(float kP, float kI, float kD, uint16_t Imax);
 
     void leave() override;
     void prepare() override;
