@@ -47,8 +47,6 @@ void StabilizeFlightMode::setHeadingHoldPIDGains(float kP, float kI, float kD, u
 
 void StabilizeFlightMode::leave()
 {
-    resetSticks();
-
     levelingXPID.reset();
     levelingYPID.reset();
     headingHoldPID.reset();
@@ -61,33 +59,33 @@ void StabilizeFlightMode::prepare()
 }
 
 
-void StabilizeFlightMode::flightModeLoop()
+void StabilizeFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
 {
     // TODO: update leveling and heading only if throttle is big enough !!
-    updateLeveling();
-    updateHeadingHolding();
+    updateLeveling(inputOutputSticks);
+    updateHeadingHolding(inputOutputSticks);
 }
 
 
 
-void StabilizeFlightMode::updateLeveling()
+void StabilizeFlightMode::updateLeveling(ControlSticks& inputOutputSticks)
 {
-    virtualSticks.setPitch(levelingXPID.update(virtualSticks.getPitch() / 10.f, rotationData.getPitch_deg()) + 0.5f);
-    virtualSticks.setRoll(levelingYPID.update(virtualSticks.getRoll() / 10.f, rotationData.getRoll_deg()) + 0.5f);
+    inputOutputSticks.setPitch(levelingXPID.update(inputOutputSticks.getPitch() / 10.f, rotationData.getPitch_deg()) + 0.5f);
+    inputOutputSticks.setRoll(levelingYPID.update(inputOutputSticks.getRoll() / 10.f, rotationData.getRoll_deg()) + 0.5f);
 }
 
 
-void StabilizeFlightMode::updateHeadingHolding()
+void StabilizeFlightMode::updateHeadingHolding(ControlSticks& inputOutputSticks)
 {
-    integrateHeadingToHold();
+    integrateHeadingToHold(inputOutputSticks.getYaw());
     calculateHeadingError();
-    virtualSticks.setYaw(headingHoldPID.update(headingError));
+    inputOutputSticks.setYaw(headingHoldPID.update(headingError));
 }
 
 
-void StabilizeFlightMode::integrateHeadingToHold()
+void StabilizeFlightMode::integrateHeadingToHold(int16_t yawStick)
 {
-    headingToHold += ((float)(virtualSticks.getYaw() / 2.f) * DeltaTime);
+    headingToHold += ((float)(yawStick / 2.f) * DeltaTime);
     headingToHold = correctHeading(headingToHold);
 }
 

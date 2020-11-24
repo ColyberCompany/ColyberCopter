@@ -16,6 +16,8 @@
 
 // TODO: implement Unarmed flight mode
 
+// TODO: update UML after finishing this class
+
 
 class FlightMode
 {
@@ -24,7 +26,6 @@ private:
     FlightMode* const baseFlightMode;
 
 protected:
-    static ControlSticks virtualSticks; // shared by all flight modes instance of virtual sticks
     const float DeltaTime; // in seconds
 
 
@@ -58,14 +59,6 @@ public:
     Enums::FlightModeTypes getType();
 
     /**
-     * @return Pointer to the only instance of control sticks shared by all flight modes.
-     * Virtual pilot should assign this values with received control sticks
-     * before calling flightModeLoop() method of a flight mode.
-     * After execution of flight modes there are values ready to put on motors.
-     */
-    static ControlSticks* getVirtualSticksPtr();
-
-    /**
      * @brief Can be overriden by concrete flight modes classes.
      * Prepare flight mode 
      */
@@ -73,8 +66,9 @@ public:
 
     /**
      * @brief Execute flightModeLoop() of this flight mode and then of the base flight mode.
+     * // TODO: update comment
      */
-    void executeFlightModeLoop();
+    void executeFlightModeLoop(ControlSticks& inputOutputSticks);
 
     /**
      * @brief Called one time when virtual pilot or any flight mode stops using this flight mode (leave from it).
@@ -95,13 +89,13 @@ protected:
      * Have to be overriden by concrete flight mode class.
      * Don't use executeFlightModeLoop() method inside.
      */
-    virtual void flightModeLoop() = 0;
+    virtual void flightModeLoop(ControlSticks& inputOutputSticks) = 0;
 
 
     /**
      * @brief Set all stick values to 0.
      */
-    void resetSticks();
+    void resetSticks(ControlSticks& sticks);
 };
 
 

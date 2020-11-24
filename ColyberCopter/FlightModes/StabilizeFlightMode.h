@@ -30,20 +30,24 @@ private:
 public:
     StabilizeFlightMode(Interfaces::I3DRotation& rotationData, float deltaTime);
 
+    StabilizeFlightMode(const StabilizeFlightMode&) = delete;
+    StabilizeFlightMode& operator=(const StabilizeFlightMode&) = delete;
+
     void setLevelingXPIDGains(float kP, float kI, float kD, uint16_t Imax);
     void setLevelingYPIDGains(float kP, float kI, float kD, uint16_t Imax);
     void setHeadingHoldPIDGains(float kP, float kI, float kD, uint16_t Imax);
 
     void leave() override;
     void prepare() override;
+    
 protected:
-    void flightModeLoop() override;
+    void flightModeLoop(ControlSticks& inputOutputSticks) override;
 
 
 private:
-    void updateLeveling();
-    void updateHeadingHolding();
-    void integrateHeadingToHold();
+    void updateLeveling(ControlSticks& inputOutputSticks);
+    void updateHeadingHolding(ControlSticks& inputOutputSticks);
+    void integrateHeadingToHold(int16_t yawStick);
     void calculateHeadingError();
     void setHeadingToHoldToCurrentReading();
 

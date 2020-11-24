@@ -63,9 +63,11 @@ bool VirtualPilot::setFlightMode(FlightModeTypes flightModeType)
 
 void VirtualPilot::runVirtualPilot()
 {
-    updateFlightModesSticksWithRmtCtrlValues();
-    executeCurrentFlightMode();
-    updateMotorsPower();
+    ControlSticks virtualSticks(steeringData->throttle, steeringData->yaw,
+                                steeringData->pitch, steeringData->roll);
+
+    currentFlightMode->executeFlightModeLoop(virtualSticks);
+    motors->updatePower(virtualSticks);
 }
 
 
@@ -105,24 +107,5 @@ void VirtualPilot::executePrepareAndLeaveMethods(const FlightMode* oldFlightMode
         else if (wasUsed && !willBeUsed)
             checked->leave();
     }
-}
-
-
-void VirtualPilot::updateFlightModesSticksWithRmtCtrlValues()
-{
-    FlightMode::getVirtualSticksPtr()->set(steeringData->throttle, steeringData->yaw,
-                                            steeringData->pitch, steeringData->roll);
-}
-
-
-void VirtualPilot::executeCurrentFlightMode()
-{
-    currentFlightMode->executeFlightModeLoop();
-}
-
-
-void VirtualPilot::updateMotorsPower()
-{
-    motors->updatePower(*FlightMode::getVirtualSticksPtr());
 }
 
