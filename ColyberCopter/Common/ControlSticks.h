@@ -15,13 +15,22 @@
 class ControlSticks
 {
 private:
-    uint16_t throttle = 0;
-    int16_t yaw = 0; // heading control
-    int16_t pitch = 0; // top-back
-    int16_t roll = 0; // left-right
+    uint16_t throttle;
+    int16_t yaw; // heading control
+    int16_t pitch; // top-back
+    int16_t roll; // left-right
 
 
 public:
+    ControlSticks() { set(0, 0, 0, 0); }
+
+
+    ControlSticks(uint16_t throttle, int16_t yaw, int16_t pitch, int16_t roll)
+    {
+        set(throttle, yaw, pitch, roll);
+    }
+
+
     /**
      * @brief Return the throttle stick value [0 : 1000].
      */
