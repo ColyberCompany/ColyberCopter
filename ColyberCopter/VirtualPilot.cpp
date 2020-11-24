@@ -117,10 +117,7 @@ void VirtualPilot::updateFlightModesSticksWithRmtCtrlValues()
 
 void VirtualPilot::executeCurrentFlightMode()
 {
-    if (motors->getMotorsState() == StateType::Enabled)
-        currentFlightMode->executeArmedLoop();
-    else
-        currentFlightMode->executeDisarmedLoop();
+    currentFlightMode->executeFlightModeLoop();
 }
 
 

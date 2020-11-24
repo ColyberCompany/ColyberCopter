@@ -37,8 +37,7 @@ public:
     void leave() override;
     void prepare() override;
 protected:
-    void disarmedLoop() override;
-    void flyingLoop() override;
+    void flightModeLoop() override;
 
 
 private:

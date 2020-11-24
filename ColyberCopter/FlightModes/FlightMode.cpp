@@ -50,19 +50,11 @@ bool FlightMode::initializeFlightMode()
 }
 
 
-void FlightMode::executeArmedLoop()
+void FlightMode::executeFlightModeLoop()
 {
-    flyingLoop();
+    flightModeLoop();
     if (baseFlightMode != nullptr)
-        baseFlightMode->executeArmedLoop();
-}
-
-
-void FlightMode::executeDisarmedLoop()
-{
-    disarmedLoop();
-    if (baseFlightMode != nullptr)
-        baseFlightMode->executeDisarmedLoop();
+        baseFlightMode->executeFlightModeLoop();
 }
 
 

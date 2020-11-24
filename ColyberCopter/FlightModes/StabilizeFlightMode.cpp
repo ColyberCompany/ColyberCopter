@@ -61,14 +61,9 @@ void StabilizeFlightMode::prepare()
 }
 
 
-void StabilizeFlightMode::disarmedLoop()
+void StabilizeFlightMode::flightModeLoop()
 {
-    // nothing here
-}
-
-
-void StabilizeFlightMode::flyingLoop()
-{
+    // TODO: update leveling and heading only if throttle is big enough !!
     updateLeveling();
     updateHeadingHolding();
 }

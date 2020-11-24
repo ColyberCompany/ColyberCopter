@@ -14,6 +14,8 @@
 
 // TODO: make sure that virtual pilot put received stick data before calling current flight mode
 
+// TODO: implement Unarmed flight mode
+
 
 class FlightMode
 {
@@ -58,7 +60,7 @@ public:
     /**
      * @return Pointer to the only instance of control sticks shared by all flight modes.
      * Virtual pilot should assign this values with received control sticks
-     * before calling flyingLoop() method of a flight mode.
+     * before calling flightModeLoop() method of a flight mode.
      * After execution of flight modes there are values ready to put on motors.
      */
     static ControlSticks* getVirtualSticksPtr();
@@ -70,14 +72,9 @@ public:
     virtual bool initializeFlightMode();
 
     /**
-     * @brief Execute flyingLoop() of this flight mode and then of the base flight mode.
+     * @brief Execute flightModeLoop() of this flight mode and then of the base flight mode.
      */
-    void executeArmedLoop();
-
-    /**
-     * @brief Execute disarmedLoop() of this flight mode and then of the base flight mode.
-     */
-    void executeDisarmedLoop();
+    void executeFlightModeLoop();
 
     /**
      * @brief Called one time when virtual pilot or any flight mode stops using this flight mode (leave from it).
@@ -93,19 +90,12 @@ public:
 
 protected:
     /**
-     * @brief Called with main frequency when this flight mode is selected as current flight mode,
-     * but drone is disarmed. Don't have to be overriden (empty by default).
-     * Don't use executeDisarmedLoop() method inside.
-     */
-    virtual void disarmedLoop(); // TODO: check if this method is used by any flight mode. Maybe it is not needed.
-
-    /**
      * @brief Called with the main frequency when used as current flight mode
-     * (or is used by current flight mode) when motors are armed.
+     * (or is used by current flight mode).
      * Have to be overriden by concrete flight mode class.
-     * Don't use executeArmedLoop() method inside.
+     * Don't use executeFlightModeLoop() method inside.
      */
-    virtual void flyingLoop() = 0;
+    virtual void flightModeLoop() = 0;
 
 
     /**
