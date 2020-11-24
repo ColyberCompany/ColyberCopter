@@ -38,7 +38,7 @@ public:
     void prepare() override;
 protected:
     void disarmedLoop() override;
-    void armedLoop() override;
+    void flyingLoop() override;
 
 
 private:

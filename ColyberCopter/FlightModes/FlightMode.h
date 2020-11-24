@@ -58,7 +58,7 @@ public:
     /**
      * @return Pointer to the only instance of control sticks shared by all flight modes.
      * Virtual pilot should assign this values with received control sticks
-     * before calling armedLoop() method of a flight mode.
+     * before calling flyingLoop() method of a flight mode.
      * After execution of flight modes there are values ready to put on motors.
      */
     static ControlSticks* getVirtualSticksPtr();
@@ -70,7 +70,7 @@ public:
     virtual bool initializeFlightMode();
 
     /**
-     * @brief Execute armedLoop() of this flight mode and then of the base flight mode.
+     * @brief Execute flyingLoop() of this flight mode and then of the base flight mode.
      */
     void executeArmedLoop();
 
@@ -105,7 +105,7 @@ protected:
      * Have to be overriden by concrete flight mode class.
      * Don't use executeArmedLoop() method inside.
      */
-    virtual void armedLoop() = 0;
+    virtual void flyingLoop() = 0;
 
 
     /**

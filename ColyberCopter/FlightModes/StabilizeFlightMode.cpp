@@ -67,7 +67,7 @@ void StabilizeFlightMode::disarmedLoop()
 }
 
 
-void StabilizeFlightMode::armedLoop()
+void StabilizeFlightMode::flyingLoop()
 {
     updateLeveling();
     updateHeadingHolding();

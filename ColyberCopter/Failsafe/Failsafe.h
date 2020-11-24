@@ -9,7 +9,6 @@
 #ifndef FAILSAFE_H
 #define FAILSAFE_H
 
-#include "Interfaces/IFailsafe.h"
 #include <Task.h>
 #include <IList.h>
 

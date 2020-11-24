@@ -52,7 +52,7 @@ bool FlightMode::initializeFlightMode()
 
 void FlightMode::executeArmedLoop()
 {
-    armedLoop();
+    flyingLoop();
     if (baseFlightMode != nullptr)
         baseFlightMode->executeArmedLoop();
 }
