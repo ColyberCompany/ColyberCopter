@@ -12,7 +12,7 @@
 #include "Enums/FlightModeTypes.h"
 #include "Common/ControlSticks.h"
 
-// TODO: make sure that virtual pilot put received stick data before calling current flight mode
+// TODO: implement Unarmed flight mode
 
 
 class FlightMode
@@ -22,7 +22,6 @@ private:
     FlightMode* const baseFlightMode;
 
 protected:
-    static ControlSticks virtualSticks; // shared by all flight modes instance of virtual sticks
     const float DeltaTime; // in seconds
 
 
@@ -56,62 +55,46 @@ public:
     Enums::FlightModeTypes getType();
 
     /**
-     * @return Pointer to the only instance of control sticks shared by all flight modes.
-     * Virtual pilot should assign this values with received control sticks
-     * before calling armedLoop() method of a flight mode.
-     * After execution of flight modes there are values ready to put on motors.
-     */
-    static ControlSticks* getVirtualSticksPtr();
-
-    /**
      * @brief Can be overriden by concrete flight modes classes.
      * Prepare flight mode 
      */
     virtual bool initializeFlightMode();
 
     /**
-     * @brief Execute armedLoop() of this flight mode and then of the base flight mode.
+     * @brief Execute flightModeLoop() of this flight mode and then of the base flight mode.
+     * @param inputOutputSticks Reference to the instance where are control sticks values
+     * and also there will be put the output values.
      */
-    void executeArmedLoop();
+    void executeFlightModeLoop(ControlSticks& inputOutputSticks);
 
     /**
-     * @brief Execute disarmedLoop() of this flight mode and then of the base flight mode.
-     */
-    void executeDisarmedLoop();
-
-    /**
-     * @brief Called one time when virtual pilot or any flight mode stops using this flight mode (leave from it).
+     * @brief Called once every time when this flight mode was used, but won't be used now
+     * (directly as current flight mode or indirectly as base flight mode of current flight mode).
      * Have to be overriden by concrete flight mode class.
      */
     virtual void leave() = 0;
 
     /**
-     * @brief Called one time when virtual pilot didn't use but will be using now this flight mode (entering to it).
+     * @brief Called once every time when this flight mode wasn't used, but will be used now
+     * (directly as current flight mode or indirectly as base flight mode of current flight mode).
      * Have to be overriden by concrete flight mode class.
      */
     virtual void prepare() = 0;
 
 protected:
     /**
-     * @brief Called with main frequency when this flight mode is selected as current flight mode,
-     * but drone is disarmed. Don't have to be overriden (empty by default).
-     * Don't use executeDisarmedLoop() method inside.
-     */
-    virtual void disarmedLoop(); // TODO: check if this method is used by any flight mode. Maybe it is not needed.
-
-    /**
      * @brief Called with the main frequency when used as current flight mode
-     * (or is used by current flight mode) when motors are armed.
+     * (or is used by current flight mode).
      * Have to be overriden by concrete flight mode class.
-     * Don't use executeArmedLoop() method inside.
+     * Don't use executeFlightModeLoop() method inside.
      */
-    virtual void armedLoop() = 0;
+    virtual void flightModeLoop(ControlSticks& inputOutputSticks) = 0;
 
 
     /**
      * @brief Set all stick values to 0.
      */
-    void resetSticks();
+    void resetSticks(ControlSticks& sticks);
 };
 
 

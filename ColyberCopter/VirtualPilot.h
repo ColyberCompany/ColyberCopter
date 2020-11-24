@@ -53,24 +53,6 @@ private:
      * @param newFlightMode flight mode that will be set from now.
      */
     void executePrepareAndLeaveMethods(const FlightMode* oldFlightMode, const FlightMode* newFlightMode);
-
-    /**
-     * @brief Assign flight mode control sticks with data received
-     * from the remote controller.
-     */
-    void updateFlightModesSticksWithRmtCtrlValues();
-
-    /**
-     * @brief Execute current flight mode armed or disarmed loop
-     * (depending on motors state).
-     */
-    void executeCurrentFlightMode();
-
-    /**
-     * @brief Updates motors power using flight modes control sticks values
-     * (use after execution of flight modes).
-     */
-    void updateMotorsPower();
 };
 
 

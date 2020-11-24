@@ -10,9 +10,6 @@
 using Enums::FlightModeTypes;
 
 
-ControlSticks FlightMode::virtualSticks;
-
-
 FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMode, float deltaTime)
     : type(flightModeType), baseFlightMode(baseFlightMode), DeltaTime(deltaTime)
 {
@@ -38,38 +35,24 @@ Enums::FlightModeTypes FlightMode::getType()
 }
 
 
-ControlSticks* FlightMode::getVirtualSticksPtr()
-{
-    return &virtualSticks;
-}
-
-
 bool FlightMode::initializeFlightMode()
 {
     return true;
 }
 
 
-void FlightMode::executeArmedLoop()
+void FlightMode::executeFlightModeLoop(ControlSticks& inputOutputSticks)
 {
-    armedLoop();
+    flightModeLoop(inputOutputSticks);
     if (baseFlightMode != nullptr)
-        baseFlightMode->executeArmedLoop();
+        baseFlightMode->executeFlightModeLoop(inputOutputSticks);
 }
 
 
-void FlightMode::executeDisarmedLoop()
+void FlightMode::resetSticks(ControlSticks& sticks)
 {
-    disarmedLoop();
-    if (baseFlightMode != nullptr)
-        baseFlightMode->executeDisarmedLoop();
-}
-
-
-void FlightMode::resetSticks()
-{
-    virtualSticks.setThrottle(0);
-    virtualSticks.setYaw(0);
-    virtualSticks.setPitch(0);
-    virtualSticks.setRoll(0);
+    sticks.setThrottle(0);
+    sticks.setYaw(0);
+    sticks.setPitch(0);
+    sticks.setRoll(0);
 }
