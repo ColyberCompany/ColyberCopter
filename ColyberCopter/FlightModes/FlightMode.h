@@ -12,11 +12,7 @@
 #include "Enums/FlightModeTypes.h"
 #include "Common/ControlSticks.h"
 
-// TODO: make sure that virtual pilot put received stick data before calling current flight mode
-
 // TODO: implement Unarmed flight mode
-
-// TODO: update UML after finishing this class
 
 
 class FlightMode
@@ -66,18 +62,21 @@ public:
 
     /**
      * @brief Execute flightModeLoop() of this flight mode and then of the base flight mode.
-     * // TODO: update comment
+     * @param inputOutputSticks Reference to the instance where are control sticks values
+     * and also there will be put the output values.
      */
     void executeFlightModeLoop(ControlSticks& inputOutputSticks);
 
     /**
-     * @brief Called one time when virtual pilot or any flight mode stops using this flight mode (leave from it).
+     * @brief Called once every time when this flight mode was used, but won't be used now
+     * (directly as current flight mode or indirectly as base flight mode of current flight mode).
      * Have to be overriden by concrete flight mode class.
      */
     virtual void leave() = 0;
 
     /**
-     * @brief Called one time when virtual pilot didn't use but will be using now this flight mode (entering to it).
+     * @brief Called once every time when this flight mode wasn't used, but will be used now
+     * (directly as current flight mode or indirectly as base flight mode of current flight mode).
      * Have to be overriden by concrete flight mode class.
      */
     virtual void prepare() = 0;
