@@ -29,10 +29,12 @@ class RmtCtrlCommunication
 // Singleton
 private:
     RmtCtrlCommunication();
-    RmtCtrlCommunication& instance = RmtCtrlCommunication();
+    static RmtCtrlCommunication* instance;
 public:
-    RmtCtrlCommunication& getInstance()
+    static RmtCtrlCommunication* getInstance()
     {
+        if (instance == nullptr)
+            instance = new RmtCtrlCommunication();
         return instance;
     }
 
