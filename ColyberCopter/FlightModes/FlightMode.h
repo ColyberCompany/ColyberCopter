@@ -12,6 +12,10 @@
 #include "Enums/FlightModeTypes.h"
 #include "Common/ControlSticks.h"
 
+#ifdef ARDUINO
+    #include <arduino.h>
+#endif
+
 // TODO: implement Unarmed flight mode
 
 

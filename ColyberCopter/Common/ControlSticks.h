@@ -11,6 +11,10 @@
 #ifndef CONTROLSTICKS_H
 #define CONTROLSTICKS_H
 
+#ifdef ARDUINO
+    #include <arduino.h>
+#endif
+
 
 class ControlSticks
 {
