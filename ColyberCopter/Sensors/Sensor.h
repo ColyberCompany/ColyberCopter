@@ -55,7 +55,7 @@ public:
      * @brief Getter of the calibration values.
      * @return Current calibration values.
      */
-    virtual const FloatAxisVector* getOffset() const = 0;
+    virtual FloatAxisVector getOffset() const = 0;
 
     /**
      * @brief Setter of the calibration values.
