@@ -12,7 +12,7 @@
 
 namespace Enums
 {
-    enum FlightModeTypes
+    enum class FlightModeTypes
     {
         UNARMED,
         STABILIZE,
