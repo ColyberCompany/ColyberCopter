@@ -11,6 +11,7 @@
 
 #include "Sensor.h"
 #include <SimpleHMC5883L.h>
+#include <SimpleMPU6050.h>
 #include "SensorsMediator.h"
 #include <Task.h>
 #include "Common/Vector3.h"
@@ -21,6 +22,7 @@ class HMC5883LAdapter: public Sensor, public Task
 {
 private:
     SimpleHMC5883L compass;
+    SimpleMPU6050& mpu; // used to enable compass bypass on GY86.
 
     // calibration
     SimpleHMC5883L::vector3Int16 mins;
@@ -29,13 +31,15 @@ private:
 
 
 public:
-    HMC5883LAdapter(SensorsMediator& sensorsMediator)
-        : Sensor(sensorsMediator)
+    HMC5883LAdapter(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050)
+        : Sensor(sensorsMediator), mpu(mpu6050)
     {
     }
 
     bool initialize() override
     {
+        mpu.enableCompassBypass();
+
         int attempts = 0;
         do {
             initResult = compass.initialize();
@@ -55,7 +59,13 @@ public:
         sensorsMediator.updateMag(vector3Float(norm.x, norm.y, norm.z));
     }
 
-    uint16_t startBackgroundCalibration(uint16_t samplesToAverage) override
+    /**
+     * @brief During calibration make every possible rotation with a magnetometer.
+     * @param amtOfSamples Amount of new readings that will influence
+     * the calibration process.
+     * @return Time that calibration process will take [in seconds].
+     */
+    uint16_t startBackgroundCalibration(uint16_t amtOfSamples) override
     {
         compass.setCompassOffset(0, 0, 0);
 
@@ -64,9 +74,9 @@ public:
         mins.y = maxs.y = raw.y;
         mins.z = maxs.z = raw.z;
 
-        calibCounter.reset(samplesToAverage);
+        calibCounter.reset(amtOfSamples);
 
-        return (interval / 1000000.f) * samplesToAverage + 1;
+        return (interval / 1000000.f) * amtOfSamples + 1;
     }
 
     FloatAxisVector getOffset() const override
