@@ -14,7 +14,7 @@
 #include "SensorsMediator.h"
 #include <Task.h>
 #include "Common/Vector3.h"
-#include "CalibrationGuard.h"
+#include "Common/Counter.h"
 
 
 class HMC5883LAdapter: public Sensor, public Task
@@ -25,7 +25,7 @@ private:
     // calibration
     SimpleHMC5883L::vector3Int16 mins;
     SimpleHMC5883L::vector3Int16 maxs;
-    CalibrationGuard calibGuard;
+    Counter calibCounter;
 
 
 public:
@@ -49,26 +49,7 @@ public:
     {
         compass.readRaw();
 
-        if (calibGuard.isCalibrating())
-        {
-            SimpleHMC5883L::vector3Int16 raw = compass.getRaw();
-            mins.x = min(raw.x, mins.x);
-            mins.y = min(raw.y, mins.y);
-            mins.z = min(raw.z, mins.z);
-
-            maxs.x = max(raw.x, maxs.x);
-            maxs.y = max(raw.y, maxs.y);
-            maxs.z = max(raw.z, maxs.z);
-
-            if (calibGuard.isLastLoop())
-            {
-                compass.setCompassOffset(
-                    (maxs.x + mins.x) / 2.f + 0.5f,
-                    (maxs.y + mins.y) / 2.f + 0.5f,
-                    (maxs.z + mins.z) / 2.f + 0.5f);
-            }
-        }
-
+        checkCalibration();
 
         SimpleHMC5883L::vector3Float norm = compass.getNormalized();
         sensorsMediator.updateMag(vector3Float(norm.x, norm.y, norm.z));
@@ -83,7 +64,7 @@ public:
         mins.y = maxs.y = raw.y;
         mins.z = maxs.z = raw.z;
 
-        calibGuard.beginCalibrationGuard(samplesToAverage);
+        calibCounter.reset(samplesToAverage);
 
         return (interval / 1000000.f) * samplesToAverage + 1;
     }
@@ -102,6 +83,36 @@ public:
             offset.getAxis(AxisType::AxisY),
             offset.getAxis(AxisType::AxisZ));
     }
+
+
+
+private:
+    void checkCalibration()
+    {
+        if (calibCounter.getCurrentCounter() > 0)
+        {
+            SimpleHMC5883L::vector3Int16 raw = compass.getRaw();
+            mins.x = min(raw.x, mins.x);
+            mins.y = min(raw.y, mins.y);
+            mins.z = min(raw.z, mins.z);
+
+            maxs.x = max(raw.x, maxs.x);
+            maxs.y = max(raw.y, maxs.y);
+            maxs.z = max(raw.z, maxs.z);
+
+            // if calibration ends now
+            if (calibCounter.getCurrentCounter() == 1)
+            {
+                compass.setCompassOffset(
+                    (maxs.x + mins.x) / 2.f + 0.5f,
+                    (maxs.y + mins.y) / 2.f + 0.5f,
+                    (maxs.z + mins.z) / 2.f + 0.5f);
+            }
+
+            calibCounter.decrement();
+        }
+    }
+
 };
 
 
