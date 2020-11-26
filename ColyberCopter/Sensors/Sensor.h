@@ -49,12 +49,12 @@ public:
     /**
      * @brief After calling this method sensor will begin calibration during
      * it's normal execution and after that it will apply new offset values.
-     * @param samplesToAverage Amount of samples to average during calibration
+     * @param amtOfSamples Amount of samples that for example are averaged during calibration
      * (bigger amount -> longer calibration process and better results).
      * @return Amount of seconds that the calibration process will take.
      * You can call getOffset() method after that time and get new offset values.
      */
-    virtual uint16_t startBackgroundCalibration(uint16_t samplesToAverage) = 0;
+    virtual uint16_t startBackgroundCalibration(uint16_t amtOfSamples) = 0;
 
     /**
      * @brief Getter of the calibration values.
