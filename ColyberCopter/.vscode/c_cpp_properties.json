@@ -13,7 +13,9 @@
                 "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\PID",
                 "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\Tasker",
                 "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\SimpleDataStructures",
-                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\PacketCommunication"
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\PacketCommunication",
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\SimpleMPU6050",
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\SimpleHMC5883L"
             ],
             "forcedInclude": [
                 "C:\\Users\\janwi\\AppData\\Local\\Arduino15\\packages\\STM32\\hardware\\stm32\\1.9.0\\cores\\arduino\\Arduino.h"
