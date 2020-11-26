@@ -13,17 +13,24 @@
 #include <SimpleHMC5883L.h>
 #include "SensorsMediator.h"
 #include <Task.h>
+#include "Common/Vector3.h"
+#include "CalibrationGuard.h"
 
 
 class HMC5883LAdapter: public Sensor, public Task
 {
 private:
     SimpleHMC5883L compass;
-    FloatAxisVector offset;
+
+    // calibration
+    SimpleHMC5883L::vector3Int16 mins;
+    SimpleHMC5883L::vector3Int16 maxs;
+    CalibrationGuard calibGuard;
+
 
 public:
     HMC5883LAdapter(SensorsMediator& sensorsMediator)
-        : Sensor(sensorsMediator), offset(3)
+        : Sensor(sensorsMediator)
     {
     }
 
@@ -40,22 +47,60 @@ public:
 
     void execute() override
     {
-        // TODO: implement main action of compass and update values in sensors mediator
+        compass.readRaw();
+
+        if (calibGuard.isCalibrating())
+        {
+            SimpleHMC5883L::vector3Int16 raw = compass.getRaw();
+            mins.x = min(raw.x, mins.x);
+            mins.y = min(raw.y, mins.y);
+            mins.z = min(raw.z, mins.z);
+
+            maxs.x = max(raw.x, maxs.x);
+            maxs.y = max(raw.y, maxs.y);
+            maxs.z = max(raw.z, maxs.z);
+
+            if (calibGuard.isLastLoop())
+            {
+                compass.setCompassOffset(
+                    (maxs.x + mins.x) / 2.f + 0.5f,
+                    (maxs.y + mins.y) / 2.f + 0.5f,
+                    (maxs.z + mins.z) / 2.f + 0.5f);
+            }
+        }
+
+
+        SimpleHMC5883L::vector3Float norm = compass.getNormalized();
+        sensorsMediator.updateMag(vector3Float(norm.x, norm.y, norm.z));
     }
 
-    uint16_t startBackgroundCalibration(int16_t samplesToAverage) override
+    uint16_t startBackgroundCalibration(uint16_t samplesToAverage) override
     {
-        // TODO: compass calibration
+        compass.setCompassOffset(0, 0, 0);
+
+        const SimpleHMC5883L::vector3Int16& raw = compass.getRaw();
+        mins.x = maxs.x = raw.x;
+        mins.y = maxs.y = raw.y;
+        mins.z = maxs.z = raw.z;
+
+        calibGuard.beginCalibrationGuard(samplesToAverage);
+
+        return (interval / 1000000.f) * samplesToAverage + 1;
     }
 
     FloatAxisVector getOffset() const override
     {
-        return offset;
+        SimpleHMC5883L::vector3Int16& magOffset = compass.getCompassOffset();
+        return FloatAxisVector(3, magOffset.x, magOffset.y, magOffset.z);
     }
 
     void setOffset(FloatAxisVector offset) override
     {
-        this->offset = offset;
+        using Enums::AxisType;
+        compass.setCompassOffset(
+            offset.getAxis(AxisType::AxisX),
+            offset.getAxis(AxisType::AxisY),
+            offset.getAxis(AxisType::AxisZ));
     }
 };
 
