@@ -18,6 +18,9 @@ class Sensor
 private:
     SensorsMediator& sensorsMediator;
 
+protected:
+    bool initResult = false;
+
 public:
     Sensor(SensorsMediator& _sensorsMediator)
         : sensorsMediator(_sensorsMediator)
@@ -28,6 +31,7 @@ public:
 
     /**
      * @brief Initialize the sensor.
+     * Set initResult flag here (true if initialized successfully)!
      * @return false if sensor wasn't initialized successfully,
      * returns true otherwise.
      */
@@ -39,7 +43,10 @@ public:
      * @return if initialize() method returned false or sensor
      * is not working.
      */
-    virtual bool isGood() const = 0; // TODO: try to figure out a better name
+    virtual bool isGood() const // TODO: try to figure out a better name
+    {
+        return initResult;
+    }
 
     /**
      * @brief After calling this method sensor will begin calibration during
