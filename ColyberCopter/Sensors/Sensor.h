@@ -15,10 +15,8 @@
 
 class Sensor
 {
-private:
-    SensorsMediator& sensorsMediator;
-
 protected:
+    SensorsMediator& sensorsMediator;
     bool initResult = false;
 
 public:
@@ -56,7 +54,7 @@ public:
      * @return Amount of seconds that the calibration process will take.
      * You can call getOffset() method after that time and get new offset values.
      */
-    virtual uint16_t startBackgroundCalibration(int16_t samplesToAverage) = 0;
+    virtual uint16_t startBackgroundCalibration(uint16_t samplesToAverage) = 0;
 
     /**
      * @brief Getter of the calibration values.
