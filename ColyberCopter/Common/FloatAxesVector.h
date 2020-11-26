@@ -34,6 +34,17 @@ public:
         valuesArray = new float[axesAmt];
     }
 
+    FloatAxisVector(uint8_t _axesAmt, float x, float y=0, float z=0)
+        : FloatAxisVector(_axesAmt)
+    {
+        switch (axesAmt)
+        {
+            case 3: valuesArray[2] = z;
+            case 2: valuesArray[1] = y;
+            case 1: valuesArray[0] = x;
+        }
+    }
+
     /**
      * @brief Copy ctor.
      * @param other Other vector to make a copy.
@@ -73,7 +84,9 @@ public:
      */
     float getAxis(Enums::AxisType axis)
     {
-        return valuesArray[(uint8_t)axis];
+        if ((uint8_t)axis < axesAmt)
+            return valuesArray[(uint8_t)axis];
+        return 0;
     }
 
     /**
@@ -83,7 +96,8 @@ public:
      */
     void setAxis(float value, Enums::AxisType axis)
     {
-        valuesArray[(uint8_t)axis] = value;
+        if ((uint8_t)axis < axesAmt)
+            valuesArray[(uint8_t)axis] = value;
     }
 };
 
