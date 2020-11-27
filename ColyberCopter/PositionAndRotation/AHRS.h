@@ -21,20 +21,51 @@
 class AHRS : public Interfaces::I3DPosition, public Interfaces::I3DRotation, public Task
 {
 private:
-    Interfaces::IPositionCalculation* positionCalculation;
-    Interfaces::IRotationCalculation* rotationCalculation;
+    Interfaces::IPositionCalculation& positionCalculation;
+    Interfaces::IRotationCalculation& rotationCalculation;
 
 public:
-    AHRS(Interfaces::IPositionCalculation* positionCalculation, Interfaces::IRotationCalculation* rotationCalculation);
+    AHRS(Interfaces::IPositionCalculation& _positionCalculation, Interfaces::IRotationCalculation& _rotationCalculation)
+        : positionCalculation(_positionCalculation), rotationCalculation(_rotationCalculation)
+    {
+    }
 
-    void execute() override;
+    void execute() override
+    {
+        // update rotation calculation first, because position calculation could use rotation
+        rotationCalculation.updateRotationCalculation();
+        positionCalculation.updatePositionCalculation();
+    }
 
-    double getLongitude_deg() override;
-    double getLatitude_deg() override;
-    float getAltitude_m() override;
-    float getPitch_deg() override;
-    float getRoll_deg() override;
-    float getHeading_deg() override;
+    double getLongitude_deg() override
+    {
+        return positionCalculation.getLongitude_deg();
+    }
+
+    double getLatitude_deg() override
+    {
+        return positionCalculation.getLatitude_deg();
+    }
+
+    float getAltitude_m() override
+    {
+        return positionCalculation.getAltitude_m();
+    }
+
+    float getPitch_deg() override
+    {
+        return rotationCalculation.getAngles_deg().x;
+    }
+
+    float getRoll_deg() override
+    {
+        return rotationCalculation.getAngles_deg().y;
+    }
+
+    float getHeading_deg() override
+    {
+        return rotationCalculation.getAngles_deg().z;
+    }
 };
 
 
