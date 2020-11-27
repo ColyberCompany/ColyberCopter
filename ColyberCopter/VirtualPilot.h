@@ -36,6 +36,8 @@ public:
     void runVirtualPilot() override;
     Enums::FlightModeTypes getCurrentFlightModeType() override;
 
+    void execute() override;
+
 
 private:
     /**

@@ -50,3 +50,9 @@ void QuadXMotors::setMotorsState(StateType state)
         updatePower(zeroSticks);
     }
 }
+
+
+StateType QuadXMotors::getMotorsState()
+{
+    return motorsState;
+}

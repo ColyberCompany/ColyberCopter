@@ -30,6 +30,7 @@ public:
     bool initializeMotors() override;
     void updatePower(const ControlSticks& stickValues) override;
     void setMotorsState(Enums::StateType state) override;
+    Enums::StateType getMotorsState() override;
 };
 
 

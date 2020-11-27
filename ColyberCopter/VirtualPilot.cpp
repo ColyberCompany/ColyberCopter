@@ -77,6 +77,12 @@ FlightModeTypes VirtualPilot::getCurrentFlightModeType()
 }
 
 
+void VirtualPilot::execute()
+{
+    runVirtualPilot();
+}
+
+
 
 FlightMode* VirtualPilot::getFlightModePtrByType(FlightModeTypes flightModeType)
 {
