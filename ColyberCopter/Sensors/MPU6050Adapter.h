@@ -29,8 +29,8 @@ private:
 
 public:
     MPU6050Adapter(SensorsMediator& sensorsMediator)
-        : accClass(sensorsMediator, mpu),
-        gyroClass(sensorsMediator, mpu)
+        : accClass(sensorsMediator, mpu, interval / 1000000.f),
+        gyroClass(sensorsMediator, mpu, interval / 1000000.f)
     {
     }
 
@@ -43,6 +43,11 @@ public:
             attempts++;
         } while (initResult == false && attempts < 3);
 
+        return initResult;
+    }
+
+    bool isGood() const
+    {
         return initResult;
     }
 

@@ -19,10 +19,22 @@ class MPU6050Gyro: public Sensor
 private:
     SimpleMPU6050& mpu;
 
+    int32_t sumX; // TODO: think how to make that this variables don't occupy memory all the time (they are needed for a short period or never)
+    int32_t sumY; // Maybe something wih that, that probably always only one sensor will be calibrated at once (also all sensors are calibrated in the simmilar way).
+    int32_t sumZ;
+    Counter calibCounter;
+    float deltaTime; // in seconds
+
 public:
-    MPU6050Gyro(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050)
+    /**
+     * @param sensorsMediator Reference to the sensorsMediator.
+     * @param mpu6050 Reference to the mpu6050 instance.
+     * @param deltaTime Time between next executeCalibration() method calls [in seconds].
+     */
+    MPU6050Gyro(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050, float deltaTime)
         : Sensor(sensorsMediator), mpu(mpu6050)
     {
+        this->deltaTime = deltaTime;
     }
 
     MPU6050Gyro(const MPU6050Gyro&) = delete;
@@ -35,26 +47,62 @@ public:
     bool isGood() const override { return true; }
 
 
+    /**
+     * @brief Sensor have to don't move at all (can be in any position
+     * but as steady as possible).
+     */
     void executeCalibration()
     {
         // called periodically by MPU6050Adapter
 
-        // run calibration process here
+        if (calibCounter.getCurrentCounter() > 0)
+        {
+            SimpleMPU6050::vector3Int16& gyroRaw = mpu.getRawRotation();
+
+            sumX += gyroRaw.x;
+            sumY += gyroRaw.y;
+            sumZ += gyroRaw.z;
+
+            // if calibration ends now
+            if (calibCounter.getCurrentCounter() == 1)
+            {
+                uint16_t averagedSamples = calibCounter.getInitialCounter();
+                mpu.setGyroOffset(
+                    (double)sumX / averagedSamples + 0.5f,
+                    (double)sumY / averagedSamples + 0.5f,
+                    (double)sumZ / averagedSamples + 0.5f);
+            }
+
+            calibCounter.decrement();
+        }
     }
 
     uint16_t startBackgroundCalibration(uint16_t amtOfSamples) override
     {
-        // TODO: implement gyro calibration
+        mpu.setGyroOffset(0, 0, 0);
+
+        sumX = 0;
+        sumY = 0;
+        sumZ = 0;
+
+        calibCounter.reset(amtOfSamples);
+
+        return deltaTime * amtOfSamples + 1;
     }
 
     FloatAxisVector getOffset() const override
     {
-        // TODO: implement getOffset()
+        SimpleMPU6050::vector3Int16& gyroOffset = mpu.getGyroOffset();
+        return FloatAxisVector(3, gyroOffset.x, gyroOffset.y, gyroOffset.z);
     }
 
     void setOffset(FloatAxisVector offset) override
     {
-        // TODO: implement setOffset()
+        using Enums::AxisType;
+        mpu.setGyroOffset(
+            offset.getAxis(AxisType::AxisX),
+            offset.getAxis(AxisType::AxisY),
+            offset.getAxis(AxisType::AxisZ));
     }
     
 

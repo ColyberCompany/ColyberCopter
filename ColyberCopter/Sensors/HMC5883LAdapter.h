@@ -101,7 +101,7 @@ private:
     {
         if (calibCounter.getCurrentCounter() > 0)
         {
-            SimpleHMC5883L::vector3Int16 raw = compass.getRaw();
+            const SimpleHMC5883L::vector3Int16& raw = compass.getRaw();
             mins.x = min(raw.x, mins.x);
             mins.y = min(raw.y, mins.y);
             mins.z = min(raw.z, mins.z);
