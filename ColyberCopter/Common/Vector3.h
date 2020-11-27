@@ -16,6 +16,7 @@ struct vector3Float
     float z;
 
     vector3Float() {}
+    
     vector3Float(float x, float y, float z)
     {
         this->x = x;

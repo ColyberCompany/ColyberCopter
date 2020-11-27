@@ -19,6 +19,7 @@
  * sensors and other classess.
  * Basically this is class with getters and setters for sensor values
  * and does nothing more than that.
+ * Remember that only one sensor should update each measurement!
  */
 class SensorsMediator : public Interfaces::ISensorsData
 {

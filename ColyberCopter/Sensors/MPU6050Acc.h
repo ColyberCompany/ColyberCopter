@@ -9,13 +9,12 @@
 #ifndef MPU6050ACC_H
 #define MPU6050ACC_H
 
-#include <IExecutable.h>
 #include <SimpleMPU6050.h>
 #include "Sensor.h"
 #include "SensorsMediator.h"
 
 
-class MPU6050Acc: public IExecutable, public Sensor
+class MPU6050Acc: public Sensor
 {
 private:
     SimpleMPU6050& mpu;
@@ -26,6 +25,9 @@ public:
     {
     }
 
+    MPU6050Acc(const MPU6050Acc&) = delete;
+    MPU6050Acc& operator=(const MPU6050Acc&) = delete;
+
     // initialization is in adapter class
     bool initialize() override { return true; }
 
@@ -33,7 +35,7 @@ public:
     bool isGood() const override { return true; }
 
 
-    void execute() override
+    void executeCalibration()
     {
         // called periodically by MPU6050Adapter
 

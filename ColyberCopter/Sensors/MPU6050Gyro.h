@@ -9,13 +9,12 @@
 #ifndef MPU6050GYRO_H
 #define MPU6050GYRO_H
 
-#include <IExecutable.h>
 #include <SimpleMPU6050.h>
 #include "Sensor.h"
 #include "SensorsMediator.h"
 
 
-class MPU6050Gyro: public IExecutable, public Sensor
+class MPU6050Gyro: public Sensor
 {
 private:
     SimpleMPU6050& mpu;
@@ -26,6 +25,9 @@ public:
     {
     }
 
+    MPU6050Gyro(const MPU6050Gyro&) = delete;
+    MPU6050Gyro& operator=(const MPU6050Gyro&) = delete;
+
     // initialization is in adapter class
     bool initialize() override { return true; }
 
@@ -33,7 +35,7 @@ public:
     bool isGood() const override { return true; }
 
 
-    void execute() override
+    void executeCalibration()
     {
         // called periodically by MPU6050Adapter
 

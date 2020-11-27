@@ -29,7 +29,7 @@ private:
 
 public:
     MPU6050Adapter(SensorsMediator& sensorsMediator)
-        accClass(sensorsMediator, mpu),
+        : accClass(sensorsMediator, mpu),
         gyroClass(sensorsMediator, mpu)
     {
     }
@@ -50,6 +50,26 @@ public:
     {
         mpu.readRawData();
 
+        SimpleMPU6050::vector3Float& accNorm = mpu.getNormalizedAcceleration();
+        accClass.sensorsMediator.updateAcc(vector3Float(accNorm.x, accNorm.y, accNorm.z));
+
+        SimpleMPU6050::vector3Float& gyroNorm = mpu.getNormalizedRotation();
+        gyroClass.sensorsMediator.updateGyro(vector3Float(gyroNorm.x, gyroNorm.y, gyroNorm.z));
+
+        // You can update temperature there
+
+        accClass.executeCalibration();
+        gyroClass.executeCalibration();
+    }
+
+    Sensor* getAccSensor()
+    {
+        return &accClass;
+    }
+
+    Sensor* getGyroSensor()
+    {
+        return &gyroClass;
     }
 };
 
