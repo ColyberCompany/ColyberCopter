@@ -18,7 +18,7 @@ namespace Interfaces
     public:
         virtual ~ISensorsData() {}
 
-        virtual vector3Float getAcc_normVector() = 0;
+        virtual vector3Float getAcc_normVector() = 0; // TODO: think whether to return by value or by (const) reference
         virtual vector3Float getGyro_degPerSec() = 0;
         virtual vector3Float getMag_normVector() = 0;
         virtual float getPressure_hPa() = 0;
