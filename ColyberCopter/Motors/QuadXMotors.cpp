@@ -20,6 +20,12 @@ QuadXMotors::QuadXMotors()
 bool QuadXMotors::initializeMotors()
 {
     // TODO: implement initializeMotors() method
+
+    // https://github.com/stm32duino/wiki/wiki/HardwareTimer-library
+
+
+    setMotorsState(StateType::Disabled);
+
     return false;
 }
 
@@ -27,6 +33,9 @@ bool QuadXMotors::initializeMotors()
 void QuadXMotors::updatePower(const ControlSticks& stickValues)
 {
     // TODO: implement updatePower() method
+
+
+    // check if motors are enabled
 }
 
 

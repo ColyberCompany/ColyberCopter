@@ -19,6 +19,11 @@ class QuadXMotors : public Interfaces::IMotors
 private:
     Enums::StateType motorsState;
 
+    static const uint8_t FLMotorPin = PA6; // Front left
+    static const uint8_t FRMotorPin = PA7; // Front right
+    static const uint8_t BRMotorPin = PB0; // Back right
+    static const uint8_t BLMotorPin = PB1; // Back left
+
 public:
     QuadXMotors();
 
