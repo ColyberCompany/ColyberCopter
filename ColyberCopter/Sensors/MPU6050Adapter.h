@@ -76,6 +76,11 @@ public:
     {
         return &gyroClass;
     }
+
+    SimpleMPU6050* getMPU6050Ptr()
+    {
+        return &mpu;
+    }
 };
 
 

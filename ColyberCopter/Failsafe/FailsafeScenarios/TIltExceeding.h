@@ -17,11 +17,10 @@
 class TiltExceeding : public FailsafeScenario
 {
 private:
-    const float AngleThreshold = 60;
-    Interfaces::I3DRotation* rotation;
+    Interfaces::I3DRotation& rotation;
 
 public:
-    TiltExceeding(Interfaces::I3DRotation* rotation, IExecutable* failsafeAction);
+    TiltExceeding(Interfaces::I3DRotation& rotation, IExecutable* failsafeAction);
     void execute() override;
 
 private:

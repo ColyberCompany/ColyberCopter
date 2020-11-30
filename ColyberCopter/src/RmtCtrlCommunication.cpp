@@ -6,10 +6,19 @@
  * 
  */
 
-#include "RmtCtrlCommunication.h"
+#include "Communication/RmtCtrlCommunication.h"
+#include "config.h"
+
+#ifdef ARDUINO
+    #include <arduino.h>
+#endif
 
 
-RmtCtrlCommunication::RmtCtrlCommunication()
+RmtCtrlCommunication::RmtCtrlCommunication(PacketCommunication& packetCommunication)
+    : comm(packetCommunication),
+    // dataPacket(ID):
+    steering(0),
+    measurementsAndState(10)
 {
 // receive:
 
@@ -32,4 +41,3 @@ RmtCtrlCommunication::RmtCtrlCommunication()
     measurementsAndState.addByteType(sendData.latitude);
     measurementsAndState.addByteType(sendData.droneConnectionStability);
 }
-

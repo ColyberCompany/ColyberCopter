@@ -18,10 +18,10 @@ class CommunicationLost : public FailsafeScenario
 {
 private:
     const uint8_t ConnectionStabilityThreshold = 60;
-    IConnectionStatus* connectionStatus;
+    IConnectionStatus& connectionStatus;
 
 public:
-    CommunicationLost(IConnectionStatus* connectionStatus, IExecutable* failsafeAction);
+    CommunicationLost(IConnectionStatus& connectionStatus, IExecutable* failsafeAction);
     void execute() override;
 };
 

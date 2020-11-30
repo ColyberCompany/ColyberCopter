@@ -92,7 +92,7 @@ public:
 
     FloatAxisVector getOffset() const override
     {
-        SimpleMPU6050::vector3Int16& gyroOffset = mpu.getGyroOffset();
+        const SimpleMPU6050::vector3Int16& gyroOffset = mpu.getGyroOffset();
         return FloatAxisVector(3, gyroOffset.x, gyroOffset.y, gyroOffset.z);
     }
 

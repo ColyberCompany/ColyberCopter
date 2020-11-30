@@ -5,7 +5,7 @@
  * 
  */
 
-#include "FlightMode.h"
+#include "FlightModes/FlightMode.h"
 
 using Enums::FlightModeTypes;
 

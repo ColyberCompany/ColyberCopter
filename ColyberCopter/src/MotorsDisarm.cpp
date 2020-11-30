@@ -5,19 +5,19 @@
  * 
  */
 
-#include "MotorsDisarm.h"
+#include "Failsafe/FailsafeActions/MotorsDisarm.h"
 
 using Interfaces::IMotors;
 using Enums::StateType;
 
 
-MotorsDisarm::MotorsDisarm(IMotors* motors)
+MotorsDisarm::MotorsDisarm(IMotors& _motors)
+    : motors(_motors)
 {
-    this->motors = motors;
 }
 
 
 void MotorsDisarm::execute()
 {
-    motors->setMotorsState(StateType::Disabled);
+    motors.setMotorsState(StateType::Disabled);
 }

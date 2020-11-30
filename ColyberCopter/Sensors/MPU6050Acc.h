@@ -93,7 +93,7 @@ public:
 
     FloatAxisVector getOffset() const override
     {
-        SimpleMPU6050::vector3Int16& accOffset = mpu.getAccOffset();
+        const SimpleMPU6050::vector3Int16& accOffset = mpu.getAccOffset();
         return FloatAxisVector(3, accOffset.x, accOffset.y, accOffset.z);
     }
 

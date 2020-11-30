@@ -23,18 +23,8 @@
  */
 class SensorsMediator : public Interfaces::ISensorsData
 {
-private:
-// Singleton
-    SensorsMediator();
-    static SensorsMediator* instance;
 public:
-    static SensorsMediator* getInstance()
-    {
-        if (instance == nullptr)
-            instance = new SensorsMediator();
-        return instance;
-    }
-
+    SensorsMediator() {};
 
 private:
     vector3Float accReading;

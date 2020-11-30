@@ -5,16 +5,15 @@
  * 
  */
 
-#include "MadgwickIMU.h"
+#include "PositionAndRotation/RotationCalculation/MadgwickIMU.h"
 
 using Interfaces::ISensorsData;
 
 
-MadgwickIMU::MadgwickIMU(ISensorsData* sensorsData, float sampleFrequency, float beta)
-    : MadgwickBase(sampleFrequency, beta)
+MadgwickIMU::MadgwickIMU(ISensorsData& _sensorsData, float sampleFrequency, float beta)
+    : MadgwickBase(sampleFrequency, beta),
+	sensorsData(_sensorsData)
 {
-    this->sensorsData = sensorsData;
-
     _2q0 = _2q1 = _2q2 = _2q3 = 0;
 	_4q0 = _4q1 = _4q2 = 0;
 	_8q1 = _8q2 = 0;
@@ -25,12 +24,12 @@ MadgwickIMU::MadgwickIMU(ISensorsData* sensorsData, float sampleFrequency, float
 void MadgwickIMU::updateRotationCalculation()
 {
     // Convert gyroscope degrees/sec to radians/sec
-    vector3Float rawGyro = sensorsData->getGyro_degPerSec();
+    vector3Float rawGyro = sensorsData.getGyro_degPerSec();
 	gx = rawGyro.x * 0.0174533f;
 	gy = rawGyro.y * 0.0174533f;
 	gz = rawGyro.z * 0.0174533f;
 
-    vector3Float normAcc = sensorsData->getAcc_normVector();
+    vector3Float normAcc = sensorsData.getAcc_normVector();
     ax = normAcc.x;
     ay = normAcc.y;
     az = normAcc.z;

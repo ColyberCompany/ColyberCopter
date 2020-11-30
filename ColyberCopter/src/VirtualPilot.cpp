@@ -12,11 +12,10 @@ using Enums::StateType;
 using Enums::FlightModeTypes;
 
 
-VirtualPilot::VirtualPilot(IMotors* motors, FlightMode* initialFlightMode, const DataFromRmtCtrl* steeringData)
+VirtualPilot::VirtualPilot(IMotors& _motors, FlightMode& initialFlightMode, const DataFromRmtCtrl& _steeringData)
+    : motors(_motors), steeringData(_steeringData)
 {
-    this->motors = motors;
-    this->currentFlightMode = initialFlightMode;
-    this->steeringData = steeringData;
+    this->currentFlightMode = &initialFlightMode;
 }
 
 
@@ -63,11 +62,11 @@ bool VirtualPilot::setFlightMode(FlightModeTypes flightModeType)
 
 void VirtualPilot::runVirtualPilot()
 {
-    ControlSticks virtualSticks(steeringData->throttle, steeringData->yaw,
-                                steeringData->pitch, steeringData->roll);
+    ControlSticks virtualSticks(steeringData.throttle, steeringData.yaw,
+                                steeringData.pitch, steeringData.roll);
 
     currentFlightMode->executeFlightModeLoop(virtualSticks);
-    motors->updatePower(virtualSticks);
+    motors.updatePower(virtualSticks);
 }
 
 

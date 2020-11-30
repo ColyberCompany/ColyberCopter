@@ -5,7 +5,7 @@
  * 
  */
 
-#include "QuadXMotors.h"
+#include "Motors/QuadXMotors.h"
 
 using Interfaces::IMotors;
 using Enums::StateType;
@@ -22,6 +22,7 @@ bool QuadXMotors::initializeMotors()
     // TODO: implement initializeMotors() method
 
     // https://github.com/stm32duino/wiki/wiki/HardwareTimer-library
+    //HardwareTimer test(TIM3);
 
 
     setMotorsState(StateType::Disabled);

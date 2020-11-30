@@ -5,7 +5,7 @@
  * 
  */
 
-#include "StabilizeFlightMode.h"
+#include "FlightModes/StabilizeFlightMode.h"
 #include "Common/Constants.h"
 
 using Interfaces::IVirtualPilot;

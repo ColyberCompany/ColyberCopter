@@ -22,13 +22,13 @@
 class VirtualPilot : public Interfaces::IVirtualPilot, public Task
 {
 private:
-    Interfaces::IMotors* motors;
+    Interfaces::IMotors& motors;
     FlightMode* currentFlightMode;
-    const DataFromRmtCtrl* steeringData;
+    const DataFromRmtCtrl& steeringData;
     GrowingArray<FlightMode*> flightModesArray;
 
 public:
-    VirtualPilot(Interfaces::IMotors* motors, FlightMode* initialFlightMode, const DataFromRmtCtrl* steeringData);
+    VirtualPilot(Interfaces::IMotors& motors, FlightMode& initialFlightMode, const DataFromRmtCtrl& steeringData);
 
     bool addFlightMode(FlightMode* flightMode) override;
     bool initializeFlightModes() override;

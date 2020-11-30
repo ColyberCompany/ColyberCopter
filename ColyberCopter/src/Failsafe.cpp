@@ -5,7 +5,7 @@
  * 
  */
 
-#include "Failsafe.h"
+#include "Failsafe/Failsafe.h"
 #include <LinkedList.h>
 
 
@@ -24,6 +24,9 @@ bool Failsafe::initializeFailsafe()
 void Failsafe::addFailsafeScenario(IExecutable* failsafeScenario)
 {
     failsafeScenariosList->add(failsafeScenario);
+    Serial1.println("added fail scen");
+    Serial1.println((int32_t)failsafeScenario);
+    delay(200);
 }
 
 

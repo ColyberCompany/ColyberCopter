@@ -16,10 +16,10 @@
 class MotorsDisarm : public IExecutable
 {
 private:
-    Interfaces::IMotors* motors;
+    Interfaces::IMotors& motors;
 
 public:
-    MotorsDisarm(Interfaces::IMotors* motors);
+    MotorsDisarm(Interfaces::IMotors& motors);
     void execute() override;
 };
 
