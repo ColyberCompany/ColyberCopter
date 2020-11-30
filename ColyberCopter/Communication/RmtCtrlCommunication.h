@@ -17,7 +17,6 @@
 #include <DataPacket.h>
 #include "ReceiveData.h"
 #include "SendData.h"
-#include "config.h"
 
 
 /**
@@ -26,34 +25,24 @@
  */
 class RmtCtrlCommunication
 {
-// Singleton
-private:
-    RmtCtrlCommunication();
-    static RmtCtrlCommunication* instance;
 public:
-    static RmtCtrlCommunication* getInstance()
-    {
-        if (instance == nullptr)
-            instance = new RmtCtrlCommunication();
-        return instance;
-    }
-
+    RmtCtrlCommunication(PacketCommunication& packetCommunication);
+    // TODO: delete copy ctor and = operator
 
 private:
-    ITransceiver& lowLevelComm = StreamComm(&Config::RmtCtrlSerial, Config::RmtCtrlMaxComBufferSize);
+    PacketCommunication& comm; // PacketCommunication
 
 public:
-    PacketCommunication& comm = PacketCommunicationWithQueue(&lowLevelComm, Config::RmtCtrlMaxQueuedBuffers);
     DataForRmtCtrl sendData;
     DataFromRmtCtrl receiveData;
 
 
     // receive data packets
-    DataPacket steering = DataPacket(0);
+    DataPacket steering; // ID 0
     // add other here
 
     // send data packets
-    DataPacket measurementsAndState = DataPacket(10);
+    DataPacket measurementsAndState; // ID 10
     // add other here
 
     // TODO: remember to make somewhere receive events and add them to receive packets (outside this class)
