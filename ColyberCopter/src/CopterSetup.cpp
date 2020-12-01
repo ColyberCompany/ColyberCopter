@@ -7,6 +7,7 @@
  */
 
 #include "CopterSetup.h"
+#include "Instances.h"
 #include "config.h"
 #include <SimpleTasker.h>
 #include "Communication/RmtCtrlCommunication.h"
@@ -26,6 +27,10 @@
 #include "StreamComm.h"
 #include "PacketCommunicationWithQueue.h"
 #include "VirtualPilot.h"
+#include "Communication/PacketReceivedEvents.h"
+#include "Sensors/NoSensor.h"
+#include "Debug/SerialDebugMessenger.h"
+#include "Common/Constants.h"
 
 using namespace Interfaces;
 
@@ -35,35 +40,72 @@ void setupFailsafe();
 void initializeSensors();
 void setupFlightModes();
 void addTasksToTasker();
-void addPacketEvents();
+void setupRemoteControllerComm();
 
 
-// All instances
-SimpleTasker simpleTasker(15);
-SensorsMediator sensorsMediator;
-MadgwickIMU madgwickIMU(sensorsMediator, Config::MainFrequency_Hz); // or MadgwickAHRS
-NoPosCalcTemp tempNoPosCalc;
-AHRS ahrs(tempNoPosCalc, madgwickIMU);
-QuadXMotors quadXMotors;
+// https://github.com/stm32duino/wiki/wiki/API#hardwareserial
+//HardwareSerial Serial1(PA10, PA9); // Serial1 is compiling, but I don't know on which pins
+HardwareSerial Serial2(PA3, PA2);
+//HardwareSerial Serial3(PB11, PB10);
 
-// Communication
-StreamComm rmtCtrlCommStream(&Serial2, Config::RmtCtrlMaxComBufferSize);
-PacketCommunicationWithQueue remotePacketComm(&rmtCtrlCommStream, Config::RmtCtrlMaxQueuedBuffers); // Remote comm instance
-RmtCtrlCommunication remoteControlComm(remotePacketComm);
 
-// FlightModes
-StabilizeFlightMode stabilizeFlightMode(ahrs, Config::MainInterval_s);
-VirtualPilot virtualPilot(quadXMotors, stabilizeFlightMode, remoteControlComm.receiveData);
+namespace Assemble
+{
+    SimpleTasker simpleTasker(15);
+    SensorsMediator sensorsMediator;
+    MadgwickIMU madgwickIMU(sensorsMediator, Config::MainFrequency_Hz); // or MadgwickAHRS
+    NoPosCalcTemp tempNoPosCalc;
+    AHRS ahrs(tempNoPosCalc, madgwickIMU);
+    QuadXMotors quadXMotors;
+    SerialDebugMessenger serialDebugMessenger(Serial1);
 
-// Sensors
-MPU6050Adapter mpu6050(sensorsMediator);
-HMC5883LAdapter hmc5883l(sensorsMediator, mpu6050.getMPU6050Ptr());
+    // Communication
+    StreamComm rmtCtrlCommStream(&Serial2, Config::RmtCtrlMaxComBufferSize);
+    PacketCommunicationWithQueue rmtPacketComm(&rmtCtrlCommStream, Config::RmtCtrlMaxQueuedBuffers); // Remote comm instance
+    RmtCtrlCommunication remoteControlComm(rmtPacketComm);
 
-// Failsafe
-Failsafe failsafe;
-MotorsDisarm failsafeActionMotorsDisarm(quadXMotors);
-CommunicationLost failsafeScenarioCommLost(remotePacketComm, &failsafeActionMotorsDisarm);
-TiltExceeding failsafeTiltExceeding(ahrs, &failsafeActionMotorsDisarm);
+    // Packet received events
+    SteeringReceivedEvent steeringReceivedEvent;
+
+    // FlightModes
+    StabilizeFlightMode stabilizeFlightMode(ahrs, Config::MainInterval_s);
+    VirtualPilot virtualPilotInstance(quadXMotors, stabilizeFlightMode, remoteControlComm.receiveData);
+
+    // Sensors
+    MPU6050Adapter mpu6050(sensorsMediator);
+    HMC5883LAdapter hmc5883l(sensorsMediator, mpu6050.getMPU6050Ptr());
+    NoSensor noSensor(sensorsMediator);
+
+    // Failsafe
+    Failsafe failsafe;
+    MotorsDisarm failsafeActionMotorsDisarm(quadXMotors);
+    CommunicationLost failsafeScenarioCommLost(rmtPacketComm, &failsafeActionMotorsDisarm);
+    TiltExceeding failsafeTiltExceeding(ahrs, &failsafeActionMotorsDisarm);
+}
+
+
+namespace Instance
+{
+    using Assemble::noSensor;
+
+    ITasker& tasker = Assemble::simpleTasker;
+    I3DPosition& position = Assemble::ahrs;
+    I3DRotation& rotation = Assemble::ahrs;
+    IMotors& motors = Assemble::quadXMotors;
+    ISensorsData& sensorsData = Assemble::sensorsMediator;
+    IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
+    PacketCommunication& rmtCtrlPacketComm = Assemble::rmtPacketComm;
+
+    Sensor& accel = *Assemble::mpu6050.getAccSensor();
+    Sensor& gyro = *Assemble::mpu6050.getGyroSensor();
+    Sensor& magn = Assemble::hmc5883l;
+    Sensor& baro = noSensor;
+    Sensor& gps = noSensor;
+    Sensor& btmRangefinder = noSensor;
+
+    Failsafe& failsafe = Assemble::failsafe;
+    DebugMessenger& debMes = Assemble::serialDebugMessenger;
+}
 
 
 
@@ -80,25 +122,34 @@ class DebugTask : public Task
 
 void setupDrone()
 {
-    //list:
-    // - 
-    
-    Serial.println(2);
-    setupFailsafe();
+    using Instance::debMes;
+    using Consts::OKText;
 
-    Serial.println(3);
-    Serial2.begin(Config::RmtCtrlSerialBaudRate);
+    debMes.enableAndInitialize(); // Comment this line to disable all debug messages
+    debMes.showMessage("Beginning drone setup");
+    delay(10);
 
-    Serial.println(4);
-
-    initializeSensors();
-    Serial.println(5);
 
     addTasksToTasker();
-    Serial.println(6);
 
-    addPacketEvents();
-    Serial.println(7);
+
+    debMes.showMessage("Failsafe");
+    setupFailsafe();
+    debMes.showMessage(OKText);
+
+
+    Serial2.begin(Config::RmtCtrlSerialBaudRate);
+
+
+    debMes.showMessage("Sensors");
+    initializeSensors();
+    debMes.showMessage(OKText);
+
+
+    setupRemoteControllerComm();
+    
+
+    debMes.showMessage("Drone setup is complete!");
 }
 
 
@@ -116,41 +167,68 @@ void setupFailsafe()
 
 void setupFlightModes()
 {
-    virtualPilot.addFlightMode(&stabilizeFlightMode); // TODO: think whether to pass flight modes by reference
+    Instance::virtualPilot.addFlightMode(&Assemble::stabilizeFlightMode); // TODO: think whether to pass flight modes by reference
 }
 
 
 void initializeSensors()
 {
+    using Instance::debMes;
+
     Wire.begin();
     Wire.setClock(400000L);
+    delay(100);
 
-    Serial.print("senInit");
-    mpu6050.initialize();
-    Serial.print(" mpuOk");
-    hmc5883l.initialize();
-    Serial.print(" hmcOk");
-    Serial.println(" all done");
+    if (!Assemble::mpu6050.initialize())
+        debMes.showErrorAndAbort(100);
+    
+    if (!Assemble::hmc5883l.initialize())
+        debMes.showErrorAndAbort(101);
+
+    // Check other key sensors ...
+
+
+    Instance::accel.initialize();
+    Instance::gyro.initialize();
+    Instance::magn.initialize();
+    Instance::baro.initialize();
+    Instance::gps.initialize();
+    Instance::btmRangefinder.initialize();
 }
 
 
 void addTasksToTasker()
 {
-    simpleTasker.addTask(&failsafe, 10, 0); // 10Hz
-    simpleTasker.addTask(&ahrs, Config::MainFrequency_Hz, 0);
-    simpleTasker.addTask(&mpu6050, Config::MainFrequency_Hz, 0);
-    simpleTasker.addTask(&virtualPilot, Config::MainFrequency_Hz, 0);
+    using Instance::tasker;
 
-    simpleTasker.addTask(&hmc5883l, 75, 0);// 75Hz
+    tasker.addTask(&Assemble::failsafe, 10, 0); // 10Hz
+    tasker.addTask(&Assemble::ahrs, Config::MainFrequency_Hz, 0);
+    tasker.addTask(&Assemble::mpu6050, Config::MainFrequency_Hz, 0);
+    tasker.addTask(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz, 0);
+
+    tasker.addTask(&Assemble::hmc5883l, 75, 0);// 75Hz
 
     // TODO: add comm
 
 
-    simpleTasker.addTask(new DebugTask(), 50, 0);
+    tasker.addTask(new DebugTask(), 50, 0);
 }
 
 
-void addPacketEvents()
+void addReceivedPacketEvents()
 {
-    
+    Assemble::remoteControlComm.steering.setPacketReceivedEvent(Assemble::steeringReceivedEvent);
+    // ...
+}
+
+void addReceivePacketsPointers()
+{
+    Instance::rmtCtrlPacketComm.addReceiveDataPacketPointer(&Assemble::remoteControlComm.steering);
+    // ...
+}
+
+void setupRemoteControllerComm()
+{
+    addReceivedPacketEvents();
+    addReceivePacketsPointers();
 }
