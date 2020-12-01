@@ -16,6 +16,8 @@ namespace Consts
 {
     const float RoundAngle = 360.f;
     const float StraightAngle = 180.f;
+
+    const char* const OKText = "OK";
 }
 
 

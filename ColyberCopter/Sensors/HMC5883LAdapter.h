@@ -77,7 +77,7 @@ public:
 
         calibCounter.reset(amtOfSamples);
 
-        return (interval / 1000000.f) * amtOfSamples + 1;
+        return getInterval_s() * amtOfSamples + 1;
     }
 
     FloatAxisVector getOffset() const override

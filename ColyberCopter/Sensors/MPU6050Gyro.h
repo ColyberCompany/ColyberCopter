@@ -29,7 +29,7 @@ public:
     /**
      * @param sensorsMediator Reference to the sensorsMediator.
      * @param mpu6050 Reference to the mpu6050 instance.
-     * @param deltaTime Time between next executeCalibration() method calls [in seconds].
+     * @param deltaTime Time between next checkCalibration() method calls [in seconds].
      */
     MPU6050Gyro(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050, float deltaTime)
         : Sensor(sensorsMediator), mpu(mpu6050)
@@ -51,7 +51,7 @@ public:
      * @brief Sensor have to don't move at all (can be in any position
      * but as steady as possible).
      */
-    void executeCalibration()
+    void checkCalibration()
     {
         // called periodically by MPU6050Adapter
 

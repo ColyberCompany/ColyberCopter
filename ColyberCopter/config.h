@@ -26,6 +26,9 @@ namespace Config
     const float MainInterval_s = 1.f / MainFrequency_Hz; // delta time between next main loop executions
 
     const float TiltExceedingAngleThreshold = 60;
+
+    const float AccLPFCutOffFreq = 5.f;
+	const float GyroLPFCutOffFreq = 10.f;
 }
 
 

@@ -4,16 +4,8 @@
 // TODO: delete copy ctor and assignment operator in all singletons
 // TODO: check if in all singletons instance are initialized as nullptr
 
-#include <SimpleTasker.h>
 #include "CopterSetup.h"
-
-
-SimpleTasker* taskerPtr;
-
-// https://github.com/stm32duino/wiki/wiki/API#hardwareserial
-//HardwareSerial Serial1(PA10, PA9); // Serial1 is compiling, but I don't know on which pins
-HardwareSerial Serial2(PA3, PA2);
-//HardwareSerial Serial3(PB11, PB10);
+#include "Instances.h"
 
 
 void setup()
@@ -24,6 +16,6 @@ void setup()
 
 void loop()
 {
-    simpleTasker.runLoop();
+    Instance::tasker.runLoop();
 }
 
