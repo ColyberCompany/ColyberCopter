@@ -6,12 +6,16 @@
  */
 
 #include "FlightModes/FlightMode.h"
+#include "config.h"
 
 using Enums::FlightModeTypes;
 
 
-FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMode, float deltaTime)
-    : type(flightModeType), baseFlightMode(baseFlightMode), DeltaTime(deltaTime)
+const float FlightMode::DeltaTime_s = Config::MainInterval_s;
+
+
+FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMode)
+    : type(flightModeType), baseFlightMode(baseFlightMode)
 {
 }
 

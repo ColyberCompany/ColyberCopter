@@ -26,7 +26,7 @@ private:
     FlightMode* const baseFlightMode;
 
 protected:
-    const float DeltaTime; // in seconds
+    static const float DeltaTime_s;
 
 
 public:
@@ -35,9 +35,8 @@ public:
      * @param flightModeType Enum type of created flight mode (if new, update enum file).
      * @param baseFlightMode Pointer to flight mode that class extends.
      * (nullptr if don't extend any current flight mode).
-     * @param deltaTime Delta time of next calls of this class (in seconds).
      */
-    FlightMode(Enums::FlightModeTypes flightModeType, FlightMode* baseFlightMode, float deltaTimeSec);
+    FlightMode(Enums::FlightModeTypes flightModeType, FlightMode* baseFlightMode);
 
     // Disable copying instances of this class
     FlightMode(const FlightMode&) = delete;

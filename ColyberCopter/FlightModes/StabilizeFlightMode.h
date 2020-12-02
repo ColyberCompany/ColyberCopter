@@ -28,7 +28,7 @@ private:
 
 
 public:
-    StabilizeFlightMode(Interfaces::I3DRotation& rotationData, float deltaTime);
+    StabilizeFlightMode(Interfaces::I3DRotation& rotationData);
 
     StabilizeFlightMode(const StabilizeFlightMode&) = delete;
     StabilizeFlightMode& operator=(const StabilizeFlightMode&) = delete;
