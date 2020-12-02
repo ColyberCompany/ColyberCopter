@@ -16,6 +16,7 @@
 #include "Failsafe/FailsafeScenarios/CommunicationLost.h"
 #include "Failsafe/FailsafeScenarios/TiltExceeding.h"
 #include "FlightModes/StabilizeFlightMode.h"
+#include "FlightModes/UnarmedFlightMode.h"
 #include "PositionAndRotation/AHRS.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickIMU.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
@@ -36,10 +37,10 @@ using namespace Interfaces;
 
 
 // Helper functions
+void addTasksToTasker();
 void setupFailsafe();
 void initializeSensors();
 void setupFlightModes();
-void addTasksToTasker();
 void setupRemoteControllerComm();
 
 
@@ -68,8 +69,9 @@ namespace Assemble
     SteeringReceivedEvent steeringReceivedEvent;
 
     // FlightModes
-    StabilizeFlightMode stabilizeFlightMode(ahrs, Config::MainInterval_s);
-    VirtualPilot virtualPilotInstance(quadXMotors, stabilizeFlightMode, remoteControlComm.receiveData);
+    UnarmedFlightMode unarmedFlightMode(quadXMotors);
+    StabilizeFlightMode stabilizeFlightMode(ahrs);
+    VirtualPilot virtualPilotInstance(quadXMotors, unarmedFlightMode, remoteControlComm.receiveData);
 
     // Sensors
     MPU6050Adapter mpu6050(sensorsMediator);
@@ -138,15 +140,24 @@ void setupDrone()
     debMes.showMessage(OKText);
 
 
-    Serial2.begin(Config::RmtCtrlSerialBaudRate);
-
-
     debMes.showMessage("Sensors");
     initializeSensors();
     debMes.showMessage(OKText);
 
 
+    debMes.showMessage("FlightModes");
+    setupFlightModes();
+    debMes.showMessage(OKText);
+
+
+    debMes.showMessage("RmtCtrlComm");
     setupRemoteControllerComm();
+    debMes.showMessage(OKText);
+
+
+    debMes.showMessage("Motors");
+    Instance::motors.initializeMotors();
+    debMes.showMessage(OKText);
     
 
     debMes.showMessage("Drone setup is complete!");
@@ -162,12 +173,6 @@ void setupFailsafe()
     //failsafe.addFailsafeScenario(&failsafeScenarioCommLost);
     //failsafe.addFailsafeScenario(&failsafeTiltExceeding);
     //failsafe.addFailsafeScenario(nullptr); // Test how many times this methods is called inside
-}
-
-
-void setupFlightModes()
-{
-    Instance::virtualPilot.addFlightMode(&Assemble::stabilizeFlightMode); // TODO: think whether to pass flight modes by reference
 }
 
 
@@ -197,21 +202,32 @@ void initializeSensors()
 }
 
 
+void setupFlightModes()
+{
+    Instance::virtualPilot.addFlightMode(&Assemble::unarmedFlightMode);
+    Instance::virtualPilot.addFlightMode(&Assemble::stabilizeFlightMode); // TODO: think whether to pass flight modes by reference
+
+    Instance::virtualPilot.initializeFlightModes();
+}
+
+
 void addTasksToTasker()
 {
     using Instance::tasker;
 
-    tasker.addTask(&Assemble::failsafe, 10, 0); // 10Hz
-    tasker.addTask(&Assemble::ahrs, Config::MainFrequency_Hz, 0);
-    tasker.addTask(&Assemble::mpu6050, Config::MainFrequency_Hz, 0);
-    tasker.addTask(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz, 0);
+    Instance::debMes.showMessage(1);
+    tasker.addTask(&Assemble::failsafe, 10); // 10Hz
+    tasker.addTask(&Assemble::ahrs, Config::MainFrequency_Hz);
+    tasker.addTask(&Assemble::mpu6050, Config::MainFrequency_Hz);
+    Instance::debMes.showMessage(2);
+    tasker.addTask(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz);
 
-    tasker.addTask(&Assemble::hmc5883l, 75, 0);// 75Hz
+    tasker.addTask(&Assemble::hmc5883l, 75); // 75Hz
 
-    // TODO: add comm
+    Instance::debMes.showMessage(3);
+    tasker.addTask(&Assemble::rmtPacketComm, 220);
 
-
-    tasker.addTask(new DebugTask(), 50, 0);
+    tasker.addTask(new DebugTask(), 50);
 }
 
 
@@ -229,6 +245,8 @@ void addReceivePacketsPointers()
 
 void setupRemoteControllerComm()
 {
+    Serial2.begin(Config::RmtCtrlSerialBaudRate);
+
     addReceivedPacketEvents();
     addReceivePacketsPointers();
 }
