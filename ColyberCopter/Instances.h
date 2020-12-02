@@ -28,7 +28,7 @@ namespace Instance
     extern ITasker& tasker;
     extern I3DPosition& position;
     extern I3DRotation& rotation;
-    extern IMotors& motors;
+    //extern IMotors& motors; // for safety
     extern ISensorsData& sensorsData;
     extern IVirtualPilot& virtualPilot;
     extern PacketCommunication& rmtCtrlPacketComm;
