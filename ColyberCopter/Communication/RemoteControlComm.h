@@ -13,10 +13,11 @@
 #define REMOTECONTROLCOMM_H
 
 #include <StreamComm.h>
-#include <PacketCommunicationWithQueue.h>
+#include <PacketCommunication.h>
 #include <DataPacket.h>
 #include "ReceiveData.h"
 #include "SendData.h"
+#include "PacketReceivedEvents.h"
 
 
 /**
@@ -26,56 +27,72 @@
 class RemoteControlComm
 {
 public:
-    RemoteControlComm(PacketCommunication& packetCommunication)
-        : comm(packetCommunication),
-        // dataPacket(ID):
-        steering(0),
-        measurementsAndState(10)
+    struct SendStuff
     {
+        DataForRemoteControl data;
+
+        DataPacket measurementsAndState;
+        // add other here ...
+
+        SendStuff()
+            : measurementsAndState(10)
+        {}
+    } sendStuff;
+
+
+    struct ReceiveStuff
+    {
+        DataFromRemoteControl data;
+
+        DataPacket steering;
+        // add other here ...
+
+        ReceiveStuff()
+            : steering(0)
+        {}
+    } receiveStuff;
+    
+
+private:
+    SteeringReceivedEvent steeringReceivedEvent;
+
+
+
+
+public:
+    RemoteControlComm(PacketCommunication& packetComm)
+    {
+        // - add all data that this packet consists of
+        // - set packet received events for received packets
+        // - add receive data packets pointers to the packetComm
+
     // receive:
 
         // steering
-        steering.addByteType(receiveData.throttle);
-        steering.addByteType(receiveData.yaw);
-        steering.addByteType(receiveData.pitch);
-        steering.addByteType(receiveData.roll);
+        receiveStuff.steering.addByteType(receiveStuff.data.throttle);
+        receiveStuff.steering.addByteType(receiveStuff.data.yaw);
+        receiveStuff.steering.addByteType(receiveStuff.data.pitch);
+        receiveStuff.steering.addByteType(receiveStuff.data.roll);
+        receiveStuff.steering.setPacketReceivedEvent(steeringReceivedEvent);
 
 
     // send:
 
         // measurements and state
         // TODO: think about structure of this packet and if to split it
-        measurementsAndState.addByteType(sendData.pitchAngle_deg);
-        measurementsAndState.addByteType(sendData.rollAngle_deg);
-        measurementsAndState.addByteType(sendData.heading_deg);
-        measurementsAndState.addByteType(sendData.altitude_cm);
-        measurementsAndState.addByteType(sendData.longitude);
-        measurementsAndState.addByteType(sendData.latitude);
-        measurementsAndState.addByteType(sendData.droneConnectionStability);
+        sendStuff.measurementsAndState.addByteType(sendStuff.data.pitchAngle_deg);
+        sendStuff.measurementsAndState.addByteType(sendStuff.data.rollAngle_deg);
+        sendStuff.measurementsAndState.addByteType(sendStuff.data.heading_deg);
+        sendStuff.measurementsAndState.addByteType(sendStuff.data.altitude_cm);
+        sendStuff.measurementsAndState.addByteType(sendStuff.data.longitude);
+        sendStuff.measurementsAndState.addByteType(sendStuff.data.latitude);
+        sendStuff.measurementsAndState.addByteType(sendStuff.data.droneConnectionStability);
+        packetComm.addReceiveDataPacketPointer(&receiveStuff.steering);
     }
 
 
     RemoteControlComm(const RemoteControlComm&) = delete;
     RemoteControlComm& operator=(const RemoteControlComm&) = delete;
-
-
-private:
-    PacketCommunication& comm; // PacketCommunication
-
-public:
-    DataForRemoteControl sendData;
-    DataFromRemoteControl receiveData;
-
-
-    // receive data packets
-    DataPacket steering; // ID 0
-    // add other here
-
-    // send data packets
-    DataPacket measurementsAndState; // ID 10
-    // add other here
-
-    // TODO: remember to make somewhere receive events and add them to receive packets (outside this class)
 };
 
 
