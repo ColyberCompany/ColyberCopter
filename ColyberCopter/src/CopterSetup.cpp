@@ -28,7 +28,6 @@
 #include "StreamComm.h"
 #include "PacketCommunicationWithQueue.h"
 #include "VirtualPilot.h"
-#include "Communication/PacketReceivedEvents.h"
 #include "Sensors/NoSensor.h"
 #include "Debug/SerialDebugMessenger.h"
 #include "Common/Constants.h"
@@ -52,7 +51,7 @@ HardwareSerial Serial2(PA3, PA2);
 
 namespace Assemble
 {
-    SimpleTasker simpleTasker(15);
+    SimpleTasker simpleTasker(Config::MaxTaskerTasks);
     SensorsMediator sensorsMediator;
     MadgwickIMU madgwickIMU(sensorsMediator, Config::MainFrequency_Hz); // or MadgwickAHRS
     NoPosCalcTemp tempNoPosCalc;
@@ -65,13 +64,10 @@ namespace Assemble
     PacketCommunicationWithQueue rmtPacketComm(&rmtCtrlCommStream, Config::RmtCtrlMaxQueuedBuffers); // Remote comm instance
     RemoteControlComm remoteControlComm(rmtPacketComm);
 
-    // Packet received events
-    SteeringReceivedEvent steeringReceivedEvent;
-
     // FlightModes
     UnarmedFlightMode unarmedFlightMode(quadXMotors);
     StabilizeFlightMode stabilizeFlightMode(ahrs);
-    VirtualPilot virtualPilotInstance(quadXMotors, unarmedFlightMode, remoteControlComm.receiveData);
+    VirtualPilot virtualPilotInstance(quadXMotors, unarmedFlightMode, remoteControlComm.receiveStuff.data);
 
     // Sensors
     MPU6050Adapter mpu6050(sensorsMediator);
@@ -88,16 +84,17 @@ namespace Assemble
 
 namespace Instance
 {
-    using Assemble::noSensor;
-
     ITasker& tasker = Assemble::simpleTasker;
     I3DPosition& position = Assemble::ahrs;
     I3DRotation& rotation = Assemble::ahrs;
     IMotors& motors = Assemble::quadXMotors;
     ISensorsData& sensorsData = Assemble::sensorsMediator;
     IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
-    PacketCommunication& rmtCtrlPacketComm = Assemble::rmtPacketComm;
 
+    PacketCommunication& pilotPacketComm = Assemble::rmtPacketComm;
+    RemoteControlComm& pilotPacketsAndData = Assemble::remoteControlComm;
+
+    using Assemble::noSensor;
     Sensor& accel = *Assemble::mpu6050.getAccSensor();
     Sensor& gyro = *Assemble::mpu6050.getGyroSensor();
     Sensor& magn = Assemble::hmc5883l;
@@ -232,23 +229,8 @@ void addTasksToTasker()
 }
 
 
-void addReceivedPacketEvents()
-{
-    Assemble::remoteControlComm.steering.setPacketReceivedEvent(Assemble::steeringReceivedEvent);
-    // ...
-}
-
-void addReceivePacketsPointers()
-{
-    Instance::rmtCtrlPacketComm.addReceiveDataPacketPointer(&Assemble::remoteControlComm.steering);
-    // ...
-}
-
 void setupRemoteControllerComm()
 {
     Serial2.begin(Config::RmtCtrlSerialBaudRate);
     Assemble::rmtCtrlCommStream.begin();
-
-    addReceivedPacketEvents();
-    addReceivePacketsPointers();
 }
