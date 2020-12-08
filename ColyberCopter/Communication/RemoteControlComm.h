@@ -54,7 +54,10 @@ public:
         measurementsAndState.addByteType(sendData.droneConnectionStability);
     }
 
-    // TODO: delete copy ctor and = operator
+
+    RemoteControlComm(const RemoteControlComm&) = delete;
+    RemoteControlComm& operator=(const RemoteControlComm&) = delete;
+
 
 private:
     PacketCommunication& comm; // PacketCommunication
