@@ -22,6 +22,10 @@
 // 
 
 
+// TODO: In ctor of VirtualPilot if you add base flight mode, add it instantly using addFlightMode() method
+// TODO: Update setFlightMode() method comment. If addFlightMode() method was not used, flight mode won't be set at all.
+
+
 namespace Interfaces
 {
     class IVirtualPilot

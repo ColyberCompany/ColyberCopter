@@ -115,7 +115,7 @@ class DebugTask : public Task
 {
     void execute() override
     {
-        Serial.println(mpu6050.getMPU6050Ptr()->getRawAcceleration().x);
+        Serial1.println(Instance::rotation.getPitch_deg());
     }
 };
 
@@ -167,9 +167,10 @@ void setupDrone()
 
 void setupFailsafe()
 {
+    // BUG: here
     // FIXME: It seems like first calling addFailsafeScenario method cause that it is called two times (when adding nullptr for example)
 
-    failsafe.initializeFailsafe();
+    Instance::failsafe.initializeFailsafe();
     //failsafe.addFailsafeScenario(&failsafeScenarioCommLost);
     //failsafe.addFailsafeScenario(&failsafeTiltExceeding);
     //failsafe.addFailsafeScenario(nullptr); // Test how many times this methods is called inside
@@ -246,6 +247,7 @@ void addReceivePacketsPointers()
 void setupRemoteControllerComm()
 {
     Serial2.begin(Config::RmtCtrlSerialBaudRate);
+    Assemble::rmtCtrlCommStream.begin();
 
     addReceivedPacketEvents();
     addReceivePacketsPointers();
