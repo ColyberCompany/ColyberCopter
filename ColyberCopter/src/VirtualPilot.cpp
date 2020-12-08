@@ -12,7 +12,7 @@ using Enums::StateType;
 using Enums::FlightModeTypes;
 
 
-VirtualPilot::VirtualPilot(IMotors& _motors, FlightMode& initialFlightMode, const DataFromRmtCtrl& _steeringData)
+VirtualPilot::VirtualPilot(IMotors& _motors, FlightMode& initialFlightMode, const DataFromRemoteControl& _steeringData)
     : motors(_motors), steeringData(_steeringData)
 {
     this->currentFlightMode = &initialFlightMode;

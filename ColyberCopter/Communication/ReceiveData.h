@@ -15,7 +15,7 @@
 /**
  * @brief Data from remote contrller.
  */
-struct DataFromRmtCtrl
+struct DataFromRemoteControl
 {
     uint16Byte throttle;
     int16Byte yaw;
@@ -43,6 +43,9 @@ struct DataFromRmtCtrl
     // It would be good if this packets will be inside the library.
     // Maybe make two types of config packets: one with config id and float value and second with config id and two float values.
 };
+
+
+// Other received data ...
 
 
 #endif

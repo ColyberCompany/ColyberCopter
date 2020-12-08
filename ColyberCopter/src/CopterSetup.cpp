@@ -10,7 +10,7 @@
 #include "Instances.h"
 #include "config.h"
 #include <SimpleTasker.h>
-#include "Communication/RmtCtrlCommunication.h"
+#include "Communication/RemoteControlComm.h"
 #include "Failsafe/Failsafe.h"
 #include "Failsafe/FailsafeActions/MotorsDisarm.h"
 #include "Failsafe/FailsafeScenarios/CommunicationLost.h"
@@ -63,7 +63,7 @@ namespace Assemble
     // Communication
     StreamComm rmtCtrlCommStream(&Serial2, Config::RmtCtrlMaxComBufferSize);
     PacketCommunicationWithQueue rmtPacketComm(&rmtCtrlCommStream, Config::RmtCtrlMaxQueuedBuffers); // Remote comm instance
-    RmtCtrlCommunication remoteControlComm(rmtPacketComm);
+    RemoteControlComm remoteControlComm(rmtPacketComm);
 
     // Packet received events
     SteeringReceivedEvent steeringReceivedEvent;
