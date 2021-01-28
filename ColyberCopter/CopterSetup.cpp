@@ -14,7 +14,7 @@
 #include "Failsafe/Failsafe.h"
 #include "Failsafe/FailsafeActions/MotorsDisarm.h"
 #include "Failsafe/FailsafeScenarios/CommunicationLost.h"
-#include "Failsafe/FailsafeScenarios/TiltExceeding.h"
+#include "Failsafe/FailsafeScenarios/TIltExceeding.h"
 #include "FlightModes/StabilizeFlightMode.h"
 #include "FlightModes/UnarmedFlightMode.h"
 #include "PositionAndRotation/AHRS.h"
