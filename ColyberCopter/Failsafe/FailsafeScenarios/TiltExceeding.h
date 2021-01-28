@@ -11,7 +11,7 @@
 #define TILTEXCEEDING_H
 
 #include "FailsafeScenario.h"
-#include "Interfaces/I3DRotation.h"
+#include "../../Interfaces/I3DRotation.h"
 
 
 class TiltExceeding : public FailsafeScenario

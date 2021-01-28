@@ -11,8 +11,8 @@
 #define MADGWICKAHRS_H
 
 #include "MadgwickBase.h"
-#include "Interfaces/IRotationCalculation.h"
-#include "Interfaces/ISensorsData.h"
+#include "../../Interfaces/IRotationCalculation.h"
+#include "../../Interfaces/ISensorsData.h"
 
 
 class MadgwickAHRS : protected MadgwickBase, public Interfaces::IRotationCalculation

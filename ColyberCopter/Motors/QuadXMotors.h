@@ -11,7 +11,7 @@
 #ifndef QUADXMOTORS_H
 #define QUADXMOTORS_H
 
-#include "Interfaces/IMotors.h"
+#include "../Interfaces/IMotors.h"
 //#include <stm32f103xb.h>
 // https://github.com/stm32duino/wiki/wiki/HardwareTimer-library
 

@@ -11,7 +11,7 @@
 #ifndef SENSORSMEDIATOR_H
 #define SENSORSMEDIATOR_H
 
-#include "Interfaces/ISensorsData.h"
+#include "../Interfaces/ISensorsData.h"
 
 
 /**

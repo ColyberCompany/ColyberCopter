@@ -11,7 +11,7 @@
 
 #include "FailsafeScenario.h"
 #include <IConnectionStatus.h>
-#include "Interfaces/IMotors.h"
+#include "../../Interfaces/IMotors.h"
 
 
 class CommunicationLost : public FailsafeScenario

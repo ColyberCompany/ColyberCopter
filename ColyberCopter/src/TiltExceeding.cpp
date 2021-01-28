@@ -5,11 +5,11 @@
  * 
  */
 
-#include "Failsafe/FailsafeScenarios/TiltExceeding.h"
-#include "config.h"
+#include "../Failsafe/FailsafeScenarios/TiltExceeding.h"
+#include "../config.h"
 
 #ifdef ARDUINO
-    #include <arduino.h>
+    #include <Arduino.h>
 #endif
 
 using Interfaces::I3DRotation;

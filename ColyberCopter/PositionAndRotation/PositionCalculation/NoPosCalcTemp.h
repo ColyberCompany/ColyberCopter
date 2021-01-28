@@ -8,7 +8,7 @@
 #ifndef NOPOSCALCTEMP_H
 #define NOPOSCALCTEMP_H
 
-#include "Interfaces/IPositionCalculation.h"
+#include "../../Interfaces/IPositionCalculation.h"
 
 
 class NoPosCalcTemp : public Interfaces::IPositionCalculation

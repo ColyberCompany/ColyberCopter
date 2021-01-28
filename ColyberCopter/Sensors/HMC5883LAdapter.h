@@ -14,8 +14,8 @@
 #include <SimpleMPU6050.h>
 #include "SensorsMediator.h"
 #include <Task.h>
-#include "Common/Vector3.h"
-#include "Common/Counter.h"
+#include "../Common/Vector3.h"
+#include "../Common/Counter.h"
 
 
 class HMC5883LAdapter: public Sensor, public Task

@@ -10,7 +10,7 @@
 #define UNARMEDFLIGHTMODE_H
 
 #include "FlightMode.h"
-#include "Interfaces/IMotors.h"
+#include "../Interfaces/IMotors.h"
 
 
 class UnarmedFlightMode : public FlightMode

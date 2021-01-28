@@ -9,7 +9,7 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
-#include "Common/FloatAxesVector.h"
+#include "../Common/FloatAxesVector.h"
 #include "SensorsMediator.h"
 
 

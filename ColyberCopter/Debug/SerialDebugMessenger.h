@@ -10,7 +10,7 @@
 #define SERIALDEBUGMESSENGER_H
 
 #include "DebugMessenger.h"
-#include "Enums/BaudRateTypes.h"
+#include "../Enums/BaudRateTypes.h"
 
 
 class SerialDebugMessenger: public DebugMessenger

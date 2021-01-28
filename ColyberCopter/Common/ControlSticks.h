@@ -12,7 +12,7 @@
 #define CONTROLSTICKS_H
 
 #ifdef ARDUINO
-    #include <arduino.h>
+    #include <Arduino.h>
 #endif
 
 

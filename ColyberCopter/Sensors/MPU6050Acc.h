@@ -12,7 +12,7 @@
 #include <SimpleMPU6050.h>
 #include "Sensor.h"
 #include "SensorsMediator.h"
-#include "Common/Counter.h"
+#include "../Common/Counter.h"
 
 
 class MPU6050Acc: public Sensor

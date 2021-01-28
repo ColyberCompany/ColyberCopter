@@ -10,8 +10,8 @@
 #define STABILIZEFLIGHTMODE_H
 
 #include "FlightMode.h"
-#include "Interfaces/IVirtualPilot.h"
-#include "Interfaces/I3DRotation.h"
+#include "../Interfaces/IVirtualPilot.h"
+#include "../Interfaces/I3DRotation.h"
 #include <PID.h>
 
 

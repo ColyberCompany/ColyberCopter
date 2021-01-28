@@ -10,7 +10,7 @@
 #define CONFIG_H
 
 #ifdef ARDUINO
-    #include <arduino.h>
+    #include <Arduino.h>
 #endif
 
 #include "Enums/BaudRateTypes.h"

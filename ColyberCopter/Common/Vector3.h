@@ -9,7 +9,7 @@
 #define VECTOR3_H
 
 #ifdef ARDUINO
-    #include <arduino.h>
+    #include <Arduino.h>
 #endif
 
 

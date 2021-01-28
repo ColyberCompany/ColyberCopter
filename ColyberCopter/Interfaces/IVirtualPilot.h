@@ -9,8 +9,8 @@
 #ifndef IVIRTUALPILOT_H
 #define IVIRTUALPILOT_H
 
-#include "FlightModes/FlightMode.h"
-#include "Enums/FlightModeTypes.h"
+#include "../FlightModes/FlightMode.h"
+#include "../Enums/FlightModeTypes.h"
 
 
 // TODO: remove this note if issue is done
