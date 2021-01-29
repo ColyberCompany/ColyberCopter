@@ -10,8 +10,8 @@
 #define MADGWICKIMU_H
 
 #include "MadgwickBase.h"
-#include "Interfaces/IRotationCalculation.h"
-#include "Interfaces/ISensorsData.h"
+#include "../../Interfaces/IRotationCalculation.h"
+#include "../../Interfaces/ISensorsData.h"
 
 
 class MadgwickIMU : protected MadgwickBase, public Interfaces::IRotationCalculation
@@ -25,14 +25,14 @@ private:
 
     vector3Float angles_deg; // x-pitch, y-roll, z-yaw
     vector3Float angles_rad; // x-pitch, y-roll, z-yaw
-    Interfaces::ISensorsData* sensorsData;
+    Interfaces::ISensorsData& sensorsData;
 
     float ax, ay, az;
     float gx, gy, gz;
 
 
 public:
-    MadgwickIMU(Interfaces::ISensorsData* sensorsData, float sampleFrequency, float beta = DefaultBeta);
+    MadgwickIMU(Interfaces::ISensorsData& sensorsData, float sampleFrequency, float beta = DefaultBeta);
     void updateRotationCalculation() override;
     vector3Float getAngles_deg() override;
     vector3Float getAngles_rad() override;

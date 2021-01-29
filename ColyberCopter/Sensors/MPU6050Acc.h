@@ -12,7 +12,7 @@
 #include <SimpleMPU6050.h>
 #include "Sensor.h"
 #include "SensorsMediator.h"
-#include "Common/Counter.h"
+#include "../Common/Counter.h"
 
 
 class MPU6050Acc: public Sensor
@@ -30,7 +30,7 @@ public:
     /**
      * @param sensorsMediator Reference to the sensorsMediator.
      * @param mpu6050 Reference to the mpu6050 instance.
-     * @param deltaTime Time between next executeCalibration() method calls [in seconds].
+     * @param deltaTime Time between next checkCalibration() method calls [in seconds].
      */
     MPU6050Acc(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050, float deltaTime)
         : Sensor(sensorsMediator), mpu(mpu6050)
@@ -42,17 +42,14 @@ public:
     MPU6050Acc& operator=(const MPU6050Acc&) = delete;
 
     // initialization is in adapter class
-    bool initialize() override { return true; }
-
-    // can't check here
-    bool isGood() const override { return true; }
+    bool initialize() override { return true; } // FIXME: try to return there real value
 
 
     /**
      * @brief Sensor have to be as horizontal as possible and don't move at all
      * during the calibration process.
      */
-    void executeCalibration()
+    void checkCalibration()
     {
         // called periodically by MPU6050Adapter
 
@@ -93,7 +90,7 @@ public:
 
     FloatAxisVector getOffset() const override
     {
-        SimpleMPU6050::vector3Int16& accOffset = mpu.getAccOffset();
+        const SimpleMPU6050::vector3Int16& accOffset = mpu.getAccOffset();
         return FloatAxisVector(3, accOffset.x, accOffset.y, accOffset.z);
     }
 

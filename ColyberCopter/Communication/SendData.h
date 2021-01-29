@@ -15,7 +15,7 @@
 /**
  * @brief Data for remote contrller.
  */
-struct DataForRmtCtrl
+struct DataForRemoteControl
 {
     int8Byte pitchAngle_deg;
     int8Byte rollAngle_deg;
@@ -26,6 +26,9 @@ struct DataForRmtCtrl
 
     uint8Byte droneConnectionStability;
 };
+
+
+// Other send data ...
 
 
 #endif

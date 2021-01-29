@@ -9,7 +9,7 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
-#include "Common/FloatAxesVector.h"
+#include "../Common/FloatAxesVector.h"
 #include "SensorsMediator.h"
 
 
@@ -41,7 +41,7 @@ public:
      * @return if initialize() method returned false or sensor
      * is not working.
      */
-    virtual bool isGood() const // TODO: try to figure out a better name
+    virtual bool isGood() const
     {
         return initResult;
     }

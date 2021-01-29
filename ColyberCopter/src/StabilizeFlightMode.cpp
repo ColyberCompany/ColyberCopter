@@ -5,8 +5,8 @@
  * 
  */
 
-#include "StabilizeFlightMode.h"
-#include "Common/Constants.h"
+#include "../FlightModes/StabilizeFlightMode.h"
+#include "../Common/Constants.h"
 
 using Interfaces::IVirtualPilot;
 using Interfaces::I3DRotation;
@@ -15,11 +15,11 @@ using Consts::RoundAngle;;
 using Consts::StraightAngle;
 
 
-StabilizeFlightMode::StabilizeFlightMode(I3DRotation& rotationData, float deltaTime)
-    : FlightMode(FlightModeTypes::STABILIZE, nullptr, deltaTime),
-    levelingXPID(deltaTime),
-    levelingYPID(deltaTime),
-    headingHoldPID(deltaTime),
+StabilizeFlightMode::StabilizeFlightMode(I3DRotation& rotationData)
+    : FlightMode(FlightModeTypes::STABILIZE, nullptr),
+    levelingXPID(DeltaTime_s),
+    levelingYPID(DeltaTime_s),
+    headingHoldPID(DeltaTime_s),
     rotationData(rotationData)
 {
     headingToHold = 0;
@@ -85,7 +85,7 @@ void StabilizeFlightMode::updateHeadingHolding(ControlSticks& inputOutputSticks)
 
 void StabilizeFlightMode::integrateHeadingToHold(int16_t yawStick)
 {
-    headingToHold += ((float)(yawStick / 2.f) * DeltaTime);
+    headingToHold += ((float)(yawStick / 2.f) * DeltaTime_s);
     headingToHold = correctHeading(headingToHold);
 }
 

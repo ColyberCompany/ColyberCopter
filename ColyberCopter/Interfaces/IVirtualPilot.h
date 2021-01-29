@@ -9,8 +9,8 @@
 #ifndef IVIRTUALPILOT_H
 #define IVIRTUALPILOT_H
 
-#include "FlightModes/FlightMode.h"
-#include "Enums/FlightModeTypes.h"
+#include "../FlightModes/FlightMode.h"
+#include "../Enums/FlightModeTypes.h"
 
 
 // TODO: remove this note if issue is done
@@ -43,10 +43,9 @@ namespace Interfaces
         virtual bool initializeFlightModes() = 0;
 
         /**
-         * @brief Used whenever want to change the current flight mode.
-         * If flight modes are added using addFlightMode() method
-         * change will be smooth (leave() and prepare() methods of
-         * proper flight modes will be executed)
+         * @brief Used whenever you want to change the current flight mode.
+         * Flight mode have to be added previously using addFlightMode() method.
+         * Call prepare() and leave() methods of proper flight modes.
          * @param flightModeToSet Pointer to the flight mode instance to set.
          * @return false if instance of choosen flight mode was not found
          * (wasn't added using addFlightMode() method).

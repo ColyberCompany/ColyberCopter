@@ -8,6 +8,10 @@
 #ifndef VECTOR3_H
 #define VECTOR3_H
 
+#ifdef ARDUINO
+    #include <Arduino.h>
+#endif
+
 
 struct vector3Float
 {

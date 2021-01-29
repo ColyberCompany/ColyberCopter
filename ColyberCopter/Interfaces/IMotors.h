@@ -9,8 +9,8 @@
 #ifndef IMOTORS_H
 #define IMOTORS_H
 
-#include "Common/ControlSticks.h"
-#include "Enums/StateType.h"
+#include "../Common/ControlSticks.h"
+#include "../Enums/StateType.h"
 
 
 namespace Interfaces

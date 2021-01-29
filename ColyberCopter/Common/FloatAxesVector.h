@@ -11,7 +11,7 @@
 #ifndef FLOATAXISVECTOR_H
 #define FLOATAXISVECTOR_H
 
-#include "Enums/AxisType.h"
+#include "../Enums/AxisType.h"
 
 
 class FloatAxisVector

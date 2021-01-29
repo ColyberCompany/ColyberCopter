@@ -15,6 +15,8 @@
 #include <Task.h>
 #include "MPU6050Acc.h"
 #include "MPU6050Gyro.h"
+#include <LowPassFilter.h>
+#include "../config.h"
 
 
 class MPU6050Adapter: public Task
@@ -26,11 +28,21 @@ private:
     MPU6050Acc accClass;
     MPU6050Gyro gyroClass;
 
+    // Low pass filters
+    struct ThreeAxisLPF
+    {
+        LowPassFilter<float> x;
+        LowPassFilter<float> y;
+        LowPassFilter<float> z;
+    };
+    ThreeAxisLPF accLPF;
+    ThreeAxisLPF gyroLPF;
+
 
 public:
     MPU6050Adapter(SensorsMediator& sensorsMediator)
-        : accClass(sensorsMediator, mpu, interval / 1000000.f),
-        gyroClass(sensorsMediator, mpu, interval / 1000000.f)
+        : accClass(sensorsMediator, mpu, getInterval_s()),
+        gyroClass(sensorsMediator, mpu, getInterval_s())
     {
     }
 
@@ -42,6 +54,12 @@ public:
             initResult = mpu.initialize();
             attempts++;
         } while (initResult == false && attempts < 3);
+
+        config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
+        config3AxisLPF(gyroLPF, Config::GyroLPFCutOffFreq);
+
+        accClass.initResult = true;
+        gyroClass.initResult = true;
 
         return initResult;
     }
@@ -56,15 +74,25 @@ public:
         mpu.readRawData();
 
         SimpleMPU6050::vector3Float& accNorm = mpu.getNormalizedAcceleration();
-        accClass.sensorsMediator.updateAcc(vector3Float(accNorm.x, accNorm.y, accNorm.z));
+        //accClass.sensorsMediator.updateAcc(vector3Float(accNorm.x, accNorm.y, accNorm.z));
+        accClass.sensorsMediator.updateAcc(vector3Float(
+            accLPF.x.update(accNorm.x),
+            accLPF.y.update(accNorm.y),
+            accLPF.z.update(accNorm.z)
+        ));
 
         SimpleMPU6050::vector3Float& gyroNorm = mpu.getNormalizedRotation();
-        gyroClass.sensorsMediator.updateGyro(vector3Float(gyroNorm.x, gyroNorm.y, gyroNorm.z));
+        //gyroClass.sensorsMediator.updateGyro(vector3Float(gyroNorm.x, gyroNorm.y, gyroNorm.z));
+        gyroClass.sensorsMediator.updateGyro(vector3Float(
+            gyroLPF.x.update(gyroNorm.x),
+            gyroLPF.y.update(gyroNorm.y),
+            gyroLPF.z.update(gyroNorm.z)
+        ));
 
         // You can update temperature there
 
-        accClass.executeCalibration();
-        gyroClass.executeCalibration();
+        accClass.checkCalibration();
+        gyroClass.checkCalibration();
     }
 
     Sensor* getAccSensor()
@@ -75,6 +103,26 @@ public:
     Sensor* getGyroSensor()
     {
         return &gyroClass;
+    }
+
+    SimpleMPU6050* getMPU6050Ptr()
+    {
+        return &mpu;
+    }
+
+
+private:
+    /**
+     * @brief Sets parameters for the three axis
+     * LowPass filter (the same for all three).
+     * @param lpf Three filters struct.
+     * @param cutoffFreq Cut-off frequency.
+     */
+    void config3AxisLPF(ThreeAxisLPF& lpf, float cutoffFreq)
+    {
+        lpf.x.reconfigureFilter(cutoffFreq, getInterval_s());
+        lpf.y.reconfigureFilter(cutoffFreq, getInterval_s());
+        lpf.z.reconfigureFilter(cutoffFreq, getInterval_s());
     }
 };
 

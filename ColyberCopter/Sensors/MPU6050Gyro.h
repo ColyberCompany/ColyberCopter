@@ -29,7 +29,7 @@ public:
     /**
      * @param sensorsMediator Reference to the sensorsMediator.
      * @param mpu6050 Reference to the mpu6050 instance.
-     * @param deltaTime Time between next executeCalibration() method calls [in seconds].
+     * @param deltaTime Time between next checkCalibration() method calls [in seconds].
      */
     MPU6050Gyro(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050, float deltaTime)
         : Sensor(sensorsMediator), mpu(mpu6050)
@@ -41,17 +41,14 @@ public:
     MPU6050Gyro& operator=(const MPU6050Gyro&) = delete;
 
     // initialization is in adapter class
-    bool initialize() override { return true; }
-
-    // can't check here
-    bool isGood() const override { return true; }
+    bool initialize() override { return true; } // FIXME: try to return there real value
 
 
     /**
      * @brief Sensor have to don't move at all (can be in any position
      * but as steady as possible).
      */
-    void executeCalibration()
+    void checkCalibration()
     {
         // called periodically by MPU6050Adapter
 
@@ -92,7 +89,7 @@ public:
 
     FloatAxisVector getOffset() const override
     {
-        SimpleMPU6050::vector3Int16& gyroOffset = mpu.getGyroOffset();
+        const SimpleMPU6050::vector3Int16& gyroOffset = mpu.getGyroOffset();
         return FloatAxisVector(3, gyroOffset.x, gyroOffset.y, gyroOffset.z);
     }
 

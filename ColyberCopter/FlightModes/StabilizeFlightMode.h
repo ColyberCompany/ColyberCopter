@@ -10,8 +10,8 @@
 #define STABILIZEFLIGHTMODE_H
 
 #include "FlightMode.h"
-#include "Interfaces/IVirtualPilot.h"
-#include "Interfaces/I3DRotation.h"
+#include "../Interfaces/IVirtualPilot.h"
+#include "../Interfaces/I3DRotation.h"
 #include <PID.h>
 
 
@@ -28,7 +28,7 @@ private:
 
 
 public:
-    StabilizeFlightMode(Interfaces::I3DRotation& rotationData, float deltaTime);
+    StabilizeFlightMode(Interfaces::I3DRotation& rotationData);
 
     StabilizeFlightMode(const StabilizeFlightMode&) = delete;
     StabilizeFlightMode& operator=(const StabilizeFlightMode&) = delete;

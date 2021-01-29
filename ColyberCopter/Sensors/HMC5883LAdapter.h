@@ -14,15 +14,15 @@
 #include <SimpleMPU6050.h>
 #include "SensorsMediator.h"
 #include <Task.h>
-#include "Common/Vector3.h"
-#include "Common/Counter.h"
+#include "../Common/Vector3.h"
+#include "../Common/Counter.h"
 
 
 class HMC5883LAdapter: public Sensor, public Task
 {
 private:
     SimpleHMC5883L compass;
-    SimpleMPU6050& mpu; // used to enable compass bypass on GY86.
+    SimpleMPU6050* mpu; // used to enable compass bypass on GY86.
 
     // calibration
     SimpleHMC5883L::vector3Int16 mins;
@@ -31,14 +31,15 @@ private:
 
 
 public:
-    HMC5883LAdapter(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050)
-        : Sensor(sensorsMediator), mpu(mpu6050)
+    HMC5883LAdapter(SensorsMediator& sensorsMediator, SimpleMPU6050* mpu6050)
+        : Sensor(sensorsMediator)
     {
+        mpu = mpu6050;
     }
 
     bool initialize() override
     {
-        mpu.enableCompassBypass();
+        mpu->enableCompassBypass();
 
         int attempts = 0;
         do {
@@ -76,12 +77,12 @@ public:
 
         calibCounter.reset(amtOfSamples);
 
-        return (interval / 1000000.f) * amtOfSamples + 1;
+        return getInterval_s() * amtOfSamples + 1;
     }
 
     FloatAxisVector getOffset() const override
     {
-        SimpleHMC5883L::vector3Int16& magOffset = compass.getCompassOffset();
+        const SimpleHMC5883L::vector3Int16& magOffset = compass.getCompassOffset();
         return FloatAxisVector(3, magOffset.x, magOffset.y, magOffset.z);
     }
 

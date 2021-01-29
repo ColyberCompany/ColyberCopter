@@ -27,6 +27,26 @@
             "defines": [
                 "USBCON"
             ]
+        },
+
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/jan/.arduino15/packages/STM32/tools/**",
+                "/home/jan/Downloads/arduino-1.8.10/libraries/**",
+                "/home/jan/.arduino15/packages/STM32/hardware/stm32/1.9.0/**",
+                "/home/jan/Arduino/libraries/**"
+            ],
+            "forcedInclude": [
+                "/home/jan/.arduino15/packages/STM32/hardware/stm32/1.9.0/cores/arduino/Arduino.h"
+            ],
+            "defines": [
+                "USBCON"
+            ],
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14"
         }
     ],
     "version": 4
