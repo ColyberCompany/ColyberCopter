@@ -22,10 +22,6 @@
 // 
 
 
-// TODO: In ctor of VirtualPilot if you add base flight mode, add it instantly using addFlightMode() method
-// TODO: Update setFlightMode() method comment. If addFlightMode() method was not used, flight mode won't be set at all.
-
-
 namespace Interfaces
 {
     class IVirtualPilot
@@ -47,10 +43,9 @@ namespace Interfaces
         virtual bool initializeFlightModes() = 0;
 
         /**
-         * @brief Used whenever want to change the current flight mode.
-         * If flight modes are added using addFlightMode() method
-         * change will be smooth (leave() and prepare() methods of
-         * proper flight modes will be executed)
+         * @brief Used whenever you want to change the current flight mode.
+         * Flight mode have to be added previously using addFlightMode() method.
+         * Call prepare() and leave() methods of proper flight modes.
          * @param flightModeToSet Pointer to the flight mode instance to set.
          * @return false if instance of choosen flight mode was not found
          * (wasn't added using addFlightMode() method).

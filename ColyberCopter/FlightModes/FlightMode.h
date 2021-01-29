@@ -16,8 +16,6 @@
     #include <Arduino.h>
 #endif
 
-// TODO: implement Unarmed flight mode
-
 
 class FlightMode
 {

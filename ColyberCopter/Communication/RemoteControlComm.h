@@ -1,10 +1,8 @@
 /**
  * @file RemoteControlComm.h
  * @author Jan Wielgus
- * @brief This (Singleton) class is used to communicate with remote controller.
- * Way of communication could be changed here. This class also contains 
- * variables that store received data or variables where sent data should be placed.
- * // TODO: maybe write something more after implementing this class.
+ * @brief This class contain all data packets and sending/receiving
+ * variables. PacketsIDs are set there.
  * @date 2020-11-09
  * 
  */
@@ -74,6 +72,7 @@ public:
         receiveStuff.steering.addByteType(receiveStuff.data.pitch);
         receiveStuff.steering.addByteType(receiveStuff.data.roll);
         receiveStuff.steering.setPacketReceivedEvent(steeringReceivedEvent);
+        packetComm.addReceiveDataPacketPointer(&receiveStuff.steering);
 
 
     // send:
@@ -87,7 +86,6 @@ public:
         sendStuff.measurementsAndState.addByteType(sendStuff.data.longitude);
         sendStuff.measurementsAndState.addByteType(sendStuff.data.latitude);
         sendStuff.measurementsAndState.addByteType(sendStuff.data.droneConnectionStability);
-        packetComm.addReceiveDataPacketPointer(&receiveStuff.steering);
     }
 
 

@@ -41,10 +41,7 @@ public:
     MPU6050Gyro& operator=(const MPU6050Gyro&) = delete;
 
     // initialization is in adapter class
-    bool initialize() override { return true; }
-
-    // can't check here
-    bool isGood() const override { return true; }
+    bool initialize() override { return true; } // FIXME: try to return there real value
 
 
     /**

@@ -41,7 +41,7 @@ public:
      * @return if initialize() method returned false or sensor
      * is not working.
      */
-    virtual bool isGood() const // TODO: try to figure out a better name
+    virtual bool isGood() const
     {
         return initResult;
     }

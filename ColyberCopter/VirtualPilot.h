@@ -18,7 +18,6 @@
 #include <GrowingArray.h>
 
 
-// TODO: implement VirtualPilot class
 class VirtualPilot : public Interfaces::IVirtualPilot, public Task
 {
 private:
