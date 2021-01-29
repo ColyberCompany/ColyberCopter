@@ -58,7 +58,7 @@ public:
         config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
         config3AxisLPF(gyroLPF, Config::GyroLPFCutOffFreq);
 
-        accClass.initResult = true; // HACK: if code don't compile here, add this class as friend. (is is compiling, delete this)
+        accClass.initResult = true;
         gyroClass.initResult = true;
 
         return initResult;
