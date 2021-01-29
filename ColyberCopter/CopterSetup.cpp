@@ -25,8 +25,8 @@
 #include "Sensors/MPU6050Adapter.h"
 #include "Sensors/HMC5883LAdapter.h"
 #include "Motors/QuadXMotors.h"
-#include "StreamComm.h"
-#include "PacketCommunicationWithQueue.h"
+#include <StreamComm.h>
+#include <PacketCommunicationWithQueue.h>
 #include "VirtualPilot.h"
 #include "Sensors/NoSensor.h"
 #include "Debug/SerialDebugMessenger.h"

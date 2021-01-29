@@ -16,7 +16,7 @@
 #include "MPU6050Acc.h"
 #include "MPU6050Gyro.h"
 #include <LowPassFilter.h>
-#include "config.h"
+#include "../config.h"
 
 
 class MPU6050Adapter: public Task
