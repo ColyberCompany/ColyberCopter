@@ -5,7 +5,7 @@
  * 
  */
 
-#include "PositionAndRotation/RotationCalculation/MadgwickBase.h"
+#include "../PositionAndRotation/RotationCalculation/MadgwickBase.h"
 
 
 const float MadgwickBase::DefaultBeta = 0.1;

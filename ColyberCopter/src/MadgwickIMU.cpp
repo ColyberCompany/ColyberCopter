@@ -5,7 +5,7 @@
  * 
  */
 
-#include "PositionAndRotation/RotationCalculation/MadgwickIMU.h"
+#include "../PositionAndRotation/RotationCalculation/MadgwickIMU.h"
 
 using Interfaces::ISensorsData;
 

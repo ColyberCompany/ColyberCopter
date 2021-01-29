@@ -5,7 +5,7 @@
  * 
  */
 
-#include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
+#include "../PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
 
 using Interfaces::ISensorsData;
 

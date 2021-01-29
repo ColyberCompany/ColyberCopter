@@ -5,7 +5,7 @@
  * 
  */
 
-#include "Failsafe/FailsafeScenarios/CommunicationLost.h"
+#include "../Failsafe/FailsafeScenarios/CommunicationLost.h"
 
 
 CommunicationLost::CommunicationLost(IConnectionStatus& _connectionStatus, IExecutable* failsafeAction)

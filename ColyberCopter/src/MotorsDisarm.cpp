@@ -5,7 +5,7 @@
  * 
  */
 
-#include "Failsafe/FailsafeActions/MotorsDisarm.h"
+#include "../Failsafe/FailsafeActions/MotorsDisarm.h"
 
 using Interfaces::IMotors;
 using Enums::StateType;

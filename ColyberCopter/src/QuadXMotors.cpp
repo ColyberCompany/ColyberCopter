@@ -5,8 +5,8 @@
  * 
  */
 
-#include "Motors/QuadXMotors.h"
-#include "config.h"
+#include "../Motors/QuadXMotors.h"
+#include "../config.h"
 
 using Interfaces::IMotors;
 using Enums::StateType;
