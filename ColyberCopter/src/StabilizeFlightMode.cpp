@@ -5,8 +5,8 @@
  * 
  */
 
-#include "FlightModes/StabilizeFlightMode.h"
-#include "Common/Constants.h"
+#include "../FlightModes/StabilizeFlightMode.h"
+#include "../Common/Constants.h"
 
 using Interfaces::IVirtualPilot;
 using Interfaces::I3DRotation;

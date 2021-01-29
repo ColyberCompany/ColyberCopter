@@ -5,7 +5,7 @@
  * 
  */
 
-#include "VirtualPilot.h"
+#include "../VirtualPilot.h"
 
 using Interfaces::IMotors;
 using Enums::StateType;
