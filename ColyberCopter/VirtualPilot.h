@@ -12,9 +12,9 @@
 
 #include "Interfaces/IVirtualPilot.h"
 #include "Interfaces/IMotors.h"
-#include <Task.h>
 #include "FlightModes/FlightMode.h"
 #include "Communication/ReceiveData.h"
+#include <Task.h>
 #include <GrowingArray.h>
 
 

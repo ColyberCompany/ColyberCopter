@@ -31,6 +31,7 @@
 #include "Sensors/NoSensor.h"
 #include "Debug/SerialDebugMessenger.h"
 #include "Common/Constants.h"
+#include "Tasks.h"
 
 using namespace Interfaces;
 
@@ -108,13 +109,13 @@ namespace Instance
 
 
 
-class DebugTask : public Task
+class : public Task
 {
     void execute() override
     {
         Serial1.println(Instance::rotation.getPitch_deg());
     }
-};
+} debugTask;
 
 
 
@@ -179,10 +180,9 @@ void initializeSensors()
     using Instance::debMes;
 
     Wire.begin();
-    Wire.setClock(400000L);
     delay(100);
 
-    if (!Assemble::mpu6050.initialize())
+    if (!Assemble::mpu6050.initialize()) // TODO: this is because initializations below don't initialize mpu6050, try to get rid of this
         debMes.showErrorAndAbort(100);
     
     if (!Assemble::hmc5883l.initialize())
@@ -191,12 +191,20 @@ void initializeSensors()
     // Check other key sensors ...
 
 
-    Instance::accel.initialize();
-    Instance::gyro.initialize();
-    Instance::magn.initialize();
-    Instance::baro.initialize();
-    Instance::gps.initialize();
-    Instance::btmRangefinder.initialize();
+    // Maybe check each sensor separately? <<<<<<<<<<<<<<< ??
+    bool initFlag = true;
+    initFlag &= Instance::accel.initialize();
+    initFlag &= Instance::gyro.initialize();
+    initFlag &= Instance::magn.initialize();
+    initFlag &= Instance::baro.initialize();
+    initFlag &= Instance::gps.initialize();
+    initFlag &= Instance::btmRangefinder.initialize();
+    if (!initFlag)
+        debMes.showErrorAndAbort(58462);
+    
+
+    // Set fast 400kHz I2C clock
+    Wire.setClock(400000L);
 }
 
 
@@ -214,18 +222,20 @@ void addTasksToTasker()
     using Instance::tasker;
 
     Instance::debMes.showMessage(1);
-    tasker.addTask(&Assemble::failsafe, 10); // 10Hz
+
+    tasker.addTask(&Assemble::failsafe, 10);
     tasker.addTask(&Assemble::ahrs, Config::MainFrequency_Hz);
     tasker.addTask(&Assemble::mpu6050, Config::MainFrequency_Hz);
-    Instance::debMes.showMessage(2);
-    tasker.addTask(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz);
 
-    tasker.addTask(&Assemble::hmc5883l, 75); // 75Hz
+    Instance::debMes.showMessage(2);
+
+    tasker.addTask(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz);
+    tasker.addTask(&Assemble::hmc5883l, 75);
 
     Instance::debMes.showMessage(3);
-    tasker.addTask(&Assemble::rmtPacketComm, 220);
 
-    tasker.addTask(new DebugTask(), 50);
+    tasker.addTask(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
+    tasker.addTask(&debugTask, 50);
 }
 
 
@@ -233,4 +243,5 @@ void setupRemoteControllerComm()
 {
     Serial2.begin(Config::RmtCtrlSerialBaudRate);
     Assemble::rmtCtrlCommStream.begin();
+    Instance::pilotPacketComm.adaptConnStabilityToFrequency(Config::RmtCtrlReceivingFrequency_Hz);
 }
