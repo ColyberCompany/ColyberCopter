@@ -24,7 +24,7 @@ struct DataFromRemoteControl
 
     uint16Byte pilotDistance_dm;
 	uint16Byte pilotDirection;
-    //uint8Byte flightMode; // read todo below
+    uint8Byte flightMode;
     //uint8Byte signalLostScenario; // read todo below
 
     uint8Byte tunedPID_ID;

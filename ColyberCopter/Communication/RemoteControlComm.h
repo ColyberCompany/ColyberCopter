@@ -25,30 +25,32 @@
 class RemoteControlComm
 {
 public:
-    struct SendStuff
+    struct Sending
     {
         DataForRemoteControl data;
 
         DataPacket measurementsAndState;
         // add other here ...
 
-        SendStuff()
+        Sending()
             : measurementsAndState(10)
         {}
-    } sendStuff;
+    } sending;
 
 
-    struct ReceiveStuff
+    struct Receiving
     {
         DataFromRemoteControl data;
 
         DataPacket steering;
+        DataPacket flightModeChange;
         // add other here ...
 
-        ReceiveStuff()
-            : steering(0)
+        Receiving()
+            : steering(0),
+              flightModeChange(10)
         {}
-    } receiveStuff;
+    } receiving;
     
 
 private:
@@ -67,25 +69,32 @@ public:
     // receive:
 
         // steering
-        receiveStuff.steering.addByteType(receiveStuff.data.throttle);
-        receiveStuff.steering.addByteType(receiveStuff.data.yaw);
-        receiveStuff.steering.addByteType(receiveStuff.data.pitch);
-        receiveStuff.steering.addByteType(receiveStuff.data.roll);
-        receiveStuff.steering.setPacketReceivedEvent(steeringReceivedEvent);
-        packetComm.addReceiveDataPacketPointer(&receiveStuff.steering);
+        receiving.steering.addByteType(receiving.data.throttle);
+        receiving.steering.addByteType(receiving.data.yaw);
+        receiving.steering.addByteType(receiving.data.pitch);
+        receiving.steering.addByteType(receiving.data.roll);
+        receiving.steering.setPacketReceivedEvent(steeringReceivedEvent);
+
+        // flight mode change
+        receiving.flightModeChange.addByteType(receiving.data.flightMode);
+
+        // Add all receiving packets to the PacketCommunication instance!! <<<<<<<<<<
+        packetComm.addReceiveDataPacketPointer(&receiving.steering);
+        packetComm.addReceiveDataPacketPointer(&receiving.flightModeChange);
 
 
     // send:
 
         // measurements and state
         // TODO: think about structure of this packet and if to split it
-        sendStuff.measurementsAndState.addByteType(sendStuff.data.pitchAngle_deg);
-        sendStuff.measurementsAndState.addByteType(sendStuff.data.rollAngle_deg);
-        sendStuff.measurementsAndState.addByteType(sendStuff.data.heading_deg);
-        sendStuff.measurementsAndState.addByteType(sendStuff.data.altitude_cm);
-        sendStuff.measurementsAndState.addByteType(sendStuff.data.longitude);
-        sendStuff.measurementsAndState.addByteType(sendStuff.data.latitude);
-        sendStuff.measurementsAndState.addByteType(sendStuff.data.droneConnectionStability);
+        sending.measurementsAndState.addByteType(sending.data.pitchAngle_deg);
+        sending.measurementsAndState.addByteType(sending.data.rollAngle_deg);
+        sending.measurementsAndState.addByteType(sending.data.heading_deg);
+        sending.measurementsAndState.addByteType(sending.data.altitude_cm);
+        sending.measurementsAndState.addByteType(sending.data.longitude);
+        sending.measurementsAndState.addByteType(sending.data.latitude);
+        sending.measurementsAndState.addByteType(sending.data.droneConnectionStability);
+
     }
 
 
