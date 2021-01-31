@@ -68,7 +68,7 @@ namespace Assemble
     // FlightModes
     UnarmedFlightMode unarmedFlightMode(quadXMotors);
     StabilizeFlightMode stabilizeFlightMode(ahrs);
-    VirtualPilot virtualPilotInstance(quadXMotors, unarmedFlightMode, remoteControlComm.receiveStuff.data);
+    VirtualPilot virtualPilotInstance(quadXMotors, unarmedFlightMode, remoteControlComm.receiving.data);
 
     // Sensors
     MPU6050Adapter mpu6050(sensorsMediator);
