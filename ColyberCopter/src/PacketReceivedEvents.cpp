@@ -6,11 +6,18 @@
  */
 
 #include "../Communication/PacketReceivedEvents.h"
+#include "../Instances.h"
 
 
 void SteeringReceivedEvent::execute()
 {
     // TODO: implement steering received event
+}
+
+
+void FlightModeChangeReceivedEvent::execute()
+{
+    // TODO: implement flight mode change event
 }
 
 

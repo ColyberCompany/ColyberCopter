@@ -55,7 +55,7 @@ public:
 
 private:
     SteeringReceivedEvent steeringReceivedEvent;
-
+    FlightModeChangeReceivedEvent flightModeChangeReceivedEvent;
 
 
 
@@ -77,6 +77,7 @@ public:
 
         // flight mode change
         receiving.flightModeChange.addByteType(receiving.data.flightMode);
+        receiving.flightModeChange.setPacketReceivedEvent(flightModeChangeReceivedEvent);
 
         // Add all receiving packets to the PacketCommunication instance!! <<<<<<<<<<
         packetComm.addReceiveDataPacketPointer(&receiving.steering);

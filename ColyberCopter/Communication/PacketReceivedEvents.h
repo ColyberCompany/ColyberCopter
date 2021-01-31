@@ -16,6 +16,10 @@ class SteeringReceivedEvent: public IExecutable
 { void execute() override; };
 
 
+class FlightModeChangeReceivedEvent: public IExecutable
+{ void execute() override; };
+
+
 // ... (definition of other received events)
 
 
