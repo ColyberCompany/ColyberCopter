@@ -11,13 +11,16 @@
 
 void SteeringReceivedEvent::execute()
 {
-    // TODO: implement steering received event
+    // VirtualPilot get data directly from received variables.
+
+    // Add other actions here if needed.
 }
 
 
 void FlightModeChangeReceivedEvent::execute()
 {
-    // TODO: implement flight mode change event
+    uint8_t newFlightModeType = Instance::pilotPacketsAndData.receiving.data.flightMode;
+    Instance::virtualPilot.setFlightMode((Enums::FlightModeTypes)newFlightModeType);
 }
 
 
