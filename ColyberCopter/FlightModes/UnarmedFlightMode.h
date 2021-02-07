@@ -41,6 +41,8 @@ public:
 protected:
     void flightModeLoop(ControlSticks& inputOutputSticks) override
     {
+        if (motors.getMotorsState() == Enums::StateType::Enabled)
+            motors.setMotorsState(Enums::StateType::Disabled);
     }
 };
 
