@@ -22,7 +22,7 @@ FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMod
 
 bool FlightMode::checkIfSuperiorOrEqualOf(const FlightMode* flightModeToCheck) const
 {
-    if (flightModeToCheck == this)
+    if (flightModeToCheck == this) // TODO: Why don't just compare the type!? (It will enable to don't add each flight mode to the vp at the startup)
         return true;
 
     else if (baseFlightMode != nullptr)
