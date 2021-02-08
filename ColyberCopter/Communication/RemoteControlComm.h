@@ -87,7 +87,6 @@ public:
     // send:
 
         // measurements and state
-        // TODO: think about structure of this packet and if to split it
         sending.measurementsAndState.addByteType(sending.data.pitchAngle_deg);
         sending.measurementsAndState.addByteType(sending.data.rollAngle_deg);
         sending.measurementsAndState.addByteType(sending.data.heading_deg);

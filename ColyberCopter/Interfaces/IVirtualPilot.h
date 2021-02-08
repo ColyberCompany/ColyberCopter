@@ -17,8 +17,8 @@
 // Flight modes setting could be done in a different way.
 // There is no need to store array of fligt modes and set it by the enum.
 // Just don't make a fm list and set the flight mode by passing a pointer to the
-// flight mode that need to be set. All fms can be created inside this class (or not, think about that
-// if flight modes are created outside, it will be easier to add new flight modes later).
+// flight mode that need to be set. All fms can be created outside.
+// It will be easier to add new flight modes later.
 // 
 
 
