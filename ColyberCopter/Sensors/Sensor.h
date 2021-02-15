@@ -67,6 +67,8 @@ public:
      * @param offset Calibration values (offset) to set.
      */
     virtual void setOffset(FloatAxisVector offset) = 0;
+
+    // TODO: create sensor name getter
 };
 
 
