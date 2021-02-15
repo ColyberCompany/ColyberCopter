@@ -10,13 +10,13 @@
 #define FAILSAFE_H
 
 #include <Task.h>
-#include <IList.h>
+#include <LinkedList.h>
 
 
 class Failsafe : public Task
 {
 private:
-    IList<IExecutable*>* failsafeScenariosList;
+    LinkedList<IExecutable*> failsafeScenariosList;
 
 public:
     Failsafe();

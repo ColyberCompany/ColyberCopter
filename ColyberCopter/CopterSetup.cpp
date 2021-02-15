@@ -127,7 +127,7 @@ void setupDrone()
 
     debMes.enableAndInitialize(); // Comment this line to disable all debug messages
     debMes.showMessage("Beginning drone setup");
-    delay(10);
+    delay(100);
 
 
     addTasksToTasker();
@@ -165,13 +165,9 @@ void setupDrone()
 
 void setupFailsafe()
 {
-    // BUG: here
-    // FIXME: It seems like first calling addFailsafeScenario method cause that it is called two times (when adding nullptr for example)
-
     Instance::failsafe.initializeFailsafe();
-    //failsafe.addFailsafeScenario(&failsafeScenarioCommLost);
-    //failsafe.addFailsafeScenario(&failsafeTiltExceeding);
-    //failsafe.addFailsafeScenario(nullptr); // Test how many times this methods is called inside
+    Instance::failsafe.addFailsafeScenario(&Assemble::failsafeScenarioCommLost);
+    Instance::failsafe.addFailsafeScenario(&Assemble::failsafeTiltExceeding);
 }
 
 
@@ -191,7 +187,7 @@ void initializeSensors()
     // Check other key sensors ...
 
 
-    // Maybe check each sensor separately? <<<<<<<<<<<<<<< ??
+    // TODO: Check each sensor separately <<<<<<<<<<<<<<<
     bool initFlag = true;
     initFlag &= Instance::accel.initialize();
     initFlag &= Instance::gyro.initialize();
@@ -200,7 +196,9 @@ void initializeSensors()
     initFlag &= Instance::gps.initialize();
     initFlag &= Instance::btmRangefinder.initialize();
     if (!initFlag)
-        debMes.showErrorAndAbort(58462);
+    {
+        //debMes.showErrorAndAbort(58462);
+    }
     
 
     // Set fast 400kHz I2C clock
