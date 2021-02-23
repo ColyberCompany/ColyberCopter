@@ -61,7 +61,9 @@ void StabilizeFlightMode::prepare()
 
 void StabilizeFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
 {
-    // TODO: update leveling and heading only if throttle is big enough !!
+    if (inputOutputSticks.getThrottle() < 100)
+        return;
+
     updateLeveling(inputOutputSticks);
     updateHeadingHolding(inputOutputSticks);
 }
