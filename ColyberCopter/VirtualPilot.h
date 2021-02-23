@@ -54,6 +54,11 @@ private:
      * @param newFlightMode flight mode that will be set from now.
      */
     void executePrepareAndLeaveMethods(const FlightMode* oldFlightMode, const FlightMode* newFlightMode);
+
+    /**
+     * @return true if drone is flying
+     */
+    bool isDroneFlying();
 };
 
 
