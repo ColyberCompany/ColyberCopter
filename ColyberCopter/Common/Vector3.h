@@ -13,15 +13,16 @@
 #endif
 
 
-struct vector3Float
+template <class T>
+struct vector3
 {
-    float x;
-    float y;
-    float z;
+    T x;
+    T y;
+    T z;
 
-    vector3Float() {}
-    
-    vector3Float(float x, float y, float z)
+    vector3() {}
+
+    vector3(T x, T y, T z)
     {
         this->x = x;
         this->y = y;
@@ -29,13 +30,8 @@ struct vector3Float
     }
 };
 
-
-struct vector3Int16
-{
-    int16_t x;
-    int16_t y;
-    int16_t z;
-};
+typedef vector3<float> vector3Float;
+typedef vector3<int16_t> vector3Int16;
 
 
 #endif
