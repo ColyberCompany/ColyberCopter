@@ -31,7 +31,10 @@ struct vector3
 };
 
 typedef vector3<float> vector3Float;
+typedef vector3<double> vector3Double;
+
 typedef vector3<int16_t> vector3Int16;
+typedef vector3<int32_t> vector3Int32;
 
 
 #endif
