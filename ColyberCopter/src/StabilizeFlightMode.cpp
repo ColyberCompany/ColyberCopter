@@ -9,18 +9,18 @@
 #include "../Common/Constants.h"
 
 using Interfaces::IVirtualPilot;
-using Interfaces::I3DRotation;
+using Interfaces::IAHRS;
 using Enums::FlightModeTypes;
 using Consts::RoundAngle;;
 using Consts::StraightAngle;
 
 
-StabilizeFlightMode::StabilizeFlightMode(I3DRotation& rotationData)
+StabilizeFlightMode::StabilizeFlightMode(IAHRS& _ahrs)
     : FlightMode(FlightModeTypes::STABILIZE, nullptr),
     levelingXPID(DeltaTime_s),
     levelingYPID(DeltaTime_s),
     headingHoldPID(DeltaTime_s),
-    rotationData(rotationData)
+    ahrs(_ahrs)
 {
     headingToHold = 0;
     headingError = 0;
@@ -72,8 +72,8 @@ void StabilizeFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
 
 void StabilizeFlightMode::updateLeveling(ControlSticks& inputOutputSticks)
 {
-    inputOutputSticks.setPitch(levelingXPID.update(inputOutputSticks.getPitch() / 10.f, rotationData.getPitch_deg()) + 0.5f);
-    inputOutputSticks.setRoll(levelingYPID.update(inputOutputSticks.getRoll() / 10.f, rotationData.getRoll_deg()) + 0.5f);
+    inputOutputSticks.setPitch(levelingXPID.update(inputOutputSticks.getPitch() / 10.f, ahrs.getPitch_deg()) + 0.5f);
+    inputOutputSticks.setRoll(levelingYPID.update(inputOutputSticks.getRoll() / 10.f, ahrs.getRoll_deg()) + 0.5f);
 }
 
 
@@ -94,7 +94,7 @@ void StabilizeFlightMode::integrateHeadingToHold(int16_t yawStick)
 
 void StabilizeFlightMode::calculateHeadingError()
 {
-    headingError = headingToHold - rotationData.getHeading_deg();
+    headingError = headingToHold - ahrs.getHeading_deg();
 
     if (headingError > StraightAngle)
         headingError -= RoundAngle;
@@ -105,7 +105,7 @@ void StabilizeFlightMode::calculateHeadingError()
 
 void StabilizeFlightMode::setHeadingToHoldToCurrentReading()
 {
-    headingToHold = rotationData.getHeading_deg();
+    headingToHold = ahrs.getHeading_deg();
 }
 
 

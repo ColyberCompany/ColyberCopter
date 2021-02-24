@@ -11,14 +11,14 @@
 
 #include "FlightMode.h"
 #include "../Interfaces/IVirtualPilot.h"
-#include "../Interfaces/I3DRotation.h"
+#include "../Interfaces/IAHRS.h"
 #include <PID.h>
 
 
 class StabilizeFlightMode : public FlightMode
 {
 private:
-    Interfaces::I3DRotation& rotationData;
+    Interfaces::IAHRS& ahrs;
     PID levelingXPID;
     PID levelingYPID;
     PID headingHoldPID;
@@ -28,7 +28,7 @@ private:
 
 
 public:
-    StabilizeFlightMode(Interfaces::I3DRotation& rotationData);
+    StabilizeFlightMode(Interfaces::IAHRS& ahrs);
 
     StabilizeFlightMode(const StabilizeFlightMode&) = delete;
     StabilizeFlightMode& operator=(const StabilizeFlightMode&) = delete;

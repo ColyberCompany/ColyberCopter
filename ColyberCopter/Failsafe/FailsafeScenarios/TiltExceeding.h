@@ -11,16 +11,16 @@
 #define TILTEXCEEDING_H
 
 #include "FailsafeScenario.h"
-#include "../../Interfaces/I3DRotation.h"
+#include "../../Interfaces/IAHRS.h"
 
 
 class TiltExceeding : public FailsafeScenario
 {
 private:
-    Interfaces::I3DRotation& rotation;
+    Interfaces::IAHRS& ahrs;
 
 public:
-    TiltExceeding(Interfaces::I3DRotation& rotation, IExecutable* failsafeAction);
+    TiltExceeding(Interfaces::IAHRS& ahrs, IExecutable* failsafeAction);
     void execute() override;
 
 private:

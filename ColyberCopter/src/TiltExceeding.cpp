@@ -12,12 +12,12 @@
     #include <Arduino.h>
 #endif
 
-using Interfaces::I3DRotation;
+using Interfaces::IAHRS;
 using Config::TiltExceedingAngleThreshold;
 
 
-TiltExceeding::TiltExceeding(I3DRotation& _rotation, IExecutable* failsafeAction)
-    : FailsafeScenario(failsafeAction), rotation(_rotation)
+TiltExceeding::TiltExceeding(IAHRS& _ahrs, IExecutable* failsafeAction)
+    : FailsafeScenario(failsafeAction), ahrs(_ahrs)
 {
 }
 
@@ -31,6 +31,6 @@ void TiltExceeding::execute()
 
 bool TiltExceeding::checkIfAnglesExceeds()
 {
-    return (abs(rotation.getPitch_deg()) > TiltExceedingAngleThreshold ||
-            abs(rotation.getRoll_deg()) > TiltExceedingAngleThreshold);
+    return (abs(ahrs.getPitch_deg()) > TiltExceedingAngleThreshold ||
+            abs(ahrs.getRoll_deg()) > TiltExceedingAngleThreshold);
 }

@@ -10,9 +10,9 @@
 #ifndef INSTANCES_H
 #define INSTANCES_H
 
+// TODO: set the order of include files
 #include <SimpleTasker.h>
-#include "Interfaces/I3DPosition.h"
-#include "Interfaces/I3DRotation.h"
+#include "Interfaces/IAHRS.h"
 #include "Interfaces/IMotors.h"
 #include "Interfaces/ISensorsData.h"
 #include "Interfaces/IVirtualPilot.h"
@@ -27,8 +27,7 @@ namespace Instance
     using namespace Interfaces;
 
     extern ITasker& tasker;
-    extern I3DPosition& position;
-    extern I3DRotation& rotation;
+    extern IAHRS& ahrs;
     //extern IMotors& motors; // for safety
     extern ISensorsData& sensorsData;
     extern IVirtualPilot& virtualPilot;
