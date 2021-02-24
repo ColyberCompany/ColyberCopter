@@ -72,8 +72,12 @@ void StabilizeFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
 
 void StabilizeFlightMode::updateLeveling(ControlSticks& inputOutputSticks)
 {
-    inputOutputSticks.setPitch(levelingXPID.update(inputOutputSticks.getPitch() / 10.f, ahrs.getPitch_deg()) + 0.5f);
-    inputOutputSticks.setRoll(levelingYPID.update(inputOutputSticks.getRoll() / 10.f, ahrs.getRoll_deg()) + 0.5f);
+    float finalPitch = inputOutputSticks.getPitch() / 10.f; // TODO: make that max tilt angle can be set
+    float finalRoll = inputOutputSticks.getRoll() / 10.f;
+    vector3Float angles = ahrs.getAngles_deg();
+
+    inputOutputSticks.setPitch(levelingXPID.update(finalPitch, angles.x) + 0.5f);
+    inputOutputSticks.setRoll(levelingYPID.update(finalRoll, angles.y) + 0.5f);
 }
 
 

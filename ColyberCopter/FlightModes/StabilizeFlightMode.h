@@ -1,7 +1,7 @@
 /**
  * @file StabilizeFlightMode.h
  * @author Jan Wielgus
- * @brief Stabilize flight mode concrete class
+ * @brief Stabilize flight mode concrete class.
  * @date 2020-08-02
  * 
  */
