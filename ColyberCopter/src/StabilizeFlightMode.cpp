@@ -8,7 +8,6 @@
 #include "../FlightModes/StabilizeFlightMode.h"
 #include "../Common/Constants.h"
 
-using Interfaces::IVirtualPilot;
 using Interfaces::IAHRS;
 using Enums::FlightModeTypes;
 using Consts::RoundAngle;;
@@ -17,13 +16,11 @@ using Consts::StraightAngle;
 
 StabilizeFlightMode::StabilizeFlightMode(IAHRS& _ahrs)
     : FlightMode(FlightModeTypes::STABILIZE, nullptr),
+    ahrs(_ahrs),
     levelingXPID(DeltaTime_s),
     levelingYPID(DeltaTime_s),
-    headingHoldPID(DeltaTime_s),
-    ahrs(_ahrs)
+    headingHoldPID(DeltaTime_s)
 {
-    headingToHold = 0;
-    headingError = 0;
 }
 
 
@@ -83,13 +80,13 @@ void StabilizeFlightMode::updateLeveling(ControlSticks& inputOutputSticks)
 
 void StabilizeFlightMode::updateHeadingHolding(ControlSticks& inputOutputSticks)
 {
-    integrateHeadingToHold(inputOutputSticks.getYaw());
+    updateHeadingToHold(inputOutputSticks.getYaw());
     calculateHeadingError();
     inputOutputSticks.setYaw(headingHoldPID.update(headingError));
 }
 
 
-void StabilizeFlightMode::integrateHeadingToHold(int16_t yawStick)
+void StabilizeFlightMode::updateHeadingToHold(int16_t yawStick)
 {
     headingToHold += ((float)(yawStick / 2.f) * DeltaTime_s);
     headingToHold = correctHeading(headingToHold);

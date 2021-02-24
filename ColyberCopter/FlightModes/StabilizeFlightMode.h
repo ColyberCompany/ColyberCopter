@@ -10,21 +10,19 @@
 #define STABILIZEFLIGHTMODE_H
 
 #include "FlightMode.h"
-#include "../Interfaces/IVirtualPilot.h"
 #include "../Interfaces/IAHRS.h"
 #include <PID.h>
 
 
 class StabilizeFlightMode : public FlightMode
 {
-private:
     Interfaces::IAHRS& ahrs;
     PID levelingXPID;
     PID levelingYPID;
     PID headingHoldPID;
 
-    float headingToHold;
-    float headingError;
+    float headingToHold = 0;
+    float headingError = 0;
 
 
 public:
@@ -40,14 +38,12 @@ public:
     void leave() override;
     void prepare() override;
     
-protected:
+private:
     void flightModeLoop(ControlSticks& inputOutputSticks) override;
 
-
-private:
     void updateLeveling(ControlSticks& inputOutputSticks);
     void updateHeadingHolding(ControlSticks& inputOutputSticks);
-    void integrateHeadingToHold(int16_t yawStick);
+    void updateHeadingToHold(int16_t yawStick);
     void calculateHeadingError();
     void setHeadingToHoldToCurrentReading();
 
