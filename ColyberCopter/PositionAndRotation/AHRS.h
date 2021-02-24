@@ -38,17 +38,17 @@ public:
 
     double getLongitude_deg() override
     {
-        return positionCalculation.getLongitude_deg();
+        return positionCalculation.getPosition().x;
     }
 
     double getLatitude_deg() override
     {
-        return positionCalculation.getLatitude_deg();
+        return positionCalculation.getPosition().y;
     }
 
     float getAltitude_m() override
     {
-        return positionCalculation.getAltitude_m();
+        return positionCalculation.getPosition().z;
     }
 
     float getPitch_deg() override
@@ -64,6 +64,16 @@ public:
     float getHeading_deg() override
     {
         return rotationCalculation.getAngles_deg().z;
+    }
+
+    vector3Float getAngles_deg() override
+    {
+        return rotationCalculation.getAngles_deg();
+    }
+
+    vector3Double getPosition() override
+    {
+        return positionCalculation.getPosition();
     }
 };
 

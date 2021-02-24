@@ -9,6 +9,8 @@
 #ifndef IPOSITIONCALCULATION_H
 #define IPOSITIONCALCULATION_H
 
+#include "../Common/Vector3.h"
+
 
 namespace Interfaces
 {
@@ -18,9 +20,7 @@ namespace Interfaces
         virtual ~IPositionCalculation() {}
 
         virtual void updatePositionCalculation() = 0;
-        virtual double getLongitude_deg() = 0;
-        virtual double getLatitude_deg() = 0;
-        virtual float getAltitude_m() = 0;
+        virtual vector3Double getPosition() = 0;
     };
 }
 

@@ -18,19 +18,9 @@ public:
     {
     }
 
-    double getLongitude_deg() override
+    vector3Double getPosition() override
     {
-        return 0;
-    }
-
-    double getLatitude_deg() override
-    {
-        return 0;
-    }
-    
-    float getAltitude_m() override
-    {
-        return 0;
+        return vector3Double(0, 0, 0);
     }
 };
 

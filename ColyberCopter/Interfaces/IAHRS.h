@@ -9,6 +9,8 @@
 #ifndef IAHRS_H
 #define IAHRS_H
 
+#include "../Common/Vector3.h"
+
 
 namespace Interfaces
 {
@@ -26,8 +28,8 @@ namespace Interfaces
         virtual double getLatitude_deg() = 0;
         virtual float getAltitude_m() = 0;
 
-
-        // XXX: Return whole vector3 with rotation or position?
+        virtual vector3Float getAngles_deg() = 0; // TODO: use this method where all 3 axes are needed
+        virtual vector3Double getPosition() = 0; // TODO: use this method where all 3 axes are needed
     };
 }
 
