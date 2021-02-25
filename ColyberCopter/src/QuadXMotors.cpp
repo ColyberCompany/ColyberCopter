@@ -24,8 +24,8 @@ bool QuadXMotors::initializeMotors()
     // https://github.com/stm32duino/wiki/wiki/HardwareTimer-library
 
 
-    motorsTimer.setMode(1, TIMER_OUTPUT_COMPARE_PWM1, TLMotorPin);
-    motorsTimer.setMode(2, TIMER_OUTPUT_COMPARE_PWM1, TRMotorPin);
+    motorsTimer.setMode(1, TIMER_OUTPUT_COMPARE_PWM1, FLMotorPin);
+    motorsTimer.setMode(2, TIMER_OUTPUT_COMPARE_PWM1, FRMotorPin);
     motorsTimer.setMode(3, TIMER_OUTPUT_COMPARE_PWM1, BRMotorPin);
     motorsTimer.setMode(4, TIMER_OUTPUT_COMPARE_PWM1, BLMotorPin);
 
