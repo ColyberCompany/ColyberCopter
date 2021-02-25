@@ -64,14 +64,6 @@ void VirtualPilot::runVirtualPilot()
 {
     ControlSticks virtualSticks(steeringData.throttle, steeringData.yaw,
                                 steeringData.pitch, steeringData.roll);
-    
-    if (!isDroneFlying())
-    {
-        // Ignore yaw, pitch and roll sticks
-        virtualSticks.setYaw(0);
-        virtualSticks.setPitch(0);
-        virtualSticks.setRoll(0);
-    }
 
     currentFlightMode->executeFlightModeLoop(virtualSticks);
     motors.updatePower(virtualSticks);
@@ -120,15 +112,5 @@ void VirtualPilot::executePrepareAndLeaveMethods(const FlightMode* oldFlightMode
         else if (wasUsed && !willBeUsed)
             checked->leave();
     }
-}
-
-
-bool VirtualPilot::isDroneFlying()
-{
-    // TODO: add altitude and throttle based checking
-    if (steeringData.throttle > 100)
-        return true;
-
-    return false;
 }
 
