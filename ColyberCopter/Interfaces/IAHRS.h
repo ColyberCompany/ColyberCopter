@@ -19,6 +19,8 @@ namespace Interfaces
     public:
         virtual ~IAHRS() {}
 
+        // TODO: add brief to all methods
+
         virtual float getPitch_deg() = 0;
         virtual float getRoll_deg() = 0;
         virtual float getHeading_deg() = 0;
@@ -26,7 +28,7 @@ namespace Interfaces
 
         virtual double getLongitude_deg() = 0;
         virtual double getLatitude_deg() = 0;
-        virtual float getAltitude_m() = 0;
+        virtual float getAltitude_m() = 0; // TODO: check if this method returns altitude over the sea level (should)
 
         virtual vector3Float getAngles_deg() = 0; // TODO: use this method where all 3 axes are needed
         virtual vector3Double getPosition() = 0; // TODO: use this method where all 3 axes are needed

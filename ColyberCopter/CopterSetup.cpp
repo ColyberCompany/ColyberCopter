@@ -6,6 +6,7 @@
  * 
  */
 
+// TODO: set the order of include files
 #include "CopterSetup.h"
 #include "Instances.h"
 #include "config.h"
@@ -86,8 +87,7 @@ namespace Assemble
 namespace Instance
 {
     ITasker& tasker = Assemble::simpleTasker;
-    I3DPosition& position = Assemble::ahrs;
-    I3DRotation& rotation = Assemble::ahrs;
+    IAHRS& ahrs = Assemble::ahrs;
     IMotors& motors = Assemble::quadXMotors;
     ISensorsData& sensorsData = Assemble::sensorsMediator;
     IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
@@ -113,7 +113,7 @@ class : public Task
 {
     void execute() override
     {
-        Serial1.println(Instance::rotation.getPitch_deg());
+        //Serial1.println(Instance::rotation.getPitch_deg());
     }
 } debugTask;
 
@@ -166,7 +166,7 @@ void setupDrone()
 void setupFailsafe()
 {
     Instance::failsafe.initializeFailsafe();
-    Instance::failsafe.addFailsafeScenario(&Assemble::failsafeScenarioCommLost);
+    //Instance::failsafe.addFailsafeScenario(&Assemble::failsafeScenarioCommLost);
     Instance::failsafe.addFailsafeScenario(&Assemble::failsafeTiltExceeding);
 }
 
@@ -187,7 +187,6 @@ void initializeSensors()
     // Check other key sensors ...
 
 
-    // TODO: Check each sensor separately <<<<<<<<<<<<<<<
     bool initFlag = true;
     initFlag &= Instance::accel.initialize();
     initFlag &= Instance::gyro.initialize();
@@ -195,7 +194,7 @@ void initializeSensors()
     initFlag &= Instance::baro.initialize();
     initFlag &= Instance::gps.initialize();
     initFlag &= Instance::btmRangefinder.initialize();
-    if (!initFlag)
+    if (!initFlag) // TODO: Check each sensor separately <<<<<<<<<<<<<<<
     {
         //debMes.showErrorAndAbort(58462);
     }
@@ -210,6 +209,11 @@ void setupFlightModes()
 {
     Instance::virtualPilot.addFlightMode(&Assemble::unarmedFlightMode);
     Instance::virtualPilot.addFlightMode(&Assemble::stabilizeFlightMode); // TODO: think whether to pass flight modes by reference
+
+    // TODO: make config values for default pid gains
+    Assemble::stabilizeFlightMode.setLevelingXPIDGains(1.69, 0.7, 0.5, 104);
+    Assemble::stabilizeFlightMode.setLevelingYPIDGains(1.69, 0.7, 0.5, 104);
+    Assemble::stabilizeFlightMode.setHeadingHoldPIDGains(2.24, 1.11, 0.97, 85);
 
     Instance::virtualPilot.initializeFlightModes();
 }
