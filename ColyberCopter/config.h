@@ -34,6 +34,8 @@ namespace Config
 
     const float AccLPFCutOffFreq = 5.f;
 	const float GyroLPFCutOffFreq = 10.f;
+
+    const uint16_t ThrottleStickCenter = 500;
 }
 
 

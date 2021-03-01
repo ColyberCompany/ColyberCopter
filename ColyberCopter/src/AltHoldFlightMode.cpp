@@ -6,6 +6,7 @@
  */
 
 #include "../FlightModes/AltHoldFlightMode.h"
+#include "../config.h"
 
 
 using Interfaces::IAHRS;
@@ -40,23 +41,44 @@ void AltHoldFlightMode::prepare()
 
 void AltHoldFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
 {
-    //if (inputOutputSticks.getThrottle() < 100)
+    if (inputOutputSticks.getThrottle() < 80) // TODO: think if this could be checked in a better way then just throttle threshold
+        return;
+    
+    updateAltitudeHolding(inputOutputSticks);
 }
 
 
-void AltHoldFlightMode::setAltitudeToHoldToCurrentReading()
+void AltHoldFlightMode::updateAltitudeHolding(ControlSticks& inputOutputSticks)
 {
-    altitudeToHold = ahrs.getAltitude_m();
+    updateAltitudeToHold(inputOutputSticks.getThrottle());
+    calculateAltitudeError();
+
+    int16_t outputThrottle = altitudeHoldPID.update(altitudeError_cm);
+    outputThrottle = constrain(outputThrottle, MinOutputThrottle, MaxOutputThrottle);
+    inputOutputSticks.setThrottle(outputThrottle);
 }
 
 
 void AltHoldFlightMode::updateAltitudeToHold(uint16_t throttle)
 {
-
+    altitudeToHold_cm += climbRateFromThr_cmPerSec(throttle) * DeltaTime_s;
 }
 
 
 void AltHoldFlightMode::calculateAltitudeError()
 {
-    altitudeError = altitudeToHold - ahrs.getAltitude_m();
+    altitudeError_cm = altitudeToHold_cm - (ahrs.getAltitude_m() * 100.f);
+}
+
+
+void AltHoldFlightMode::setAltitudeToHoldToCurrentReading()
+{
+    altitudeToHold_cm = ahrs.getAltitude_m() * 100.f;
+}
+
+
+float AltHoldFlightMode::climbRateFromThr_cmPerSec(uint16_t throttle)
+{
+    int16_t centeredThrottle = throttle - Config::ThrottleStickCenter;
+    return centeredThrottle * ThrottleMultiplier;
 }

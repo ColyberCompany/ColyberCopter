@@ -20,8 +20,14 @@ class AltHoldFlightMode : public FlightMode
     Interfaces::IAHRS& ahrs;
     PID altitudeHoldPID;
 
-    float altitudeToHold = 0;
-    float altitudeError = 0;
+    float altitudeToHold_cm = 0;
+    float altitudeError_cm = 0;
+
+    static const uint16_t MinOutputThrottle = 300;
+    static const uint16_t MaxOutputThrottle = 700;
+    static const uint16_t MaxClimbRate_cmPerSec = 100; // also for declining
+    
+    static const float ThrottleMultiplier = MaxClimbRate_cmPerSec / 500.f;
 
 public:
     AltHoldFlightMode(StabilizeFlightMode& stabilizeFlightMode, Interfaces::IAHRS& ahrs);
@@ -37,9 +43,12 @@ public:
 private:
     void flightModeLoop(ControlSticks& inputOutputSticks) override;
 
-    void setAltitudeToHoldToCurrentReading();
+    void updateAltitudeHolding(ControlSticks& inputOutputSticks);
     void updateAltitudeToHold(uint16_t throttle);
     void calculateAltitudeError();
+    void setAltitudeToHoldToCurrentReading();
+
+    static float climbRateFromThr_cmPerSec(uint16_t throttle);
 };
 
 
