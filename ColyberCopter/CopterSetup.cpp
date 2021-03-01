@@ -25,11 +25,12 @@
 #include "Sensors/SensorsMediator.h"
 #include "Sensors/MPU6050Adapter.h"
 #include "Sensors/HMC5883LAdapter.h"
+#include "Sensors/MS5611Adapter.h"
+#include "Sensors/NoSensor.h"
 #include "Motors/QuadXMotors.h"
 #include <StreamComm.h>
 #include <PacketCommunicationWithQueue.h>
 #include "VirtualPilot.h"
-#include "Sensors/NoSensor.h"
 #include "Debug/SerialDebugMessenger.h"
 #include "Common/Constants.h"
 #include "Tasks.h"
@@ -74,6 +75,7 @@ namespace Assemble
     // Sensors
     MPU6050Adapter mpu6050(sensorsMediator);
     HMC5883LAdapter hmc5883l(sensorsMediator, mpu6050.getMPU6050Ptr());
+    MS5611Adapter ms5611(sensorsMediator, simpleTasker);
     NoSensor noSensor(sensorsMediator);
 
     // Failsafe
@@ -99,7 +101,7 @@ namespace Instance
     Sensor& accel = *Assemble::mpu6050.getAccSensor();
     Sensor& gyro = *Assemble::mpu6050.getGyroSensor();
     Sensor& magn = Assemble::hmc5883l;
-    Sensor& baro = noSensor;
+    Sensor& baro = Assemble::ms5611;
     Sensor& gps = noSensor;
     Sensor& btmRangefinder = noSensor;
 
@@ -194,7 +196,8 @@ void initializeSensors()
     initFlag &= Instance::baro.initialize();
     initFlag &= Instance::gps.initialize();
     initFlag &= Instance::btmRangefinder.initialize();
-    if (!initFlag) // TODO: Check each sensor separately <<<<<<<<<<<<<<<
+    // other sensors
+    if (!initFlag) // TODO: Check each sensor separately, print their names <<<<<<<<<<<<<<<
     {
         //debMes.showErrorAndAbort(58462);
     }

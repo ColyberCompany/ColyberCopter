@@ -83,11 +83,17 @@ SimpleMS5611Continuous::SimpleMS5611Continuous(ITasker& _tasker)
 
 bool SimpleMS5611Continuous::initialize()
 {
+    static bool initialized = false;
+
     if (!SimpleMS5611::initialize())
         return false;
 
+    if (initialized)
+        return true;
+
     float readingTaskFrequency = 1000000.f / RequestWaitTime_us;
     tasker.addTask(&readingTask, readingTaskFrequency);
+    initialized = true;
     
     return true;
 }
