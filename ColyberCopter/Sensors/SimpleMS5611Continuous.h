@@ -33,6 +33,12 @@ class SimpleMS5611Continuous : public SimpleMS5611
          * @return  
          */
         void execute() override;
+
+    
+    private:
+        bool shouldGetPressureAndRequestPressure();
+        bool shouldGetPressureAndRequestTemperature();
+        bool shouldGetTemperatureAndRequestPressure();
     };
 
 
@@ -58,10 +64,29 @@ public:
      */
     bool initialize() override;
 
+    /**
+     * @brief Getter of the newest continuously read pressure value.
+     * @return Newest pressure value.
+     */
+    float getPressure() override { return SimpleMS5611::getPressure(); }
+
+    /**
+     * @brief Getter of the newest continuously read
+     * smoothed pressure value with a little bit more lag.
+     * @return Newest smoothed pressure value.
+     */
+    float getSmoothPressure();
+
+    /**
+     * @brief Set event called when new reading will arrive.
+     * @param newReadingEvent Pointer to the executable.
+     */
     void setNewReadingEvent(IExecutable* newReadingEvent);
 
 
 private:
+    void averagePressure();
+    void updateSmoothPressure();
     void executeNewReadingEvent();
 
 

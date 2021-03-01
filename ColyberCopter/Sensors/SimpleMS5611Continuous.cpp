@@ -18,51 +18,56 @@ SimpleMS5611Continuous::MS5611ReadingTask::MS5611ReadingTask(SimpleMS5611Continu
 
 void SimpleMS5611Continuous::MS5611ReadingTask::execute()
 {
-    // TODO: replace if brackets contents with bool methods
-    if (actionCounter >= 1 &&
-        actionCounter < SimpleMS5611Continuous::PressurePerTemperatureRequests)
+    if (shouldGetPressureAndRequestPressure())
     {
-        // read pressure and request next pressure
-
         ms5611.getRawPressureFromDevice();
         ms5611.requestPressureFromDevice();
     }
-    else if (actionCounter == SimpleMS5611Continuous::PressurePerTemperatureRequests)
+    else if (shouldGetPressureAndRequestTemperature())
     {
-        // read pressure and request next temperature
-
         ms5611.getRawPressureFromDevice();
         ms5611.requestTemperatureFromDevice();
     }
-    else if (actionCounter == SimpleMS5611Continuous::PressurePerTemperatureRequests + 1) // should be only when actionCounter == PressurePerTemperatureRequests + 1
+    else if (shouldGetTemperatureAndRequestPressure())
     {
-        // read temperature and request next pressure, reset actionCounter
-
         ms5611.getRawTemperatureFromDevice();
         ms5611.requestPressureFromDevice();
+        
         actionCounter = 0; // 0 because incrementation is at the end
     }
-    else if (actionCounter == 0) // first pressure request
+    else // first pressure request, if actionCounter is 0 at the beginning
     {
+        // Should run this only once
         ms5611.requestPressureFromDevice();
     }
 
+
     ms5611.calculatePressureAndTemperatureFromRawData();
-
-    // Pressure is the average value of PressurePerTemperatureRequests + 1 readings
-    ms5611.pressureFilter.update(ms5611.intPressure);
-    ms5611.pressure = ms5611.pressureFilter.getFilteredValueFloat();
-
-    // Smooth the value
-	if (abs(ms5611.smoothPressure - ms5611.pressure) > 1)
-		ms5611.smoothPressure = ms5611.smoothPressure*0.72f + ms5611.pressure*0.28f;
-	else
-		ms5611.smoothPressure = ms5611.smoothPressure*0.96f + ms5611.pressure*0.04f;
-
+    ms5611.averagePressure();
+    ms5611.updateSmoothPressure();
     ms5611.executeNewReadingEvent();
 
     actionCounter++;
 }
+
+
+bool SimpleMS5611Continuous::MS5611ReadingTask::shouldGetPressureAndRequestPressure()
+{
+    return actionCounter >= 1 &&
+        actionCounter < SimpleMS5611Continuous::PressurePerTemperatureRequests;
+}
+
+bool SimpleMS5611Continuous::MS5611ReadingTask::shouldGetPressureAndRequestTemperature()
+{
+    return actionCounter == SimpleMS5611Continuous::PressurePerTemperatureRequests;
+}
+
+bool SimpleMS5611Continuous::MS5611ReadingTask::shouldGetTemperatureAndRequestPressure()
+{
+    return actionCounter == (SimpleMS5611Continuous::PressurePerTemperatureRequests + 1);
+}
+
+
 
 
 
@@ -94,8 +99,25 @@ void SimpleMS5611Continuous::setNewReadingEvent(IExecutable* newReadingEvent)
 }
 
 
+void SimpleMS5611Continuous::averagePressure()
+{
+    // Pressure is the average value of PressurePerTemperatureRequests + 1 readings
+    pressureFilter.update(intPressure);
+    pressure = pressureFilter.getFilteredValueFloat();
+}
+
+
+void SimpleMS5611Continuous::updateSmoothPressure()
+{
+    if (abs(smoothPressure - pressure) > 1)
+		smoothPressure = smoothPressure*0.72f + pressure*0.28f;
+	else
+		smoothPressure = smoothPressure*0.96f + pressure*0.04f;
+}
+
+
 void SimpleMS5611Continuous::executeNewReadingEvent()
-    {
-        if (newReadingEvent != nullptr)
-            newReadingEvent->execute();
-    }
+{
+    if (newReadingEvent != nullptr)
+        newReadingEvent->execute();
+}
