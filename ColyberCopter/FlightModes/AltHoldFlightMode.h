@@ -48,7 +48,7 @@ private:
     void calculateAltitudeError();
     void setAltitudeToHoldToCurrentReading();
 
-    static float climbRateFromThr_cmPerSec(uint16_t throttle);
+    static float throttleToClimbRate_cmPerSec(uint16_t throttle);
 };
 
 

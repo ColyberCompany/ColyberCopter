@@ -61,7 +61,7 @@ void AltHoldFlightMode::updateAltitudeHolding(ControlSticks& inputOutputSticks)
 
 void AltHoldFlightMode::updateAltitudeToHold(uint16_t throttle)
 {
-    altitudeToHold_cm += climbRateFromThr_cmPerSec(throttle) * DeltaTime_s;
+    altitudeToHold_cm += throttleToClimbRate_cmPerSec(throttle) * DeltaTime_s;
 }
 
 
@@ -77,7 +77,7 @@ void AltHoldFlightMode::setAltitudeToHoldToCurrentReading()
 }
 
 
-float AltHoldFlightMode::climbRateFromThr_cmPerSec(uint16_t throttle)
+float AltHoldFlightMode::throttleToClimbRate_cmPerSec(uint16_t throttle)
 {
     int16_t centeredThrottle = throttle - Config::ThrottleStickCenter;
     return centeredThrottle * ThrottleMultiplier;
