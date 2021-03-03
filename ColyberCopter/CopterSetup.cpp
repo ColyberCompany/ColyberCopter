@@ -16,8 +16,9 @@
 #include "Failsafe/FailsafeActions/MotorsDisarm.h"
 #include "Failsafe/FailsafeScenarios/CommunicationLost.h"
 #include "Failsafe/FailsafeScenarios/TiltExceeding.h"
-#include "FlightModes/StabilizeFlightMode.h"
 #include "FlightModes/UnarmedFlightMode.h"
+#include "FlightModes/StabilizeFlightMode.h"
+#include "FlightModes/AltHoldFlightMode.h"
 #include "PositionAndRotation/AHRS.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickIMU.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
@@ -70,6 +71,7 @@ namespace Assemble
     // FlightModes
     UnarmedFlightMode unarmedFlightMode(quadXMotors);
     StabilizeFlightMode stabilizeFlightMode(ahrs);
+    AltHoldFlightMode altHoldFlightMode(stabilizeFlightMode, ahrs);
     VirtualPilot virtualPilotInstance(quadXMotors, unarmedFlightMode, remoteControlComm.receiving.data);
 
     // Sensors
@@ -197,7 +199,7 @@ void initializeSensors()
     initFlag &= Instance::gps.initialize();
     initFlag &= Instance::btmRangefinder.initialize();
     // other sensors
-    if (!initFlag) // TODO: Check each sensor separately, print their names <<<<<<<<<<<<<<<
+    if (!initFlag) // TODO: Check each sensor separately, print names of uninitialized sensors, could also send them to remote controller <<<<<<<<<<<<<<<
     {
         //debMes.showErrorAndAbort(58462);
     }
@@ -217,6 +219,7 @@ void setupFlightModes()
     Assemble::stabilizeFlightMode.setLevelingXPIDGains(1.69, 0.7, 0.5, 104);
     Assemble::stabilizeFlightMode.setLevelingYPIDGains(1.69, 0.7, 0.5, 104);
     Assemble::stabilizeFlightMode.setHeadingHoldPIDGains(2.24, 1.11, 0.97, 85);
+    //Assemble::altHoldFlightMode.setAltHoldPIDGains(0.f, 0.f, 0.f, 0); // TODO: set default alt hold pid gains
 
     Instance::virtualPilot.initializeFlightModes();
 }
