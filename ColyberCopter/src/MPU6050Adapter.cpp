@@ -6,12 +6,12 @@
  */
 
 #include "../Sensors/MPU6050Adapter.h"
+#include "../config.h"
 
 
-MPU6050Acc::MPU6050Acc(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050, float deltaTime)
+MPU6050Acc::MPU6050Acc(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050)
     : Sensor(sensorsMediator), mpu(mpu6050)
 {
-    this->deltaTime = deltaTime;
 }
 
 
@@ -29,18 +29,18 @@ void MPU6050Acc::checkCalibration()
     {
         SimpleMPU6050::vector3Int16& accRaw = mpu.getRawAcceleration();
 
-        sumX += accRaw.x;
-        sumY += accRaw.y;
-        sumZ += accRaw.z - mpu.getRawAccValueFor1G();
+        calibSumVector.x += accRaw.x;
+        calibSumVector.y += accRaw.y;
+        calibSumVector.z += accRaw.z - mpu.getRawAccValueFor1G();
 
         // if calibration ends now
         if (calibCounter.getCurrentCounter() == 1)
         {
             uint16_t averagedSamples = calibCounter.getInitialCounter();
             mpu.setAccOffset(
-                (double)sumX / averagedSamples + 0.5f,
-                (double)sumY / averagedSamples + 0.5f,
-                (double)sumZ / averagedSamples + 0.5f);
+                (double)calibSumVector.x / averagedSamples + 0.5f,
+                (double)calibSumVector.y / averagedSamples + 0.5f,
+                (double)calibSumVector.z / averagedSamples + 0.5f);
         }
 
         calibCounter.decrement();
@@ -52,13 +52,13 @@ uint16_t MPU6050Acc::startBackgroundCalibration(uint16_t amtOfSamples)
 {
     mpu.setAccOffset(0, 0, 0);
 
-    sumX = 0;
-    sumY = 0;
-    sumZ = 0;
+    calibSumVector.x = 0;
+    calibSumVector.y = 0;
+    calibSumVector.z = 0;
 
     calibCounter.reset(amtOfSamples);
 
-    return deltaTime * amtOfSamples + 1;
+    return Config::MainInterval_s * amtOfSamples + 1;
 }
 
 
@@ -84,10 +84,9 @@ void MPU6050Acc::setOffset(FloatAxisVector offset)
 
 
 
-MPU6050Gyro::MPU6050Gyro(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050, float deltaTime)
+MPU6050Gyro::MPU6050Gyro(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050)
     : Sensor(sensorsMediator), mpu(mpu6050)
 {
-    this->deltaTime = deltaTime;
 }
 
 
@@ -105,18 +104,18 @@ void MPU6050Gyro::checkCalibration()
     {
         SimpleMPU6050::vector3Int16& gyroRaw = mpu.getRawRotation();
 
-        sumX += gyroRaw.x;
-        sumY += gyroRaw.y;
-        sumZ += gyroRaw.z;
+        calibSumVector.x += gyroRaw.x;
+        calibSumVector.y += gyroRaw.y;
+        calibSumVector.z += gyroRaw.z;
 
         // if calibration ends now
         if (calibCounter.getCurrentCounter() == 1)
         {
             uint16_t averagedSamples = calibCounter.getInitialCounter();
             mpu.setGyroOffset(
-                (double)sumX / averagedSamples + 0.5f,
-                (double)sumY / averagedSamples + 0.5f,
-                (double)sumZ / averagedSamples + 0.5f);
+                (double)calibSumVector.x / averagedSamples + 0.5f,
+                (double)calibSumVector.y / averagedSamples + 0.5f,
+                (double)calibSumVector.z / averagedSamples + 0.5f);
         }
 
         calibCounter.decrement();
@@ -128,13 +127,13 @@ uint16_t MPU6050Gyro::startBackgroundCalibration(uint16_t amtOfSamples)
 {
     mpu.setGyroOffset(0, 0, 0);
 
-    sumX = 0;
-    sumY = 0;
-    sumZ = 0;
+    calibSumVector.x = 0;
+    calibSumVector.y = 0;
+    calibSumVector.z = 0;
 
     calibCounter.reset(amtOfSamples);
 
-    return deltaTime * amtOfSamples + 1;
+    return Config::MainInterval_s * amtOfSamples + 1;
 }
 
 
@@ -162,8 +161,8 @@ void MPU6050Gyro::setOffset(FloatAxisVector offset)
 
 
 MPU6050Adapter::MPU6050Adapter(SensorsMediator& sensorsMediator)
-    : accClass(sensorsMediator, mpu, getInterval_s()),
-    gyroClass(sensorsMediator, mpu, getInterval_s())
+    : accClass(sensorsMediator, mpu),
+    gyroClass(sensorsMediator, mpu)
 {
 }
 
@@ -237,9 +236,9 @@ SimpleMPU6050* MPU6050Adapter::getMPU6050Ptr()
 }
 
 
-void MPU6050Adapter::config3AxisLPF(ThreeAxisLPF& lpf, float cutoffFreq)
+void MPU6050Adapter::config3AxisLPF(ThreeAxesLPF& lpf, float cutoffFreq)
 {
-    lpf.x.reconfigureFilter(cutoffFreq, getInterval_s());
-    lpf.y.reconfigureFilter(cutoffFreq, getInterval_s());
-    lpf.z.reconfigureFilter(cutoffFreq, getInterval_s());
+    lpf.x.reconfigureFilter(cutoffFreq, Config::MainInterval_s);
+    lpf.y.reconfigureFilter(cutoffFreq, Config::MainInterval_s);
+    lpf.z.reconfigureFilter(cutoffFreq, Config::MainInterval_s);
 }
