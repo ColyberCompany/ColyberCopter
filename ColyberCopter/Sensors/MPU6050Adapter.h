@@ -27,7 +27,7 @@ class MPU6050Adapter: public Task
 {
     class AccCalib: public Sensor
     {
-        SimpleMPU6050& mpu;
+        MPU6050Adapter& mpuAdapter;
 
         vector3<int32_t> calibSumVector; // TODO: think how to make that this variables don't occupy memory all the time (they are needed for a short period or never). // Maybe something wih that, that probably always only one sensor will be calibrated at once (also all sensors are calibrated in the simmilar way).
         Counter calibCounter;
@@ -37,7 +37,7 @@ class MPU6050Adapter: public Task
          * @param sensorsMediator Reference to the sensorsMediator.
          * @param mpu6050 Reference to the mpu6050 instance.
          */
-        AccCalib(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050);
+        AccCalib(SensorsMediator& sensorsMediator, MPU6050Adapter& mpuAdapter);
 
         // initialization is in adapter class
         bool initialize() override;
@@ -53,12 +53,14 @@ class MPU6050Adapter: public Task
         uint16_t startBackgroundCalibration(uint16_t amtOfSamples) override;
         FloatAxisVector getOffset() const override;
         void setOffset(FloatAxisVector offset) override;
+
+        friend class MPU6050Adapter;
     };
 
 
     class GyroCalib: public Sensor
     {
-        SimpleMPU6050& mpu;
+        MPU6050Adapter& mpuAdapter;
 
         vector3<int32_t> calibSumVector; // TODO: think how to make that this variables don't occupy memory all the time (they are needed for a short period or never). // Maybe something wih that, that probably always only one sensor will be calibrated at once (also all sensors are calibrated in the simmilar way).
         Counter calibCounter;
@@ -68,7 +70,7 @@ class MPU6050Adapter: public Task
          * @param sensorsMediator Reference to the sensorsMediator.
          * @param mpu6050 Reference to the mpu6050 instance.
          */
-        GyroCalib(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050);
+        GyroCalib(SensorsMediator& sensorsMediator, MPU6050Adapter& mpuAdapter);
 
         // initialization is in adapter class
         bool initialize() override;
@@ -83,12 +85,14 @@ class MPU6050Adapter: public Task
         uint16_t startBackgroundCalibration(uint16_t amtOfSamples) override;
         FloatAxisVector getOffset() const override;
         void setOffset(FloatAxisVector offset) override;
+
+        friend class MPU6050Adapter;
     };
 
 
 private:
     SimpleMPU6050 mpu;
-    bool initResult = false;
+    bool initResultFlag = false;
 
     AccCalib accCalib;
     GyroCalib gyroCalib;
@@ -112,6 +116,8 @@ public:
 
 
 private:
+    void initializeMPU6050IfWasNotInitialized();
+
     /**
      * @brief Sets parameters for the three axes
      * LowPass filter (the same for all three).
