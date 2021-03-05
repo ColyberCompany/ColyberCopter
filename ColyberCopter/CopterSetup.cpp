@@ -179,10 +179,6 @@ void initializeSensors()
     delay(100);
     
 
-    if (!Assemble::hmc5883l.initialize()) // BUG: get rid of this (initialize only by magn instance)
-        debMes.showErrorAndAbort(101);
-
-
     bool initFlag = true;
     initFlag &= Instance::accel.initialize();
     initFlag &= Instance::gyro.initialize();
