@@ -57,7 +57,7 @@ public:
     {
         showError(errorCode);
         serial.println("PROGRAM IS ABORTED!");
-        while (true);
+        while (true); // TODO: think about posibility to force program execution by sending some special message on serial monitor
     }
 };
 

@@ -177,8 +177,9 @@ void initializeSensors()
 
     Wire.begin();
     delay(100);
-    
 
+
+    // TODO: rebuild this (print name of sensor that was not initialized)
     bool initFlag = true;
     initFlag &= Instance::accel.initialize();
     initFlag &= Instance::gyro.initialize();
