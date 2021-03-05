@@ -33,7 +33,7 @@ void HMC5883LAdapter::execute()
 {
     compass.readRaw();
 
-    checkCalibration();
+    calibrationLoop();
 
     SimpleHMC5883L::vector3Float norm = compass.getNormalized();
     sensorsMediator.updateMag(vector3Float(norm.x, norm.y, norm.z));
@@ -72,7 +72,7 @@ void HMC5883LAdapter::setOffset(FloatAxisVector offset)
 }
 
 
-void HMC5883LAdapter::checkCalibration()
+void HMC5883LAdapter::calibrationLoop()
 {
     if (calibCounter.getCurrentCounter() > 0)
     {

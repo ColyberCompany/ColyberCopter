@@ -51,7 +51,7 @@ public:
 
 
 private:
-    void checkCalibration();
+    void calibrationLoop();
 };
 
 
