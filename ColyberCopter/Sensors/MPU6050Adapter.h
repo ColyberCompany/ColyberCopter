@@ -18,11 +18,6 @@
 #include <LowPassFilter.h>
 
 
-
-// TODO: consider making classes above nested inside the MPU6050Adapter class.
-// TODO: make further refactoring
-
-
 class MPU6050Adapter: public Task
 {
     class AccCalib: public Sensor
