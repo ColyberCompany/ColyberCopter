@@ -177,14 +177,10 @@ void initializeSensors()
 
     Wire.begin();
     delay(100);
-
-    if (!Assemble::mpu6050.initialize()) // TODO: this is because initializations below don't initialize mpu6050, try to get rid of this
-        debMes.showErrorAndAbort(100);
     
-    if (!Assemble::hmc5883l.initialize())
-        debMes.showErrorAndAbort(101);
 
-    // Check other key sensors ...
+    if (!Assemble::hmc5883l.initialize()) // BUG: get rid of this (initialize only by magn instance)
+        debMes.showErrorAndAbort(101);
 
 
     bool initFlag = true;
@@ -194,6 +190,8 @@ void initializeSensors()
     initFlag &= Instance::baro.initialize();
     initFlag &= Instance::gps.initialize();
     initFlag &= Instance::btmRangefinder.initialize();
+    // new sensors goes here...
+
     if (!initFlag) // TODO: Check each sensor separately <<<<<<<<<<<<<<<
     {
         //debMes.showErrorAndAbort(58462);

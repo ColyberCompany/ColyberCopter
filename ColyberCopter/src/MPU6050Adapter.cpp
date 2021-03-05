@@ -17,7 +17,8 @@ MPU6050Adapter::AccCalib::AccCalib(SensorsMediator& sensorsMediator, MPU6050Adap
 
 bool MPU6050Adapter::AccCalib::initialize()
 {
-    return mpuAdapter.initialize();
+    mpuAdapter.initializeMPU6050IfWasNotInitialized();
+    return isGood();
 }
 
 
@@ -92,7 +93,8 @@ MPU6050Adapter::GyroCalib::GyroCalib(SensorsMediator& sensorsMediator, MPU6050Ad
 
 bool MPU6050Adapter::GyroCalib::initialize()
 {
-    return mpuAdapter.initialize();
+    mpuAdapter.initializeMPU6050IfWasNotInitialized();
+    return isGood();
 }
 
 
@@ -167,19 +169,6 @@ MPU6050Adapter::MPU6050Adapter(SensorsMediator& sensorsMediator)
 }
 
 
-bool MPU6050Adapter::initialize()
-{
-    initializeMPU6050IfWasNotInitialized();
-    return isGood();
-}
-
-
-bool MPU6050Adapter::isGood() const
-{
-    return initResultFlag;
-}
-
-
 void MPU6050Adapter::execute()
 {
     mpu.readRawData();
@@ -227,11 +216,12 @@ SimpleMPU6050* MPU6050Adapter::getMPU6050Ptr()
 
 void MPU6050Adapter::initializeMPU6050IfWasNotInitialized()
 {
-    static bool wasInitializedFlag = false;
+    static bool haveBeenInitializedFlag = false;
 
-    if (wasInitializedFlag)
+    if (haveBeenInitializedFlag)
         return;
 
+    bool initResultFlag = false;
     int attempts = 0;
     do {
         initResultFlag = mpu.initialize();
@@ -242,11 +232,13 @@ void MPU6050Adapter::initializeMPU6050IfWasNotInitialized()
         return;
 
 
-    wasInitializedFlag = true;
+    haveBeenInitializedFlag = true;
 
+    // Update init flags in sensor classes for acc and gyro
     accCalib.initResult = true;
     gyroCalib.initResult = true;
 
+    // Configure filters
     config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
     config3AxisLPF(gyroLPF, Config::GyroLPFCutOffFreq);
 }

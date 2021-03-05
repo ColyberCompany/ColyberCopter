@@ -92,7 +92,6 @@ class MPU6050Adapter: public Task
 
 private:
     SimpleMPU6050 mpu;
-    bool initResultFlag = false;
 
     AccCalib accCalib;
     GyroCalib gyroCalib;
@@ -105,10 +104,7 @@ private:
 
 public:
     MPU6050Adapter(SensorsMediator& sensorsMediator);
-
-    // Call Wire.begin() before!
-    bool initialize();
-    bool isGood() const;
+    
     void execute() override;
     Sensor* getAccSensor();
     Sensor* getGyroSensor();
