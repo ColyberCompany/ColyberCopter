@@ -21,11 +21,11 @@ bool HMC5883LAdapter::initialize()
 
     int attempts = 0;
     do {
-        initResult = compass.initialize();
+        initResultFlag = compass.initialize();
         attempts++;
-    } while (initResult == false && attempts < 3);
+    } while (initResultFlag == false && attempts < 3);
 
-    return initResult;
+    return initResultFlag;
 }
 
 

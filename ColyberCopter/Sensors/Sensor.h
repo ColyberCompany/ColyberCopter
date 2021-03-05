@@ -17,7 +17,7 @@ class Sensor
 {
 protected:
     SensorsMediator& sensorsMediator;
-    bool initResult = false;
+    bool initResultFlag = false; // TODO: change name to initResultFlag
 
 public:
     Sensor(SensorsMediator& _sensorsMediator)
@@ -29,7 +29,7 @@ public:
 
     /**
      * @brief Initialize the sensor.
-     * Set initResult flag here (true if initialized successfully)!
+     * Set initResultFlag here (true if initialized successfully)!
      * @return false if sensor wasn't initialized successfully,
      * returns true otherwise.
      */
@@ -43,7 +43,7 @@ public:
      */
     virtual bool isGood() const
     {
-        return initResult;
+        return initResultFlag;
     }
 
     /**

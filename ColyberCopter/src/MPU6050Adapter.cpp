@@ -235,8 +235,8 @@ void MPU6050Adapter::initializeMPU6050IfWasNotInitialized()
     haveBeenInitializedFlag = true;
 
     // Update init flags in sensor classes for acc and gyro
-    accCalib.initResult = true;
-    gyroCalib.initResult = true;
+    accCalib.initResultFlag = true;
+    gyroCalib.initResultFlag = true;
 
     // Configure filters
     config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
