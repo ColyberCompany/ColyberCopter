@@ -9,35 +9,36 @@
 #include "../config.h"
 
 
-MPU6050Acc::MPU6050Acc(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050)
-    : Sensor(sensorsMediator), mpu(mpu6050)
+MPU6050Adapter::AccCalib::AccCalib(SensorsMediator& sensorsMediator, MPU6050Adapter& _mpuAdapter)
+    : Sensor(sensorsMediator), mpuAdapter(_mpuAdapter)
 {
 }
 
 
-bool MPU6050Acc::initialize()
+bool MPU6050Adapter::AccCalib::initialize()
 {
-    return true; // FIXME: try to return there real value
+    mpuAdapter.initializeMPU6050IfWasNotInitialized();
+    return isGood();
 }
 
 
-void MPU6050Acc::checkCalibration()
+void MPU6050Adapter::AccCalib::calibrationLoop()
 {
     // called periodically by MPU6050Adapter
 
     if (calibCounter.getCurrentCounter() > 0)
     {
-        SimpleMPU6050::vector3Int16& accRaw = mpu.getRawAcceleration();
+        SimpleMPU6050::vector3Int16& accRaw = mpuAdapter.mpu.getRawAcceleration();
 
         calibSumVector.x += accRaw.x;
         calibSumVector.y += accRaw.y;
-        calibSumVector.z += accRaw.z - mpu.getRawAccValueFor1G();
+        calibSumVector.z += accRaw.z - mpuAdapter.mpu.getRawAccValueFor1G();
 
         // if calibration ends now
         if (calibCounter.getCurrentCounter() == 1)
         {
             uint16_t averagedSamples = calibCounter.getInitialCounter();
-            mpu.setAccOffset(
+            mpuAdapter.mpu.setAccOffset(
                 (double)calibSumVector.x / averagedSamples + 0.5f,
                 (double)calibSumVector.y / averagedSamples + 0.5f,
                 (double)calibSumVector.z / averagedSamples + 0.5f);
@@ -48,9 +49,9 @@ void MPU6050Acc::checkCalibration()
 }
 
 
-uint16_t MPU6050Acc::startBackgroundCalibration(uint16_t amtOfSamples)
+uint16_t MPU6050Adapter::AccCalib::startBackgroundCalibration(uint16_t amtOfSamples)
 {
-    mpu.setAccOffset(0, 0, 0);
+    mpuAdapter.mpu.setAccOffset(0, 0, 0);
 
     calibSumVector.x = 0;
     calibSumVector.y = 0;
@@ -62,17 +63,17 @@ uint16_t MPU6050Acc::startBackgroundCalibration(uint16_t amtOfSamples)
 }
 
 
-FloatAxisVector MPU6050Acc::getOffset() const
+FloatAxisVector MPU6050Adapter::AccCalib::getOffset() const
 {
-    const SimpleMPU6050::vector3Int16& accOffset = mpu.getAccOffset();
+    const SimpleMPU6050::vector3Int16& accOffset = mpuAdapter.mpu.getAccOffset();
     return FloatAxisVector(3, accOffset.x, accOffset.y, accOffset.z);
 }
 
 
-void MPU6050Acc::setOffset(FloatAxisVector offset)
+void MPU6050Adapter::AccCalib::setOffset(FloatAxisVector offset)
 {
     using Enums::AxisType;
-    mpu.setAccOffset(
+    mpuAdapter.mpu.setAccOffset(
         offset.getAxis(AxisType::AxisX),
         offset.getAxis(AxisType::AxisY),
         offset.getAxis(AxisType::AxisZ));
@@ -84,25 +85,26 @@ void MPU6050Acc::setOffset(FloatAxisVector offset)
 
 
 
-MPU6050Gyro::MPU6050Gyro(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050)
-    : Sensor(sensorsMediator), mpu(mpu6050)
+MPU6050Adapter::GyroCalib::GyroCalib(SensorsMediator& sensorsMediator, MPU6050Adapter& _mpuAdapter)
+    : Sensor(sensorsMediator), mpuAdapter(_mpuAdapter)
 {
 }
 
 
-bool MPU6050Gyro::initialize()
+bool MPU6050Adapter::GyroCalib::initialize()
 {
-    return true; // FIXME: try to return there real value
+    mpuAdapter.initializeMPU6050IfWasNotInitialized();
+    return isGood();
 }
 
 
-void MPU6050Gyro::checkCalibration()
+void MPU6050Adapter::GyroCalib::calibrationLoop()
 {
     // called periodically by MPU6050Adapter
 
     if (calibCounter.getCurrentCounter() > 0)
     {
-        SimpleMPU6050::vector3Int16& gyroRaw = mpu.getRawRotation();
+        SimpleMPU6050::vector3Int16& gyroRaw = mpuAdapter.mpu.getRawRotation();
 
         calibSumVector.x += gyroRaw.x;
         calibSumVector.y += gyroRaw.y;
@@ -112,7 +114,7 @@ void MPU6050Gyro::checkCalibration()
         if (calibCounter.getCurrentCounter() == 1)
         {
             uint16_t averagedSamples = calibCounter.getInitialCounter();
-            mpu.setGyroOffset(
+            mpuAdapter.mpu.setGyroOffset(
                 (double)calibSumVector.x / averagedSamples + 0.5f,
                 (double)calibSumVector.y / averagedSamples + 0.5f,
                 (double)calibSumVector.z / averagedSamples + 0.5f);
@@ -123,9 +125,9 @@ void MPU6050Gyro::checkCalibration()
 }
 
 
-uint16_t MPU6050Gyro::startBackgroundCalibration(uint16_t amtOfSamples)
+uint16_t MPU6050Adapter::GyroCalib::startBackgroundCalibration(uint16_t amtOfSamples)
 {
-    mpu.setGyroOffset(0, 0, 0);
+    mpuAdapter.mpu.setGyroOffset(0, 0, 0);
 
     calibSumVector.x = 0;
     calibSumVector.y = 0;
@@ -137,17 +139,17 @@ uint16_t MPU6050Gyro::startBackgroundCalibration(uint16_t amtOfSamples)
 }
 
 
-FloatAxisVector MPU6050Gyro::getOffset() const
+FloatAxisVector MPU6050Adapter::GyroCalib::getOffset() const
 {
-    const SimpleMPU6050::vector3Int16& gyroOffset = mpu.getGyroOffset();
+    const SimpleMPU6050::vector3Int16& gyroOffset = mpuAdapter.mpu.getGyroOffset();
     return FloatAxisVector(3, gyroOffset.x, gyroOffset.y, gyroOffset.z);
 }
 
 
-void MPU6050Gyro::setOffset(FloatAxisVector offset)
+void MPU6050Adapter::GyroCalib::setOffset(FloatAxisVector offset)
 {
     using Enums::AxisType;
-    mpu.setGyroOffset(
+    mpuAdapter.mpu.setGyroOffset(
         offset.getAxis(AxisType::AxisX),
         offset.getAxis(AxisType::AxisY),
         offset.getAxis(AxisType::AxisZ));
@@ -161,33 +163,9 @@ void MPU6050Gyro::setOffset(FloatAxisVector offset)
 
 
 MPU6050Adapter::MPU6050Adapter(SensorsMediator& sensorsMediator)
-    : accClass(sensorsMediator, mpu),
-    gyroClass(sensorsMediator, mpu)
+    : accCalib(sensorsMediator, *this),
+    gyroCalib(sensorsMediator, *this)
 {
-}
-
-
-bool MPU6050Adapter::initialize()
-{
-    int attempts = 0;
-    do {
-        initResult = mpu.initialize();
-        attempts++;
-    } while (initResult == false && attempts < 3);
-
-    config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
-    config3AxisLPF(gyroLPF, Config::GyroLPFCutOffFreq);
-
-    accClass.initResult = true;
-    gyroClass.initResult = true;
-
-    return initResult;
-}
-
-
-bool MPU6050Adapter::isGood() const
-{
-    return initResult;
 }
 
 
@@ -196,16 +174,16 @@ void MPU6050Adapter::execute()
     mpu.readRawData();
 
     SimpleMPU6050::vector3Float& accNorm = mpu.getNormalizedAcceleration();
-    //accClass.sensorsMediator.updateAcc(vector3Float(accNorm.x, accNorm.y, accNorm.z));
-    accClass.sensorsMediator.updateAcc(vector3Float(
+    //accCalib.sensorsMediator.updateAcc(vector3Float(accNorm.x, accNorm.y, accNorm.z)); // without filter
+    accCalib.sensorsMediator.updateAcc(vector3Float(
         accLPF.x.update(accNorm.x),
         accLPF.y.update(accNorm.y),
         accLPF.z.update(accNorm.z)
     ));
 
     SimpleMPU6050::vector3Float& gyroNorm = mpu.getNormalizedRotation();
-    //gyroClass.sensorsMediator.updateGyro(vector3Float(gyroNorm.x, gyroNorm.y, gyroNorm.z));
-    gyroClass.sensorsMediator.updateGyro(vector3Float(
+    //gyroCalib.sensorsMediator.updateGyro(vector3Float(gyroNorm.x, gyroNorm.y, gyroNorm.z)); // without filter
+    gyroCalib.sensorsMediator.updateGyro(vector3Float(
         gyroLPF.x.update(gyroNorm.x),
         gyroLPF.y.update(gyroNorm.y),
         gyroLPF.z.update(gyroNorm.z)
@@ -213,26 +191,56 @@ void MPU6050Adapter::execute()
 
     // You can update temperature there
 
-    accClass.checkCalibration();
-    gyroClass.checkCalibration();
+    accCalib.calibrationLoop();
+    gyroCalib.calibrationLoop();
 }
 
 
 Sensor* MPU6050Adapter::getAccSensor()
 {
-    return &accClass;
+    return &accCalib;
 }
 
 
 Sensor* MPU6050Adapter::getGyroSensor()
 {
-    return &gyroClass;
+    return &gyroCalib;
 }
 
 
 SimpleMPU6050* MPU6050Adapter::getMPU6050Ptr()
 {
     return &mpu;
+}
+
+
+void MPU6050Adapter::initializeMPU6050IfWasNotInitialized()
+{
+    static bool haveBeenInitializedFlag = false;
+
+    if (haveBeenInitializedFlag)
+        return;
+
+    bool initResultFlag = false;
+    int attempts = 0;
+    do {
+        initResultFlag = mpu.initialize();
+        attempts++;
+    } while (initResultFlag == false && attempts < 3);
+
+    if (initResultFlag == false)
+        return;
+
+
+    haveBeenInitializedFlag = true;
+
+    // Update init flags in sensor classes for acc and gyro
+    accCalib.initResult = true;
+    gyroCalib.initResult = true;
+
+    // Configure filters
+    config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
+    config3AxisLPF(gyroLPF, Config::GyroLPFCutOffFreq);
 }
 
 

@@ -18,112 +18,93 @@
 #include <LowPassFilter.h>
 
 
-class MPU6050Adapter;
-class MPU6050Acc;
-class MPU6050Gyro;
 
-
-
-
-class MPU6050Acc: public Sensor
-{
-private:
-    SimpleMPU6050& mpu;
-
-    vector3<int32_t> calibSumVector; // TODO: think how to make that this variables don't occupy memory all the time (they are needed for a short period or never). // Maybe something wih that, that probably always only one sensor will be calibrated at once (also all sensors are calibrated in the simmilar way).
-    Counter calibCounter;
-
-public:
-    /**
-     * @param sensorsMediator Reference to the sensorsMediator.
-     * @param mpu6050 Reference to the mpu6050 instance.
-     */
-    MPU6050Acc(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050);
-
-    MPU6050Acc(const MPU6050Acc&) = delete;
-    MPU6050Acc& operator=(const MPU6050Acc&) = delete;
-
-    // initialization is in adapter class
-    bool initialize() override;
-
-    /**
-     * @brief Sensor have to be as horizontal as possible and don't move at all
-     * during the calibration process.
-     */
-    void checkCalibration();
-
-    uint16_t startBackgroundCalibration(uint16_t amtOfSamples) override;
-    FloatAxisVector getOffset() const override;
-    void setOffset(FloatAxisVector offset) override;
-
-
-    friend class MPU6050Adapter;
-};
-
-
-
-
-
-class MPU6050Gyro: public Sensor
-{
-private:
-    SimpleMPU6050& mpu;
-
-    vector3<int32_t> calibSumVector; // TODO: think how to make that this variables don't occupy memory all the time (they are needed for a short period or never). // Maybe something wih that, that probably always only one sensor will be calibrated at once (also all sensors are calibrated in the simmilar way).
-    Counter calibCounter;
-
-public:
-    /**
-     * @param sensorsMediator Reference to the sensorsMediator.
-     * @param mpu6050 Reference to the mpu6050 instance.
-     */
-    MPU6050Gyro(SensorsMediator& sensorsMediator, SimpleMPU6050& mpu6050);
-
-    MPU6050Gyro(const MPU6050Gyro&) = delete;
-    MPU6050Gyro& operator=(const MPU6050Gyro&) = delete;
-
-    // initialization is in adapter class
-    bool initialize() override;
-
-    /**
-     * @brief Sensor have to don't move at all (can be in any position
-     * but as steady as possible).
-     */
-    void checkCalibration();
-
-    uint16_t startBackgroundCalibration(uint16_t amtOfSamples) override;
-    FloatAxisVector getOffset() const override;
-    void setOffset(FloatAxisVector offset) override;
-    
-
-    friend class MPU6050Adapter;
-};
-
-
-
-
+// TODO: consider making classes above nested inside the MPU6050Adapter class.
+// TODO: make further refactoring
 
 
 class MPU6050Adapter: public Task
 {
+    class AccCalib: public Sensor
+    {
+        MPU6050Adapter& mpuAdapter;
+
+        vector3<int32_t> calibSumVector; // TODO: think how to make that this variables don't occupy memory all the time (they are needed for a short period or never). // Maybe something wih that, that probably always only one sensor will be calibrated at once (also all sensors are calibrated in the simmilar way).
+        Counter calibCounter;
+
+    public:
+        /**
+         * @param sensorsMediator Reference to the sensorsMediator.
+         * @param mpu6050 Reference to the mpu6050 instance.
+         */
+        AccCalib(SensorsMediator& sensorsMediator, MPU6050Adapter& mpuAdapter);
+
+        // initialization is in adapter class
+        bool initialize() override;
+
+        /**
+         * @brief Runs one calibration loop if sensor need to calibrate
+         * (if don't need, this method does nothing).
+         * Sensor have to be as horizontal as possible and can't move at all
+         * during the calibration process.
+         */
+        void calibrationLoop();
+
+        uint16_t startBackgroundCalibration(uint16_t amtOfSamples) override;
+        FloatAxisVector getOffset() const override;
+        void setOffset(FloatAxisVector offset) override;
+
+        friend class MPU6050Adapter;
+    };
+
+
+    class GyroCalib: public Sensor
+    {
+        MPU6050Adapter& mpuAdapter;
+
+        vector3<int32_t> calibSumVector; // TODO: think how to make that this variables don't occupy memory all the time (they are needed for a short period or never). // Maybe something wih that, that probably always only one sensor will be calibrated at once (also all sensors are calibrated in the simmilar way).
+        Counter calibCounter;
+
+    public:
+        /**
+         * @param sensorsMediator Reference to the sensorsMediator.
+         * @param mpu6050 Reference to the mpu6050 instance.
+         */
+        GyroCalib(SensorsMediator& sensorsMediator, MPU6050Adapter& mpuAdapter);
+
+        // initialization is in adapter class
+        bool initialize() override;
+
+        /**
+         * @brief Runs one calibration loop if sensor need to calibrate
+         * (if don't need, this method does nothing).
+         * Sensor have to be as steady as possible.
+         */
+        void calibrationLoop();
+
+        uint16_t startBackgroundCalibration(uint16_t amtOfSamples) override;
+        FloatAxisVector getOffset() const override;
+        void setOffset(FloatAxisVector offset) override;
+
+        friend class MPU6050Adapter;
+    };
+
+
 private:
     SimpleMPU6050 mpu;
-    bool initResult = false;
 
-    MPU6050Acc accClass;
-    MPU6050Gyro gyroClass;
+    AccCalib accCalib;
+    GyroCalib gyroCalib;
 
+    // Filtering stuff:
     typedef vector3<LowPassFilter<float>> ThreeAxesLPF;
-    ThreeAxesLPF accLPF;
-    ThreeAxesLPF gyroLPF;
+    ThreeAxesLPF accLPF; // accelerometer low-pass filter
+    ThreeAxesLPF gyroLPF; // gyro low-pass filter
 
 
 public:
     MPU6050Adapter(SensorsMediator& sensorsMediator);
-
-    // Call Wire.begin() before!
-    bool initialize();
-    bool isGood() const;
+    
     void execute() override;
     Sensor* getAccSensor();
     Sensor* getGyroSensor();
@@ -131,6 +112,8 @@ public:
 
 
 private:
+    void initializeMPU6050IfWasNotInitialized();
+
     /**
      * @brief Sets parameters for the three axes
      * LowPass filter (the same for all three).
