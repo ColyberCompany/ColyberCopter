@@ -44,6 +44,11 @@ public:
     void setOffset(FloatAxisVector) override
     {
     }
+
+    const char* getName() override
+    {
+        return "no sensor";
+    }
 };
 
 

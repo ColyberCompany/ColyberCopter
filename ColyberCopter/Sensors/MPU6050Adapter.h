@@ -49,6 +49,11 @@ class MPU6050Adapter: public Task
         FloatAxisVector getOffset() const override;
         void setOffset(FloatAxisVector offset) override;
 
+        const char* getName() override
+        {
+            return "accelerometer";
+        }
+
         friend class MPU6050Adapter;
     };
 
@@ -80,6 +85,11 @@ class MPU6050Adapter: public Task
         uint16_t startBackgroundCalibration(uint16_t amtOfSamples) override;
         FloatAxisVector getOffset() const override;
         void setOffset(FloatAxisVector offset) override;
+
+        const char* getName() override
+        {
+            return "gyroscope";
+        }
 
         friend class MPU6050Adapter;
     };
