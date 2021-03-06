@@ -82,6 +82,11 @@ public:
      */
     virtual void prepare() = 0;
 
+    /**
+     * @brief Return name of the flight mode
+     */
+    virtual const char* getName() = 0;
+
 protected:
     /**
      * @brief Called with the main frequency when used as current flight mode

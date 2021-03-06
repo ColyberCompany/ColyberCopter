@@ -9,19 +9,22 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
-#include "../Common/FloatAxesVector.h"
 #include "SensorsMediator.h"
+#include "../Common/FloatAxesVector.h"
+#include "../Enums/SensorTypes.h"
 
 
 class Sensor
 {
 protected:
+    const Enums::SensorTypes type;
     SensorsMediator& sensorsMediator;
-    bool initResult = false;
+    bool initResultFlag = false; // TODO: change name to initResultFlag
 
 public:
-    Sensor(SensorsMediator& _sensorsMediator)
-        : sensorsMediator(_sensorsMediator)
+    Sensor(Enums::SensorTypes _type, SensorsMediator& _sensorsMediator)
+        : type(_type),
+          sensorsMediator(_sensorsMediator)
     {
     }
 
@@ -29,7 +32,7 @@ public:
 
     /**
      * @brief Initialize the sensor.
-     * Set initResult flag here (true if initialized successfully)!
+     * Set initResultFlag here (true if initialized successfully)!
      * @return false if sensor wasn't initialized successfully,
      * returns true otherwise.
      */
@@ -43,7 +46,7 @@ public:
      */
     virtual bool isGood() const
     {
-        return initResult;
+        return initResultFlag;
     }
 
     /**
@@ -68,7 +71,18 @@ public:
      */
     virtual void setOffset(FloatAxisVector offset) = 0;
 
-    // TODO: create sensor name getter
+    /**
+     * @brief Getter of name of this sensor. 
+     */
+    virtual const char* getName() = 0;
+
+    /**
+     * @return Type of the current sensor.
+     */
+    Enums::SensorTypes getType()
+    {
+        return type;
+    }
 };
 
 

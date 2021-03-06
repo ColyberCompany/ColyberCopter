@@ -11,6 +11,10 @@
 #ifndef FLOATAXISVECTOR_H
 #define FLOATAXISVECTOR_H
 
+#ifdef ARDUINO
+    #include <Arduino.h>
+#endif
+
 #include "../Enums/AxisType.h"
 
 

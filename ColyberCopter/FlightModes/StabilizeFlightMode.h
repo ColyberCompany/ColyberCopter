@@ -37,6 +37,8 @@ public:
 
     void leave() override;
     void prepare() override;
+
+    const char* getName() override;
     
 private:
     void flightModeLoop(ControlSticks& inputOutputSticks) override;

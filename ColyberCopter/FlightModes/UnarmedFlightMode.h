@@ -38,6 +38,11 @@ public:
         motors.setMotorsState(Enums::StateType::Disabled);
     }
 
+    const char* getName() override
+    {
+        return "unarmed";
+    }
+
 protected:
     void flightModeLoop(ControlSticks& inputOutputSticks) override
     {

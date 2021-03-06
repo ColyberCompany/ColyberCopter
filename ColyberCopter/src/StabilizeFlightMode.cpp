@@ -56,6 +56,12 @@ void StabilizeFlightMode::prepare()
 }
 
 
+const char* StabilizeFlightMode::getName()
+{
+    return "stabilize";
+}
+
+
 void StabilizeFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
 {
     if (inputOutputSticks.getThrottle() < 100) // TODO: think if this could be checked in a better way then just throttle threshold
