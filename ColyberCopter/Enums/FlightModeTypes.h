@@ -1,7 +1,7 @@
 /**
  * @file FlightModeTypes.h
  * @author Jan Wielgus
- * @brief All flight modes types
+ * @brief All flight modes types.
  * @date 2020-07-31
  * 
  */
