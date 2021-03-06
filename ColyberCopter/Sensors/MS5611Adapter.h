@@ -26,45 +26,16 @@ class MS5611Adapter : public Sensor, private IExecutable
 
 
 public:
-    MS5611Adapter(SensorsMediator& sensorsMediator, ITasker& tasker)
-        : Sensor(sensorsMediator),
-        baro(tasker)
-    {
-    }
+    MS5611Adapter(SensorsMediator& sensorsMediator, ITasker& tasker);
 
-    bool initialize() override
-    {
-        int attempts = 0;
-        do {
-            initResult = baro.initialize();
-            attempts++;
-        } while (initResult == false && attempts < 3);
+    bool initialize() override;
+    void execute() override;
 
-        if (isGood())
-            baro.setNewReadingEvent(this);
+    uint16_t startBackgroundCalibration(uint16_t) override;
+    FloatAxisVector getOffset() const override;
+    void setOffset(FloatAxisVector) override;
 
-        return initResult;
-    }
-
-    void execute() override
-    {
-        sensorsMediator.updatePressure(baro.getSmoothPressure());
-    }
-
-    uint16_t startBackgroundCalibration(uint16_t) override
-    {
-        // Don't need to calibrate baro
-        return 0;
-    }
-
-    FloatAxisVector getOffset() const override
-    {
-        return FloatAxisVector(0);
-    }
-
-    void setOffset(FloatAxisVector) override
-    {
-    }
+    const char* getName() override;
 };
 
 

@@ -5,9 +5,7 @@
  * 
  */
 
-#include "SimpleMS5611Continuous.h"
-
-
+#include "../Sensors/SimpleMS5611Continuous.h"
 
 
 SimpleMS5611Continuous::MS5611ReadingTask::MS5611ReadingTask(SimpleMS5611Continuous& _ms5611)
@@ -96,6 +94,18 @@ bool SimpleMS5611Continuous::initialize()
     initialized = true;
     
     return true;
+}
+
+
+float SimpleMS5611Continuous::getPressure() 
+{
+    return SimpleMS5611::getPressure();
+}
+
+
+float SimpleMS5611Continuous::getSmoothPressure()
+{
+    return smoothPressure;
 }
 
 

@@ -13,6 +13,13 @@ using Interfaces::IAHRS;
 using Enums::FlightModeTypes;
 
 
+const uint16_t AltHoldFlightMode::MinOutputThrottle = 300;
+const uint16_t AltHoldFlightMode::MaxOutputThrottle = 700;
+const uint16_t AltHoldFlightMode::MaxClimbRate_cmPerSec = 100; // also for declining
+
+const float AltHoldFlightMode::ThrottleMultiplier = MaxClimbRate_cmPerSec / 500.f;
+
+
 AltHoldFlightMode::AltHoldFlightMode(StabilizeFlightMode& stabilizeFlightMode, IAHRS& _ahrs)
     : FlightMode(FlightModeTypes::ALT_HOLD, &stabilizeFlightMode),
     ahrs(_ahrs),
@@ -36,6 +43,12 @@ void AltHoldFlightMode::leave()
 void AltHoldFlightMode::prepare()
 {
     setAltitudeToHoldToCurrentReading();
+}
+
+
+const char* AltHoldFlightMode::getName()
+{
+    return "alt_hold";
 }
 
 

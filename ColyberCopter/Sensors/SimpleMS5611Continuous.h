@@ -11,7 +11,7 @@
 #ifndef SIMPLEMS5611CONTINUOUS_H
 #define SIMPLEMS5611CONTINUOUS_H
 
-#include "SimpleMS5611.h"
+#include <SimpleMS5611.h>
 #include <ITasker.h>
 #include <IExecutable.h>
 #include <AverageFilter.h>
@@ -68,7 +68,7 @@ public:
      * @brief Getter of the newest continuously read pressure value.
      * @return Newest pressure value.
      */
-    float getPressure() override { return SimpleMS5611::getPressure(); }
+    float getPressure() override;
 
     /**
      * @brief Getter of the newest continuously read
