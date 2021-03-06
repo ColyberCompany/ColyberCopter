@@ -68,7 +68,7 @@ public:
      */
     virtual void setOffset(FloatAxisVector offset) = 0;
 
-    // TODO: create sensor name getter
+    virtual const char* getName() = 0;
 };
 
 

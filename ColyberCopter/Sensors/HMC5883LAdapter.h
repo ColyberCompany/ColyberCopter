@@ -49,6 +49,10 @@ public:
 
     void setOffset(FloatAxisVector offset) override;
 
+    const char* getName() override
+    {
+        return "compass";
+    }
 
 private:
     void calibrationLoop();
