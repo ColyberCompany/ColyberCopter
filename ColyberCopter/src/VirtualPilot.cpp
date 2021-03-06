@@ -59,6 +59,7 @@ bool VirtualPilot::setFlightMode(FlightModeTypes flightModeType)
     
     currentFlightMode = flightModeToSet;
 
+    Instance::debMes.showMessage("Flight mode has been changed to:");
     Instance::debMes.showMessage(currentFlightMode->getName());
 }
 
