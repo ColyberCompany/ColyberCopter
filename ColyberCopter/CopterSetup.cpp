@@ -245,7 +245,7 @@ void setupRemoteControllerComm()
 
 bool initSensor(Sensor* sensorToInit)
 {
-    Instance::debMes.showMessage("Initializing:");
+    Instance::debMes.showMessage("Initializing:"); // TODO: add variadic version of showMessage that receive multiple strings to show and use it there
     Instance::debMes.showMessage(sensorToInit->getName());
 
     bool sensorInitResult = sensorToInit->initialize();
