@@ -18,7 +18,7 @@ class NoSensor: public Sensor
 {
 public:
     NoSensor(SensorsMediator& sensorsMediator)
-        : Sensor(sensorsMediator)
+        : Sensor(Enums::SensorTypes::NO_SENSOR, sensorsMediator)
     {}
 
     bool initialize() override
