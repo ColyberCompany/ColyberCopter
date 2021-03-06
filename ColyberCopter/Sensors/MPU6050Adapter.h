@@ -49,10 +49,7 @@ class MPU6050Adapter: public Task
         FloatAxisVector getOffset() const override;
         void setOffset(FloatAxisVector offset) override;
 
-        const char* getName() override
-        {
-            return "accelerometer";
-        }
+        const char* getName() override;
 
         friend class MPU6050Adapter;
     };
@@ -86,10 +83,7 @@ class MPU6050Adapter: public Task
         FloatAxisVector getOffset() const override;
         void setOffset(FloatAxisVector offset) override;
 
-        const char* getName() override
-        {
-            return "gyroscope";
-        }
+        const char* getName() override;
 
         friend class MPU6050Adapter;
     };
