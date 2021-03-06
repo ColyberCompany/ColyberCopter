@@ -80,6 +80,12 @@ void MPU6050Adapter::AccCalib::setOffset(FloatAxisVector offset)
 }
 
 
+const char* MPU6050Adapter::AccCalib::getName()
+{
+    return "accelerometer";
+}
+
+
 
 
 
@@ -153,6 +159,12 @@ void MPU6050Adapter::GyroCalib::setOffset(FloatAxisVector offset)
         offset.getAxis(AxisType::AxisX),
         offset.getAxis(AxisType::AxisY),
         offset.getAxis(AxisType::AxisZ));
+}
+
+
+const char* MPU6050Adapter::GyroCalib::getName()
+{
+    return "accelerometer";
 }
 
 
