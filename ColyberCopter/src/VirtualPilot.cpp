@@ -6,6 +6,7 @@
  */
 
 #include "../VirtualPilot.h"
+#include "../Instances.h"
 
 using Interfaces::IMotors;
 using Enums::StateType;
@@ -57,6 +58,9 @@ bool VirtualPilot::setFlightMode(FlightModeTypes flightModeType)
     executePrepareAndLeaveMethods(currentFlightMode, flightModeToSet);
     
     currentFlightMode = flightModeToSet;
+
+    Instance::debMes.showMessage("Flight mode has been changed to:");
+    Instance::debMes.showMessage(currentFlightMode->getName());
 }
 
 

@@ -28,7 +28,11 @@ namespace Interfaces
 
         virtual double getLongitude_deg() = 0;
         virtual double getLatitude_deg() = 0;
-        virtual float getAltitude_m() = 0; // TODO: check if this method returns altitude over the sea level (should)
+
+        /**
+         * @brief Height over the sea level getter.   
+         */
+        virtual float getAltitude_m() = 0; // TODO: check if AHRS return correct value
 
         virtual vector3Float getAngles_deg() = 0; // TODO: use this method where all 3 axes are needed
         virtual vector3Double getPosition() = 0; // TODO: use this method where all 3 axes are needed

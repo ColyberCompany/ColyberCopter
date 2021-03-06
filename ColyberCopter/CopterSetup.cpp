@@ -44,6 +44,9 @@ void initializeSensors();
 void setupFlightModes();
 void setupRemoteControllerComm();
 
+// Helper^2 functions
+bool initSensor(Sensor* sensorToInit);
+
 
 // https://github.com/stm32duino/wiki/wiki/API#hardwareserial
 //HardwareSerial Serial1(PA10, PA9); // Serial1 is compiling, but I don't know on which pins
@@ -173,31 +176,18 @@ void setupFailsafe()
 
 void initializeSensors()
 {
-    using Instance::debMes;
-
     Wire.begin();
     delay(100);
 
-    if (!Assemble::mpu6050.initialize()) // TODO: this is because initializations below don't initialize mpu6050, try to get rid of this
-        debMes.showErrorAndAbort(100);
-    
-    if (!Assemble::hmc5883l.initialize())
-        debMes.showErrorAndAbort(101);
 
-    // Check other key sensors ...
-
-
-    bool initFlag = true;
-    initFlag &= Instance::accel.initialize();
-    initFlag &= Instance::gyro.initialize();
-    initFlag &= Instance::magn.initialize();
-    initFlag &= Instance::baro.initialize();
-    initFlag &= Instance::gps.initialize();
-    initFlag &= Instance::btmRangefinder.initialize();
-    if (!initFlag) // TODO: Check each sensor separately <<<<<<<<<<<<<<<
-    {
-        //debMes.showErrorAndAbort(58462);
-    }
+    // TODO: make a list from sensors and add enum with sensor types
+    initSensor(&Instance::accel);
+    initSensor(&Instance::gyro);
+    initSensor(&Instance::magn);
+    initSensor(&Instance::baro);
+    initSensor(&Instance::gps);
+    initSensor(&Instance::btmRangefinder);
+    // new sensors goes here...
     
 
     // Set fast 400kHz I2C clock
@@ -246,4 +236,27 @@ void setupRemoteControllerComm()
     Serial2.begin(Config::RmtCtrlSerialBaudRate);
     Assemble::rmtCtrlCommStream.begin();
     Instance::pilotPacketComm.adaptConnStabilityToFrequency(Config::RmtCtrlReceivingFrequency_Hz);
+}
+
+
+
+
+
+
+bool initSensor(Sensor* sensorToInit)
+{
+    Instance::debMes.showMessage("Initializing:"); // TODO: add variadic version of showMessage that receive multiple strings to show and use it there
+    Instance::debMes.showMessage(sensorToInit->getName());
+
+    bool sensorInitResult = sensorToInit->initialize();
+
+    if (sensorInitResult == false)
+    {
+        Instance::debMes.showMessage("failed");
+        Instance::debMes.showError(478792);
+    }
+    else
+        Instance::debMes.showMessage("success");
+
+    return sensorInitResult;
 }
