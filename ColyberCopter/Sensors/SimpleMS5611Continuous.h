@@ -43,9 +43,9 @@ class SimpleMS5611Continuous : public SimpleMS5611
 
 
     ITasker& tasker;
-    AverageFilter<int32_t> pressureFilter;
+    AverageFilter<int32_t> pressureFilter_pascal;
 
-    float smoothPressure = 0.f;
+    float smoothPressure_mbar = 0.f;
     MS5611ReadingTask readingTask; // Instance of tasker task that performs reading pressure and temperature
     IExecutable* newReadingEvent = nullptr;
 
@@ -66,14 +66,14 @@ public:
 
     /**
      * @brief Getter of the newest continuously read pressure value.
-     * @return Newest pressure value.
+     * @return Newest pressure value [mbar].
      */
     float getPressure() override;
 
     /**
      * @brief Getter of the newest continuously read
      * smoothed pressure value with a little bit more lag.
-     * @return Newest smoothed pressure value.
+     * @return Newest smoothed pressure value [mbar].
      */
     float getSmoothPressure();
 

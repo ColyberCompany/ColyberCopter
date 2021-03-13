@@ -73,7 +73,7 @@ bool SimpleMS5611Continuous::MS5611ReadingTask::shouldGetTemperatureAndRequestPr
 
 SimpleMS5611Continuous::SimpleMS5611Continuous(ITasker& _tasker)
     : tasker(_tasker),
-    pressureFilter(PressurePerTemperatureRequests + 1),
+    pressureFilter_pascal(PressurePerTemperatureRequests + 1),
     readingTask(*this)
 {
 }
@@ -81,17 +81,16 @@ SimpleMS5611Continuous::SimpleMS5611Continuous(ITasker& _tasker)
 
 bool SimpleMS5611Continuous::initialize()
 {
-    static bool initialized = false;
-
     if (!SimpleMS5611::initialize())
         return false;
 
-    if (initialized)
-        return true;
-
-    float readingTaskFrequency = 1000000.f / RequestWaitTime_us;
-    tasker.addTask(&readingTask, readingTaskFrequency);
-    initialized = true;
+    static bool initialized = false;
+    if (!initialized)
+    {
+        float readingTaskFrequency = 1000000.f / RequestWaitTime_us;
+        tasker.addTask(&readingTask, readingTaskFrequency);
+        initialized = true;
+    }
     
     return true;
 }
@@ -99,13 +98,13 @@ bool SimpleMS5611Continuous::initialize()
 
 float SimpleMS5611Continuous::getPressure() 
 {
-    return SimpleMS5611::getPressure();
+    return pressure_mbar;
 }
 
 
 float SimpleMS5611Continuous::getSmoothPressure()
 {
-    return smoothPressure;
+    return smoothPressure_mbar;
 }
 
 
@@ -118,17 +117,17 @@ void SimpleMS5611Continuous::setNewReadingEvent(IExecutable* newReadingEvent)
 void SimpleMS5611Continuous::averagePressure()
 {
     // Pressure is the average value of PressurePerTemperatureRequests + 1 readings
-    pressureFilter.update(intPressure);
-    pressure = pressureFilter.getFilteredValueFloat();
+    pressureFilter_pascal.update(pressure_pascal);
+    pressure_mbar = pressureFilter_pascal.getFilteredValueFloat() / 100.f;
 }
 
 
 void SimpleMS5611Continuous::updateSmoothPressure()
 {
-    if (abs(smoothPressure - pressure) > 1)
-		smoothPressure = smoothPressure*0.72f + pressure*0.28f;
+    if (abs(smoothPressure_mbar - pressure_mbar) > 1)
+		smoothPressure_mbar = smoothPressure_mbar*0.72f + pressure_mbar*0.28f;
 	else
-		smoothPressure = smoothPressure*0.96f + pressure*0.04f;
+		smoothPressure_mbar = smoothPressure_mbar*0.96f + pressure_mbar*0.04f;
 }
 
 
