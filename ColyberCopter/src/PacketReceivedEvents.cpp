@@ -7,9 +7,12 @@
 
 #include "../Communication/PacketReceivedEvents.h"
 #include "../Instances.h"
+#include "../Communication/CommData.h"
+
+using namespace PacketReceivedEvents;
 
 
-void SteeringReceivedEvent::execute()
+void Steering::execute()
 {
     // VirtualPilot get data directly from received variables.
 
@@ -17,10 +20,24 @@ void SteeringReceivedEvent::execute()
 }
 
 
-void FlightModeChangeReceivedEvent::execute()
+void FlightModeChange::execute()
 {
-    uint8_t newFlightModeType = Instance::pilotPacketsAndData.receiving.data.flightMode;
+    uint8_t newFlightModeType = commData.flightMode;
     Instance::virtualPilot.setFlightMode((Enums::FlightModeTypes)newFlightModeType);
+}
+
+
+void PIDTuning::execute()
+{
+
+
+
+
+    // TODO: <<<<<<<<< IMPLEMENT
+
+
+
+    // ><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< IMPLEMENT
 }
 
 
