@@ -20,7 +20,6 @@
 #include "Sensors/Sensor.h"
 #include "Failsafe/Failsafe.h"
 #include "Debug/DebugMessenger.h"
-#include "Communication/RemoteControlComm.h"
 
 namespace Instance
 {
@@ -33,7 +32,6 @@ namespace Instance
     extern IVirtualPilot& virtualPilot;
     
     extern PacketCommunication& pilotPacketComm;
-    extern RemoteControlComm& pilotPacketsAndData;
 
     extern Sensor& accel;
     extern Sensor& gyro;
