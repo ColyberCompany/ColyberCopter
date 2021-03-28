@@ -7,14 +7,15 @@
 
 #include "../VirtualPilot.h"
 #include "../Instances.h"
+#include "../Communication/CommData.h"
 
 using Interfaces::IMotors;
 using Enums::StateType;
 using Enums::FlightModeTypes;
 
 
-VirtualPilot::VirtualPilot(IMotors& _motors, FlightMode& initialFlightMode, const DataFromRemoteControl& _steeringData)
-    : motors(_motors), steeringData(_steeringData)
+VirtualPilot::VirtualPilot(IMotors& _motors, FlightMode& initialFlightMode)
+    : motors(_motors)
 {
     this->currentFlightMode = &initialFlightMode;
 }
@@ -66,8 +67,10 @@ bool VirtualPilot::setFlightMode(FlightModeTypes flightModeType)
 
 void VirtualPilot::runVirtualPilot()
 {
-    ControlSticks virtualSticks(steeringData.throttle, steeringData.yaw,
-                                steeringData.pitch, steeringData.roll);
+    ControlSticks virtualSticks(commData.pilot.stick.throttle,
+                                commData.pilot.stick.yaw,
+                                commData.pilot.stick.pitch,
+                                commData.pilot.stick.roll);
 
     currentFlightMode->executeFlightModeLoop(virtualSticks);
     motors.updatePower(virtualSticks);
