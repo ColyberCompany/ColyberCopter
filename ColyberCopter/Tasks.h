@@ -10,7 +10,7 @@
 #define TASKS_H
 
 #include <Task.h>
-#include "Instances.h"
+#include "Instances/MainInstances.h" // Exemption: this file can include Instances, because only CopterSetup.h includes this file.
 
 
 namespace Tasks

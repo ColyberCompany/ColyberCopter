@@ -13,7 +13,6 @@
 #include "Interfaces/IVirtualPilot.h"
 #include "Interfaces/IMotors.h"
 #include "FlightModes/FlightMode.h"
-#include "Communication/ReceiveData.h"
 #include <Task.h>
 #include <GrowingArray.h>
 
@@ -23,11 +22,10 @@ class VirtualPilot : public Interfaces::IVirtualPilot, public Task
 private:
     Interfaces::IMotors& motors;
     FlightMode* currentFlightMode;
-    const DataFromRemoteControl& steeringData;
     GrowingArray<FlightMode*> flightModesArray;
 
 public:
-    VirtualPilot(Interfaces::IMotors& motors, FlightMode& initialFlightMode, const DataFromRemoteControl& steeringData);
+    VirtualPilot(Interfaces::IMotors& motors, FlightMode& initialFlightMode);
 
     bool addFlightMode(FlightMode* flightMode) override;
     bool initializeFlightModes() override;

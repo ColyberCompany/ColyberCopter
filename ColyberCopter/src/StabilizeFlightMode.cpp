@@ -94,7 +94,7 @@ void StabilizeFlightMode::updateHeadingHolding(ControlSticks& inputOutputSticks)
 
 void StabilizeFlightMode::updateHeadingToHold(int16_t yawStick)
 {
-    headingToHold += ((float)(yawStick / 2.f) * DeltaTime_s);
+    headingToHold -= ((float)(yawStick / 2.f) * DeltaTime_s);
     headingToHold = correctHeading(headingToHold);
 }
 
