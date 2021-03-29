@@ -6,7 +6,7 @@
  */
 
 #include "../VirtualPilot.h"
-#include "../Instances.h"
+#include "../Instances/MainInstances.h"
 #include "../Communication/CommData.h"
 
 using Interfaces::IMotors;

@@ -8,7 +8,7 @@
 
 // TODO: set the order of include files
 #include "CopterSetup.h"
-#include "Instances.h"
+#include "Instances/MainInstances.h"
 #include "config.h"
 #include <SimpleTasker.h>
 #include "Failsafe/Failsafe.h"
@@ -94,6 +94,7 @@ namespace Assemble
 
 namespace Instance
 {
+// MainInstances:
     ITasker& tasker = Assemble::simpleTasker;
     IAHRS& ahrs = Assemble::ahrs;
     IMotors& motors = Assemble::quadXMotors;
@@ -102,6 +103,11 @@ namespace Instance
 
     PacketCommunication& pilotPacketComm = Assemble::Communication::rmtPacketComm;
 
+    Failsafe& failsafe = Assemble::failsafe;
+    DebugMessenger& debMes = Assemble::serialDebugMessenger;
+
+
+// SensorInstances:
     using Assemble::Sensors::noSensor;
     Sensor& accel = *Assemble::Sensors::mpu6050.getAccSensor();
     Sensor& gyro = *Assemble::Sensors::mpu6050.getGyroSensor();
@@ -109,9 +115,6 @@ namespace Instance
     Sensor& baro = noSensor;
     Sensor& gps = noSensor;
     Sensor& btmRangefinder = noSensor;
-
-    Failsafe& failsafe = Assemble::failsafe;
-    DebugMessenger& debMes = Assemble::serialDebugMessenger;
 }
 
 
