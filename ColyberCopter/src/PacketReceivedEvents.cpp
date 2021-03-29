@@ -6,8 +6,9 @@
  */
 
 #include "../Communication/PacketReceivedEvents.h"
-#include "../Instances.h"
 #include "../Communication/CommData.h"
+#include "../Instances/MainInstances.h"
+#include "../Instances/FlightModeInstances.h"
 
 using namespace PacketReceivedEvents;
 
@@ -29,15 +30,28 @@ void FlightModeChange::execute()
 
 void PIDTuning::execute()
 {
+    using Assemble::FlightModes::stabilizeFlightMode;
 
+    switch (commData.pidTuning.tunedController_ID)
+    {
+        case 0: // leveling
+            stabilizeFlightMode.setLevelingXPIDGains(commData.pidTuning.kP,
+                                                     commData.pidTuning.kI,
+                                                     commData.pidTuning.kD,
+                                                     commData.pidTuning.iMax);
 
-
-
-    // TODO: <<<<<<<<< IMPLEMENT
-
-
-
-    // ><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< IMPLEMENT
+            stabilizeFlightMode.setLevelingYPIDGains(commData.pidTuning.kP,
+                                                     commData.pidTuning.kI,
+                                                     commData.pidTuning.kD,
+                                                     commData.pidTuning.iMax);
+            break;
+        
+        case 1: // yaw  
+            stabilizeFlightMode.setHeadingHoldPIDGains(commData.pidTuning.kP,
+                                                       commData.pidTuning.kI,
+                                                       commData.pidTuning.kD,
+                                                       commData.pidTuning.iMax);
+    }
 }
 
 
