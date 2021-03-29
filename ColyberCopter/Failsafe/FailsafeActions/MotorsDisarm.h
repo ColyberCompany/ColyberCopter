@@ -6,6 +6,8 @@
  * 
  */
 
+// TODO: consider making one pair of h and cpp files for all failsafe actions
+
 #ifndef MOTORSDISARM_H
 #define MOTORSDISARM_H
 

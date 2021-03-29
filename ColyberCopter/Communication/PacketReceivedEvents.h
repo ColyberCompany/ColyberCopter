@@ -12,15 +12,26 @@
 #include <IExecutable.h>
 
 
-class SteeringReceivedEvent: public IExecutable
-{ void execute() override; };
+namespace PacketReceivedEvents
+{
+    class Steering: public IExecutable {
+        void execute() override;
+    };
 
 
-class FlightModeChangeReceivedEvent: public IExecutable
-{ void execute() override; };
+    class FlightModeChange: public IExecutable {
+        void execute() override;
+    };
 
 
-// ... (definition of other received events)
+    class PIDTuning : public IExecutable {
+        void execute() override;
+    };
+
+
+    // events for other data packets...
+}
+
 
 
 #endif
