@@ -31,6 +31,16 @@ void FlightModeChange::execute()
 void PIDTuning::execute()
 {
     using Assemble::FlightModes::stabilizeFlightMode;
+    using Instance::debMes;
+
+    debMes.showMessage("Got new PID. ID:");
+    debMes.showMessage(commData.pidTuning.tunedController_ID);
+    debMes.showMessage("kP, kI, kD, iMax:");
+    debMes.showMessage(commData.pidTuning.kP * 100);
+    debMes.showMessage(commData.pidTuning.kI * 100);
+    debMes.showMessage(commData.pidTuning.kD * 100);
+    debMes.showMessage(commData.pidTuning.iMax);
+    
 
     switch (commData.pidTuning.tunedController_ID)
     {
