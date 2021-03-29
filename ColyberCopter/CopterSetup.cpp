@@ -42,6 +42,7 @@ using namespace Interfaces;
 void addTasksToTasker();
 void setupFailsafe();
 void initializeSensors();
+void setSensorsOffsets();
 void setupFlightModes();
 void setupCommunication();
 
@@ -121,9 +122,11 @@ namespace Instance
 
 class : public Task
 {
-    void execute() override
-    {
-        //Serial1.println(Instance::rotation.getPitch_deg());
+    void execute() override {
+        /*
+        Serial1.print(Instance::ahrs.getPitch_deg());
+        Serial1.print('\t');
+        Serial1.println(Instance::ahrs.getRoll_deg());*/
     }
 } debugTask;
 
@@ -150,6 +153,7 @@ void setupDrone()
 
     debMes.showMessage("Sensors");
     initializeSensors();
+    setSensorsOffsets();
     debMes.showMessage(OKText);
 
 
@@ -202,6 +206,13 @@ void initializeSensors()
 }
 
 
+void setSensorsOffsets()
+{
+    Instance::accel.setOffset(FloatAxisVector(3, 188.00, 26.00, -38.00));
+    Instance::gyro.setOffset(FloatAxisVector(3, -142.00, 123.00, -8.00));
+}
+
+
 void setupFlightModes()
 {
     Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::unarmedFlightMode);
@@ -234,7 +245,11 @@ void addTasksToTasker()
     Instance::debMes.showMessage(3);
 
     tasker.addTask(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
+
     tasker.addTask(&debugTask, 50);
+
+    //tasker.addTask(&Tasks::calibTask, 1);
+    //Tasks::calibTask.pauseExecutionFor_s(5);
 }
 
 
