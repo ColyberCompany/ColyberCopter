@@ -73,7 +73,7 @@ namespace Assemble
 
     namespace FlightModes {
         UnarmedFlightMode unarmedFlightMode(quadXMotors);
-    StabilizeFlightMode stabilizeFlightMode(ahrs);
+        StabilizeFlightMode stabilizeFlightMode(ahrs);
     }
 
     VirtualPilot virtualPilotInstance(quadXMotors, FlightModes::unarmedFlightMode);
