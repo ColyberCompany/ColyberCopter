@@ -8,10 +8,9 @@
 
 // TODO: set the order of include files
 #include "CopterSetup.h"
-#include "Instances.h"
+#include "Instances/MainInstances.h"
 #include "config.h"
 #include <SimpleTasker.h>
-#include "Communication/RemoteControlComm.h"
 #include "Failsafe/Failsafe.h"
 #include "Failsafe/FailsafeActions/MotorsDisarm.h"
 #include "Failsafe/FailsafeScenarios/CommunicationLost.h"
@@ -33,6 +32,8 @@
 #include "Debug/SerialDebugMessenger.h"
 #include "Common/Constants.h"
 #include "Tasks.h"
+#include "Communication/CommData.h"
+#include "Communication/DataPackets.h"
 
 using namespace Interfaces;
 
@@ -42,7 +43,7 @@ void addTasksToTasker();
 void setupFailsafe();
 void initializeSensors();
 void setupFlightModes();
-void setupRemoteControllerComm();
+void setupCommunication();
 
 // Helper^2 functions
 bool initSensor(Sensor* sensorToInit);
@@ -64,50 +65,56 @@ namespace Assemble
     QuadXMotors quadXMotors;
     SerialDebugMessenger serialDebugMessenger(Serial1);
 
-    // Communication
-    StreamComm rmtCtrlCommStream(&Serial2, Config::RmtCtrlMaxComBufferSize);
-    PacketCommunicationWithQueue rmtPacketComm(&rmtCtrlCommStream, Config::RmtCtrlMaxQueuedBuffers); // Remote comm instance
-    RemoteControlComm remoteControlComm(rmtPacketComm);
+    namespace Communication {
+        StreamComm rmtCtrlCommStream(&Serial2, Config::RmtCtrlMaxComBufferSize);
+        PacketCommunicationWithQueue rmtPacketComm(&rmtCtrlCommStream, Config::RmtCtrlMaxQueuedBuffers); // Remote comm instance
+    }
 
-    // FlightModes
-    UnarmedFlightMode unarmedFlightMode(quadXMotors);
-    StabilizeFlightMode stabilizeFlightMode(ahrs);
-    VirtualPilot virtualPilotInstance(quadXMotors, unarmedFlightMode, remoteControlComm.receiving.data);
 
-    // Sensors
-    MPU6050Adapter mpu6050(sensorsMediator);
-    HMC5883LAdapter hmc5883l(sensorsMediator, mpu6050.getMPU6050Ptr());
-    NoSensor noSensor(sensorsMediator);
+    namespace FlightModes {
+        UnarmedFlightMode unarmedFlightMode(quadXMotors);
+        StabilizeFlightMode stabilizeFlightMode(ahrs);
+    }
 
-    // Failsafe
+    VirtualPilot virtualPilotInstance(quadXMotors, FlightModes::unarmedFlightMode);
+
+    namespace Sensors {
+        MPU6050Adapter mpu6050(sensorsMediator);
+        HMC5883LAdapter hmc5883l(sensorsMediator, mpu6050.getMPU6050Ptr());
+        NoSensor noSensor(sensorsMediator);
+    }
+
+
     Failsafe failsafe;
     MotorsDisarm failsafeActionMotorsDisarm(quadXMotors);
-    CommunicationLost failsafeScenarioCommLost(rmtPacketComm, &failsafeActionMotorsDisarm);
+    CommunicationLost failsafeScenarioCommLost(Communication::rmtPacketComm, &failsafeActionMotorsDisarm);
     TiltExceeding failsafeTiltExceeding(ahrs, &failsafeActionMotorsDisarm);
 }
 
 
 namespace Instance
 {
+// MainInstances:
     ITasker& tasker = Assemble::simpleTasker;
     IAHRS& ahrs = Assemble::ahrs;
     IMotors& motors = Assemble::quadXMotors;
     ISensorsData& sensorsData = Assemble::sensorsMediator;
     IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
 
-    PacketCommunication& pilotPacketComm = Assemble::rmtPacketComm;
-    RemoteControlComm& pilotPacketsAndData = Assemble::remoteControlComm;
-
-    using Assemble::noSensor;
-    Sensor& accel = *Assemble::mpu6050.getAccSensor();
-    Sensor& gyro = *Assemble::mpu6050.getGyroSensor();
-    Sensor& magn = Assemble::hmc5883l;
-    Sensor& baro = noSensor;
-    Sensor& gps = noSensor;
-    Sensor& btmRangefinder = noSensor;
+    PacketCommunication& pilotPacketComm = Assemble::Communication::rmtPacketComm;
 
     Failsafe& failsafe = Assemble::failsafe;
     DebugMessenger& debMes = Assemble::serialDebugMessenger;
+
+
+// SensorInstances:
+    using Assemble::Sensors::noSensor;
+    Sensor& accel = *Assemble::Sensors::mpu6050.getAccSensor();
+    Sensor& gyro = *Assemble::Sensors::mpu6050.getGyroSensor();
+    Sensor& magn = Assemble::Sensors::hmc5883l;
+    Sensor& baro = noSensor;
+    Sensor& gps = noSensor;
+    Sensor& btmRangefinder = noSensor;
 }
 
 
@@ -152,7 +159,7 @@ void setupDrone()
 
 
     debMes.showMessage("RmtCtrlComm");
-    setupRemoteControllerComm();
+    setupCommunication();
     debMes.showMessage(OKText);
 
 
@@ -197,13 +204,13 @@ void initializeSensors()
 
 void setupFlightModes()
 {
-    Instance::virtualPilot.addFlightMode(&Assemble::unarmedFlightMode);
-    Instance::virtualPilot.addFlightMode(&Assemble::stabilizeFlightMode); // TODO: think whether to pass flight modes by reference
+    Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::unarmedFlightMode);
+    Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::stabilizeFlightMode); // TODO: think whether to pass flight modes by reference
 
     // TODO: make config values for default pid gains
-    Assemble::stabilizeFlightMode.setLevelingXPIDGains(1.69, 0.7, 0.5, 104);
-    Assemble::stabilizeFlightMode.setLevelingYPIDGains(1.69, 0.7, 0.5, 104);
-    Assemble::stabilizeFlightMode.setHeadingHoldPIDGains(2.24, 1.11, 0.97, 85);
+    Assemble::FlightModes::stabilizeFlightMode.setLevelingXPIDGains(1.69, 0.7, 0.5, 104);
+    Assemble::FlightModes::stabilizeFlightMode.setLevelingYPIDGains(1.69, 0.7, 0.5, 104);
+    Assemble::FlightModes::stabilizeFlightMode.setHeadingHoldPIDGains(2.24, 1.11, 0.97, 85);
 
     Instance::virtualPilot.initializeFlightModes();
 }
@@ -217,12 +224,12 @@ void addTasksToTasker()
 
     tasker.addTask(&Assemble::failsafe, 10);
     tasker.addTask(&Assemble::ahrs, Config::MainFrequency_Hz);
-    tasker.addTask(&Assemble::mpu6050, Config::MainFrequency_Hz);
+    tasker.addTask(&Assemble::Sensors::mpu6050, Config::MainFrequency_Hz);
 
     Instance::debMes.showMessage(2);
 
     tasker.addTask(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz);
-    tasker.addTask(&Assemble::hmc5883l, 75);
+    tasker.addTask(&Assemble::Sensors::hmc5883l, 75);
 
     Instance::debMes.showMessage(3);
 
@@ -231,11 +238,16 @@ void addTasksToTasker()
 }
 
 
-void setupRemoteControllerComm()
+void setupCommunication()
 {
     Serial2.begin(Config::RmtCtrlSerialBaudRate);
-    Assemble::rmtCtrlCommStream.begin();
+    Assemble::Communication::rmtCtrlCommStream.begin();
     Instance::pilotPacketComm.adaptConnStabilityToFrequency(Config::RmtCtrlReceivingFrequency_Hz);
+
+    Instance::pilotPacketComm.addReceiveDataPacketPointer(&DataPackets::steering);
+    Instance::pilotPacketComm.addReceiveDataPacketPointer(&DataPackets::flightModeChange);
+    Instance::pilotPacketComm.addReceiveDataPacketPointer(&DataPackets::pidTuning);
+    // add other data packets that could be received...
 }
 
 

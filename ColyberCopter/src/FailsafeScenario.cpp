@@ -5,7 +5,7 @@
  * 
  */
 
-#include "Failsafe/FailsafeScenarios/FailsafeScenario.h"
+#include "../Failsafe/FailsafeScenarios/FailsafeScenario.h"
 
 
 FailsafeScenario::FailsafeScenario(IExecutable* failsafeAction)
