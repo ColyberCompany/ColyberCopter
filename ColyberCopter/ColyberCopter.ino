@@ -20,6 +20,6 @@ void setup()
 
 void loop()
 {
-    Instance::tasker.runLoop();
+    Instance::tasker.loop();
 }
 
