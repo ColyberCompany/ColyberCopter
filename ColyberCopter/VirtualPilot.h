@@ -11,7 +11,6 @@
 #define VIRTUALPILOT_H
 
 #include "Interfaces/IVirtualPilot.h"
-#include "Interfaces/IMotors.h"
 #include "FlightModes/FlightMode.h"
 #include <Task.h>
 #include <GrowingArray.h>
@@ -20,12 +19,11 @@
 class VirtualPilot : public Interfaces::IVirtualPilot, public Task
 {
 private:
-    Interfaces::IMotors& motors;
     FlightMode* currentFlightMode;
     GrowingArray<FlightMode*> flightModesArray;
 
 public:
-    VirtualPilot(Interfaces::IMotors& motors, FlightMode& initialFlightMode);
+    VirtualPilot(FlightMode& initialFlightMode);
 
     bool addFlightMode(FlightMode* flightMode) override;
     bool initializeFlightModes() override;
