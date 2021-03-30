@@ -25,7 +25,7 @@ public:
      */
     FailsafeScenario(IExecutable* failsafeAction);
     virtual ~FailsafeScenario();
-    virtual void execute() override = 0;
+    virtual void execute() override = 0; // TODO: change name of this method (probably don't inherit from IExecutable)
 
 protected:
     /**

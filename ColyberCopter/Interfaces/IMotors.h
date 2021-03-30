@@ -49,7 +49,7 @@ namespace Interfaces
          * @return Current state of the motors
          * (Enabled - armed, Disabled - disarmed)
          */
-        virtual Enums::StateType getMotorsState() = 0;
+        virtual Enums::StateType getMotorsState() = 0; // TODO: if Motors were and abstract class, this can be implemented
     };
 }
 
