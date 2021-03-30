@@ -13,7 +13,6 @@
 // TODO: set the order of include files
 #include <SimpleTasker.h>
 #include "../Interfaces/IAHRS.h"
-#include "../Interfaces/IMotors.h"
 #include "../Interfaces/ISensorsData.h"
 #include "../Interfaces/IVirtualPilot.h"
 #include <PacketCommunication.h>
@@ -27,7 +26,6 @@ namespace Instance
 
     extern ITasker& tasker;
     extern IAHRS& ahrs;
-    //extern IMotors& motors; // for safety
     extern ISensorsData& sensorsData;
     extern IVirtualPilot& virtualPilot;
     
