@@ -8,11 +8,10 @@
 
 // TODO: set the order of include files
 #include "CopterSetup.h"
-#include "Instances/MainInstances.h"
 #include "config.h"
 #include <SimpleTasker.h>
 #include "Failsafe/Failsafe.h"
-#include "Failsafe/FailsafeActions/MotorsDisarm.h"
+#include "Failsafe/FailsafeActions/DisarmMotors.h"
 #include "Failsafe/FailsafeScenarios/CommunicationLost.h"
 #include "Failsafe/FailsafeScenarios/TiltExceeding.h"
 #include "FlightModes/StabilizeFlightMode.h"
@@ -34,6 +33,7 @@
 #include "Tasks.h"
 #include "Communication/CommData.h"
 #include "Communication/DataPackets.h"
+#include "Motors/Motors.h"
 
 using namespace Interfaces;
 
@@ -60,11 +60,14 @@ namespace Assemble
 {
     SimpleTasker simpleTasker(Config::MaxTaskerTasks);
     SensorsMediator sensorsMediator;
-    MadgwickIMU madgwickIMU(sensorsMediator, Config::MainFrequency_Hz); // or MadgwickAHRS
-    NoPosCalcTemp tempNoPosCalc;
-    AHRS ahrs(tempNoPosCalc, madgwickIMU);
     QuadXMotors quadXMotors;
     SerialDebugMessenger serialDebugMessenger(Serial1);
+
+    namespace PositionAndRotation {
+        MadgwickIMU madgwickIMU(sensorsMediator, Config::MainFrequency_Hz); // or MadgwickAHRS
+        NoPosCalcTemp tempNoPosCalc;
+        AHRS ahrs(tempNoPosCalc, madgwickIMU);
+    }
 
     namespace Communication {
         StreamComm rmtCtrlCommStream(&Serial2, Config::RmtCtrlMaxComBufferSize);
@@ -73,11 +76,11 @@ namespace Assemble
 
 
     namespace FlightModes {
-        UnarmedFlightMode unarmedFlightMode(quadXMotors);
+        UnarmedFlightMode unarmedFlightMode;
         StabilizeFlightMode stabilizeFlightMode(ahrs);
     }
 
-    VirtualPilot virtualPilotInstance(quadXMotors, FlightModes::unarmedFlightMode);
+    VirtualPilot virtualPilotInstance(FlightModes::unarmedFlightMode);
 
     namespace Sensors {
         MPU6050Adapter mpu6050(sensorsMediator);
@@ -87,9 +90,9 @@ namespace Assemble
 
 
     Failsafe failsafe;
-    MotorsDisarm failsafeActionMotorsDisarm(quadXMotors);
-    CommunicationLost failsafeScenarioCommLost(Communication::rmtPacketComm, &failsafeActionMotorsDisarm);
-    TiltExceeding failsafeTiltExceeding(ahrs, &failsafeActionMotorsDisarm);
+    DisarmMotors failsafeActionDisarmMotors;
+    CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
+    TiltExceeding failsafeTiltExceeding(ahrs, &failsafeActionDisarmMotors);
 }
 
 
@@ -97,8 +100,8 @@ namespace Instance
 {
 // MainInstances:
     ITasker& tasker = Assemble::simpleTasker;
-    IAHRS& ahrs = Assemble::ahrs;
-    IMotors& motors = Assemble::quadXMotors;
+    IAHRS& ahrs = Assemble::PositionAndRotation::ahrs;
+    Motors& motors = Assemble::quadXMotors;
     ISensorsData& sensorsData = Assemble::sensorsMediator;
     IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
 
@@ -227,22 +230,16 @@ void setupFlightModes()
 }
 
 
-void addTasksToTasker()
+void addTasksToTasker() // TODO: maybe there shouldn't be this method and all tasks be added during initialization?
 {
     using Instance::tasker;
 
-    Instance::debMes.showMessage(1);
-
     tasker.addTask(&Assemble::failsafe, 10);
-    tasker.addTask(&Assemble::ahrs, Config::MainFrequency_Hz);
+    tasker.addTask(&Assemble::PositionAndRotation::ahrs, Config::MainFrequency_Hz);
     tasker.addTask(&Assemble::Sensors::mpu6050, Config::MainFrequency_Hz);
-
-    Instance::debMes.showMessage(2);
 
     tasker.addTask(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz);
     tasker.addTask(&Assemble::Sensors::hmc5883l, 75);
-
-    Instance::debMes.showMessage(3);
 
     tasker.addTask(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
 
