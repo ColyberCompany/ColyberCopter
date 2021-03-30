@@ -10,18 +10,15 @@
 #define COMMUNICATIONLOST_H
 
 #include "FailsafeScenario.h"
-#include <IConnectionStatus.h>
-#include "../../Interfaces/IMotors.h"
 
 
 class CommunicationLost : public FailsafeScenario
 {
 private:
-    const uint8_t ConnectionStabilityThreshold = 60;
-    IConnectionStatus& connectionStatus;
+    const uint8_t ConnectionStabilityThreshold = 60; // TODO: probably it should be somewhere else
 
 public:
-    CommunicationLost(IConnectionStatus& connectionStatus, IExecutable* failsafeAction);
+    CommunicationLost(IExecutable* failsafeAction);
     void execute() override;
 };
 

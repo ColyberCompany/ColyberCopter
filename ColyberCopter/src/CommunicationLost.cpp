@@ -6,16 +6,17 @@
  */
 
 #include "../Failsafe/FailsafeScenarios/CommunicationLost.h"
+#include "../Instances/MainInstances.h"
 
 
-CommunicationLost::CommunicationLost(IConnectionStatus& _connectionStatus, IExecutable* failsafeAction)
-    : FailsafeScenario(failsafeAction), connectionStatus(_connectionStatus)
+CommunicationLost::CommunicationLost(IExecutable* failsafeAction)
+    : FailsafeScenario(failsafeAction)
 {
 }
 
 
 void CommunicationLost::execute()
 {
-    if (connectionStatus.getConnectionStability() > ConnectionStabilityThreshold)
+    if (Instance::pilotPacketComm.getConnectionStability() > ConnectionStabilityThreshold)
         runFailsafeAction();
 }
