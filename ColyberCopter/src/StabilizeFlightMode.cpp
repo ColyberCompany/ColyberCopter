@@ -7,16 +7,15 @@
 
 #include "../FlightModes/StabilizeFlightMode.h"
 #include "../Common/Constants.h"
+#include "../Instances/MainInstances.h"
 
-using Interfaces::IAHRS;
 using Enums::FlightModeTypes;
 using Consts::RoundAngle;;
 using Consts::StraightAngle;
 
 
-StabilizeFlightMode::StabilizeFlightMode(IAHRS& _ahrs)
+StabilizeFlightMode::StabilizeFlightMode()
     : FlightMode(FlightModeTypes::STABILIZE, nullptr),
-    ahrs(_ahrs),
     levelingXPID(DeltaTime_s),
     levelingYPID(DeltaTime_s),
     headingHoldPID(DeltaTime_s)
@@ -77,7 +76,7 @@ void StabilizeFlightMode::updateLeveling(ControlSticks& inputOutputSticks)
 {
     float finalPitch = inputOutputSticks.getPitch() / 10.f; // TODO: make that max tilt angle can be set
     float finalRoll = inputOutputSticks.getRoll() / 10.f;
-    vector3Float angles = ahrs.getAngles_deg();
+    vector3Float angles = Instance::ahrs.getAngles_deg();
 
     inputOutputSticks.setPitch(levelingXPID.update(finalPitch, angles.x) + 0.5f);
     inputOutputSticks.setRoll(levelingYPID.update(finalRoll, angles.y) + 0.5f);
@@ -101,7 +100,7 @@ void StabilizeFlightMode::updateHeadingToHold(int16_t yawStick)
 
 void StabilizeFlightMode::calculateHeadingError()
 {
-    headingError = headingToHold - ahrs.getHeading_deg();
+    headingError = headingToHold - Instance::ahrs.getHeading_deg();
 
     if (headingError > StraightAngle)
         headingError -= RoundAngle;
@@ -112,7 +111,7 @@ void StabilizeFlightMode::calculateHeadingError()
 
 void StabilizeFlightMode::setHeadingToHoldToCurrentReading()
 {
-    headingToHold = ahrs.getHeading_deg();
+    headingToHold = Instance::ahrs.getHeading_deg();
 }
 
 
