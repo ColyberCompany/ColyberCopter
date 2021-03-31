@@ -42,7 +42,6 @@ using namespace Interfaces;
 void addTasksToTasker();
 void setupFailsafe();
 void initializeSensors();
-void setSensorsOffsets();
 void setupFlightModes();
 void setupCommunication();
 
@@ -60,8 +59,11 @@ namespace Assemble
 {
     SimpleTasker simpleTasker(Config::MaxTaskerTasks);
     SensorsMediator sensorsMediator;
-    QuadXMotors quadXMotors;
     SerialDebugMessenger serialDebugMessenger(Serial1);
+
+    namespace Motors {
+        QuadXMotors quadXMotors;
+    }
 
     namespace PositionAndRotation {
         MadgwickIMU madgwickIMU(sensorsMediator, Config::MainFrequency_Hz); // or MadgwickAHRS
@@ -102,7 +104,7 @@ namespace Instance
 // MainInstances:
     ITasker& tasker = Assemble::simpleTasker;
     IAHRS& ahrs = Assemble::PositionAndRotation::ahrs;
-    Motors& motors = Assemble::quadXMotors;
+    Motors& motors = Assemble::Motors::quadXMotors;
     ISensorsData& sensorsData = Assemble::sensorsMediator;
     IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
 
@@ -157,7 +159,6 @@ void setupDrone()
 
     debMes.showMessage("Sensors");
     initializeSensors();
-    setSensorsOffsets();
     debMes.showMessage(OKText);
 
 
@@ -210,22 +211,11 @@ void initializeSensors()
 }
 
 
-void setSensorsOffsets()
-{
-    Instance::accel.setOffset(FloatAxisVector(3, 188.00, 26.00, -38.00));
-    Instance::gyro.setOffset(FloatAxisVector(3, -142.00, 123.00, -8.00));
-}
-
-
 void setupFlightModes()
 {
     Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::unarmedFlightMode);
     Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::stabilizeFlightMode); // TODO: think whether to pass flight modes by reference
-
-    // TODO: make config values for default pid gains
-    Assemble::FlightModes::stabilizeFlightMode.setLevelingXPIDGains(1.69, 0.7, 0.5, 104);
-    Assemble::FlightModes::stabilizeFlightMode.setLevelingYPIDGains(1.69, 0.7, 0.5, 104);
-    Assemble::FlightModes::stabilizeFlightMode.setHeadingHoldPIDGains(2.24, 1.11, 0.97, 85);
+    // add other flight modes...
 
     Instance::virtualPilot.initializeFlightModes();
 }
