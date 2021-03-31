@@ -10,7 +10,7 @@
 #include "CopterSetup.h"
 #include "config.h"
 #include <SimpleTasker.h>
-#include "Failsafe/Failsafe.h"
+#include "Failsafe/FailsafeManager.h"
 #include "Failsafe/FailsafeActions/DisarmMotors.h"
 #include "Failsafe/FailsafeScenarios/CommunicationLost.h"
 #include "Failsafe/FailsafeScenarios/TiltExceeding.h"
@@ -88,11 +88,12 @@ namespace Assemble
         NoSensor noSensor(sensorsMediator);
     }
 
-
-    Failsafe failsafe;
-    DisarmMotors failsafeActionDisarmMotors;
-    CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
-    TiltExceeding failsafeTiltExceeding(&failsafeActionDisarmMotors);
+    namespace Failsafe { // TODO: try to improve names of objects inside
+        FailsafeManager failsafeManager;
+        DisarmMotors failsafeActionDisarmMotors;
+        CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
+        TiltExceeding failsafeTiltExceeding(&failsafeActionDisarmMotors);
+    }
 }
 
 
@@ -107,7 +108,7 @@ namespace Instance
 
     PacketCommunication& pilotPacketComm = Assemble::Communication::rmtPacketComm;
 
-    Failsafe& failsafe = Assemble::failsafe;
+    FailsafeManager& failsafe = Assemble::Failsafe::failsafeManager;
     DebugMessenger& debMes = Assemble::serialDebugMessenger;
 
 
@@ -184,7 +185,7 @@ void setupFailsafe()
 {
     Instance::failsafe.initializeFailsafe();
     //Instance::failsafe.addFailsafeScenario(&Assemble::failsafeScenarioCommLost);
-    Instance::failsafe.addFailsafeScenario(&Assemble::failsafeTiltExceeding);
+    Instance::failsafe.addFailsafeScenario(&Assemble::Failsafe::failsafeTiltExceeding);
 }
 
 
@@ -234,7 +235,7 @@ void addTasksToTasker() // TODO: maybe there shouldn't be this method and all ta
 {
     using Instance::tasker;
 
-    tasker.addTask(&Assemble::failsafe, 10);
+    tasker.addTask(&Assemble::Failsafe::failsafeManager, 10);
     tasker.addTask(&Assemble::PositionAndRotation::ahrs, Config::MainFrequency_Hz);
     tasker.addTask(&Assemble::Sensors::mpu6050, Config::MainFrequency_Hz);
 

@@ -17,7 +17,7 @@
 #include "../Interfaces/IVirtualPilot.h"
 #include <PacketCommunication.h>
 #include "../Sensors/Sensor.h"
-#include "../Failsafe/Failsafe.h"
+#include "../Failsafe/FailsafeManager.h"
 #include "../Debug/DebugMessenger.h"
 
 namespace Instance
@@ -31,7 +31,7 @@ namespace Instance
     
     extern PacketCommunication& pilotPacketComm;
 
-    extern Failsafe& failsafe;
+    extern FailsafeManager& failsafeManager;
     extern DebugMessenger& debMes;
 }
 
