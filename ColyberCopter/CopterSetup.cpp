@@ -77,7 +77,7 @@ namespace Assemble
 
     namespace FlightModes {
         UnarmedFlightMode unarmedFlightMode;
-        StabilizeFlightMode stabilizeFlightMode(ahrs);
+        StabilizeFlightMode stabilizeFlightMode;
     }
 
     VirtualPilot virtualPilotInstance(FlightModes::unarmedFlightMode);
@@ -92,7 +92,7 @@ namespace Assemble
     Failsafe failsafe;
     DisarmMotors failsafeActionDisarmMotors;
     CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
-    TiltExceeding failsafeTiltExceeding(ahrs, &failsafeActionDisarmMotors);
+    TiltExceeding failsafeTiltExceeding(&failsafeActionDisarmMotors);
 }
 
 
