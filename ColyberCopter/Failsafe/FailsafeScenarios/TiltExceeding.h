@@ -17,15 +17,7 @@ class TiltExceeding : public FailsafeScenario
 {
 public:
     TiltExceeding(IExecutable* failsafeAction);
-    void execute() override;
-
-private:
-    /**
-     * @brief Determines if pitch and roll are out of range.
-     * @return true if angles are too high,
-     * returns false if angles are nominal.
-     */
-    bool checkIfAnglesExceeds();
+    bool hasFailOccurred() override;
 };
 
 

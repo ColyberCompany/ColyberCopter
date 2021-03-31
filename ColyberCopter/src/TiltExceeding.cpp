@@ -20,14 +20,7 @@ TiltExceeding::TiltExceeding(IExecutable* failsafeAction)
 }
 
 
-void TiltExceeding::execute()
-{
-    if (checkIfAnglesExceeds())
-        runFailsafeAction();
-}
-
-
-bool TiltExceeding::checkIfAnglesExceeds()
+bool TiltExceeding::hasFailOccurred()
 {
     using Config::TiltExceedingAngleThreshold;
 
