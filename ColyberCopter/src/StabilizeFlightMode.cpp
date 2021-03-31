@@ -8,17 +8,27 @@
 #include "../FlightModes/StabilizeFlightMode.h"
 #include "../Common/Constants.h"
 #include "../Instances/MainInstances.h"
+#include "../config.h"
 
 using Enums::FlightModeTypes;
 using Consts::RoundAngle;;
 using Consts::StraightAngle;
 
+using Config::LevelingPID_kP;
+using Config::LevelingPID_kI;
+using Config::LevelingPID_kD;
+using Config::LevelingPID_IMax;
+using Config::HeadHoldPID_kP;
+using Config::HeadHoldPID_kI;
+using Config::HeadHoldPID_kD;
+using Config::HeadHoldPID_IMax;
+
 
 StabilizeFlightMode::StabilizeFlightMode()
     : FlightMode(FlightModeTypes::STABILIZE, nullptr),
-    levelingXPID(DeltaTime_s),
-    levelingYPID(DeltaTime_s),
-    headingHoldPID(DeltaTime_s)
+    levelingXPID(DeltaTime_s, LevelingPID_kP, LevelingPID_kI, LevelingPID_kD, LevelingPID_IMax),
+    levelingYPID(DeltaTime_s, LevelingPID_kP, LevelingPID_kI, LevelingPID_kD, LevelingPID_IMax),
+    headingHoldPID(DeltaTime_s, HeadHoldPID_kP, HeadHoldPID_kI, HeadHoldPID_kD, HeadHoldPID_IMax)
 {
 }
 
