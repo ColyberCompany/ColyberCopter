@@ -19,11 +19,11 @@
 class CommunicationLost : public FailsafeScenario
 {
 private:
-    const uint8_t ConnectionStabilityThreshold = 60; // TODO: probably it should be somewhere else
+    const uint8_t ConnectionStabilityThreshold = 50; // TODO: probably it should be somewhere else
 
 public:
     CommunicationLost(IExecutable* failsafeAction);
-    void execute() override;
+    bool hasFailOccurred() override;
 };
 
 

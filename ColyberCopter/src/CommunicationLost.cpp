@@ -15,8 +15,8 @@ CommunicationLost::CommunicationLost(IExecutable* failsafeAction)
 }
 
 
-void CommunicationLost::execute()
+bool CommunicationLost::hasFailOccurred()
 {
-    if (Instance::pilotPacketComm.getConnectionStability() > ConnectionStabilityThreshold)
-        runFailsafeAction();
+    using Instance::pilotPacketComm;
+    return pilotPacketComm.getConnectionStability() < ConnectionStabilityThreshold;
 }
