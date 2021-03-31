@@ -10,12 +10,25 @@
 
 FailsafeScenario::FailsafeScenario(IExecutable* failsafeAction)
 {
-    this->failsafeAction = failsafeAction;
+    setFailsafeAction(failsafeAction);
 }
 
 
 FailsafeScenario::~FailsafeScenario()
 {
+}
+
+
+void FailsafeScenario::setFailsafeAction(IExecutable* failsafeAction)
+{
+    this->failsafeAction = failsafeAction;
+}
+
+
+void FailsafeScenario::runFailsafeActionIfFailHasOccurred()
+{
+    if (hasFailOccurred())
+        runFailsafeAction();
 }
 
 
