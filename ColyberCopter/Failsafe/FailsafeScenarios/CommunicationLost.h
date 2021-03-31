@@ -11,6 +11,10 @@
 
 #include "FailsafeScenario.h"
 
+#ifdef ARDUINO
+    #include <Arduino.h>
+#endif
+
 
 class CommunicationLost : public FailsafeScenario
 {
