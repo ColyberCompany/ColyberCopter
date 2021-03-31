@@ -6,18 +6,16 @@
  */
 
 #include "../Failsafe/FailsafeScenarios/TiltExceeding.h"
+#include "../Instances/MainInstances.h"
 #include "../config.h"
 
 #ifdef ARDUINO
     #include <Arduino.h>
 #endif
 
-using Interfaces::IAHRS;
-using Config::TiltExceedingAngleThreshold;
 
-
-TiltExceeding::TiltExceeding(IAHRS& _ahrs, IExecutable* failsafeAction)
-    : FailsafeScenario(failsafeAction), ahrs(_ahrs)
+TiltExceeding::TiltExceeding(IExecutable* failsafeAction)
+    : FailsafeScenario(failsafeAction)
 {
 }
 
@@ -31,6 +29,8 @@ void TiltExceeding::execute()
 
 bool TiltExceeding::checkIfAnglesExceeds()
 {
-    return (abs(ahrs.getPitch_deg()) > TiltExceedingAngleThreshold ||
-            abs(ahrs.getRoll_deg()) > TiltExceedingAngleThreshold);
+    using Config::TiltExceedingAngleThreshold;
+
+    return (abs(Instance::ahrs.getPitch_deg()) > TiltExceedingAngleThreshold ||
+            abs(Instance::ahrs.getRoll_deg()) > TiltExceedingAngleThreshold);
 }
