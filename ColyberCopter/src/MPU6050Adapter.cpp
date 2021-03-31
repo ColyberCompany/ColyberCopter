@@ -13,6 +13,8 @@ MPU6050Adapter::AccCalib::AccCalib(SensorsMediator& sensorsMediator, MPU6050Adap
     : Sensor(Enums::SensorTypes::ACCELEROMETER, sensorsMediator),
       mpuAdapter(_mpuAdapter)
 {
+    using Config::AccOffset;
+    setOffset(FloatAxisVector(3, AccOffset.x, AccOffset.y, AccOffset.z));
 }
 
 
@@ -96,6 +98,8 @@ MPU6050Adapter::GyroCalib::GyroCalib(SensorsMediator& sensorsMediator, MPU6050Ad
     : Sensor(Enums::SensorTypes::GYROSCOPE, sensorsMediator),
       mpuAdapter(_mpuAdapter)
 {
+    using Config::GyroOffset;
+    setOffset(FloatAxisVector(3, GyroOffset.x, GyroOffset.y, GyroOffset.z));
 }
 
 
