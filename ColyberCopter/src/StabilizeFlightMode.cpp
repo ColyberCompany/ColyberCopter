@@ -26,10 +26,13 @@ using Config::HeadHoldPID_IMax;
 
 StabilizeFlightMode::StabilizeFlightMode()
     : FlightMode(FlightModeTypes::STABILIZE, nullptr),
-    levelingXPID(DeltaTime_s, LevelingPID_kP, LevelingPID_kI, LevelingPID_kD, LevelingPID_IMax),
-    levelingYPID(DeltaTime_s, LevelingPID_kP, LevelingPID_kI, LevelingPID_kD, LevelingPID_IMax),
-    headingHoldPID(DeltaTime_s, HeadHoldPID_kP, HeadHoldPID_kI, HeadHoldPID_kD, HeadHoldPID_IMax)
+    levelingXPID(Config::MainInterval_s),
+    levelingYPID(Config::MainInterval_s),
+    headingHoldPID(Config::MainInterval_s)
 {
+    levelingXPID.setGains(LevelingPID_kP, LevelingPID_kI, LevelingPID_kD, LevelingPID_IMax);
+    levelingYPID.setGains(LevelingPID_kP, LevelingPID_kI, LevelingPID_kD, LevelingPID_IMax);
+    headingHoldPID.setGains(HeadHoldPID_kP, HeadHoldPID_kI, HeadHoldPID_kD, HeadHoldPID_IMax);
 }
 
 
@@ -88,8 +91,16 @@ void StabilizeFlightMode::updateLeveling(ControlSticks& inputOutputSticks)
     float finalRoll = inputOutputSticks.getRoll() / 10.f;
     vector3Float angles = Instance::ahrs.getAngles_deg();
 
-    inputOutputSticks.setPitch(levelingXPID.update(finalPitch, angles.x) + 0.5f);
+    //Serial1.print(inputOutputSticks.getPitch());
+    //Serial1.print('\t');
+
+    //inputOutputSticks.setPitch(levelingXPID.update(finalPitch, angles.x) + 0.5f);
+    float temp = levelingXPID.update(finalPitch, angles.x) + 0.5f;
+    //Serial1.println(temp);
+
     inputOutputSticks.setRoll(levelingYPID.update(finalRoll, angles.y) + 0.5f);
+
+    //Serial1.println(inputOutputSticks.getPitch());
 }
 
 
@@ -103,7 +114,7 @@ void StabilizeFlightMode::updateHeadingHolding(ControlSticks& inputOutputSticks)
 
 void StabilizeFlightMode::updateHeadingToHold(int16_t yawStick)
 {
-    headingToHold -= ((float)(yawStick / 2.f) * DeltaTime_s);
+    headingToHold -= ((float)(yawStick / 2.f) * Config::MainInterval_s);
     headingToHold = correctHeading(headingToHold);
 }
 
