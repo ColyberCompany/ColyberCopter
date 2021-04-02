@@ -23,7 +23,7 @@ namespace Config
 
     const uint8_t MaxTaskerTasks = 15;
 
-    const float TiltExceedingAngleThreshold = 60;
+    const float TiltExceedingAngleThreshold = 67;
 
     const float AccLPFCutOffFreq = 5.f;
     const float GyroLPFCutOffFreq = 10.f;
