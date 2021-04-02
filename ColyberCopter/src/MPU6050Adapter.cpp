@@ -170,7 +170,7 @@ void MPU6050Adapter::GyroCalib::setOffset(FloatAxisVector offset)
 
 const char* MPU6050Adapter::GyroCalib::getName()
 {
-    return "accelerometer";
+    return "gyroscope";
 }
 
 
