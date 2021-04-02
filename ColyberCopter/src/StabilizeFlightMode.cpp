@@ -91,16 +91,8 @@ void StabilizeFlightMode::updateLeveling(ControlSticks& inputOutputSticks)
     float finalRoll = inputOutputSticks.getRoll() / 10.f;
     vector3Float angles = Instance::ahrs.getAngles_deg();
 
-    //Serial1.print(inputOutputSticks.getPitch());
-    //Serial1.print('\t');
-
-    //inputOutputSticks.setPitch(levelingXPID.update(finalPitch, angles.x) + 0.5f);
-    float temp = levelingXPID.update(finalPitch, angles.x) + 0.5f;
-    //Serial1.println(temp);
-
+    inputOutputSticks.setPitch(levelingXPID.update(finalPitch, angles.x) + 0.5f);
     inputOutputSticks.setRoll(levelingYPID.update(finalRoll, angles.y) + 0.5f);
-
-    //Serial1.println(inputOutputSticks.getPitch());
 }
 
 
