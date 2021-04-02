@@ -11,9 +11,6 @@
 using Enums::FlightModeTypes;
 
 
-const float FlightMode::DeltaTime_s = Config::MainInterval_s;
-
-
 FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMode)
     : type(flightModeType), baseFlightMode(baseFlightMode)
 {
