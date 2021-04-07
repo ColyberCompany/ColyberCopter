@@ -45,7 +45,7 @@ namespace Interfaces
         /**
          * @brief Used whenever you want to change the current flight mode.
          * Flight mode have to be added previously using addFlightMode() method.
-         * Call prepare() and leave() methods of proper flight modes.
+         * This mehtod call prepare() and leave() methods of proper flight modes.
          * @param flightModeToSet Pointer to the flight mode instance to set.
          * @return false if instance of choosen flight mode was not found
          * (wasn't added using addFlightMode() method).
