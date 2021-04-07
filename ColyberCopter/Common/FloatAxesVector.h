@@ -26,27 +26,41 @@ private:
 
 public:
     /**
-     * @brief Parametrized ctor.
-     * @param axesAmt Amount of axes that this vector will have.
+     * @brief Creates zero axis object. 
      */
-    FloatAxisVector(uint8_t axesAmt)
+    FloatAxisVector()
     {
-        if (axesAmt > 3)
-            axesAmt = 3;
-
-        this->axesAmt = axesAmt;
-        valuesArray = new float[axesAmt];
+        allocateMemory(0);
     }
 
-    FloatAxisVector(uint8_t _axesAmt, float x, float y=0, float z=0)
-        : FloatAxisVector(_axesAmt)
+    /**
+     * @brief Creates one axis object.
+     */
+    FloatAxisVector(float x)
     {
-        switch (axesAmt)
-        {
-            case 3: valuesArray[2] = z;
-            case 2: valuesArray[1] = y;
-            case 1: valuesArray[0] = x;
-        }
+        allocateMemory(1);
+        valuesArray[0] = x;
+    }
+
+    /**
+     * @brief Creates two axes object.
+     */
+    FloatAxisVector(float x, float y)
+    {
+        allocateMemory(2);
+        valuesArray[0] = x;
+        valuesArray[1] = y;
+    }
+
+    /**
+     * @brief Creates three axes object.
+     */
+    FloatAxisVector(float x, float y, float z)
+    {
+        allocateMemory(3);
+        valuesArray[0] = x;
+        valuesArray[1] = y;
+        valuesArray[2] = z;
     }
 
     /**
@@ -57,6 +71,22 @@ public:
     {
         axesAmt = other.axesAmt;
         valuesArray = new float[axesAmt];
+        for (uint8_t i=0; i < axesAmt; i++)
+            valuesArray[i] = other.valuesArray[i];
+    }
+
+    FloatAxisVector(FloatAxisVector&& toMove)
+    {
+        axesAmt = toMove.axesAmt;
+        valuesArray = toMove.valuesArray;
+
+        toMove.axesAmt = 0;
+        toMove.valuesArray = nullptr;
+    }
+
+    ~FloatAxisVector()
+    {
+        delete[] valuesArray;
     }
 
     /**
@@ -76,6 +106,21 @@ public:
 
             for (int i = 0; i < axesAmt; i++)
                     valuesArray[i] = other.valuesArray[i];
+        }
+
+        return *this;
+    }
+
+    FloatAxisVector& operator=(FloatAxisVector&& toMove)
+    {
+        if (this != &toMove)
+        {
+            delete[] valuesArray;
+            axesAmt = toMove.axesAmt;
+            valuesArray = toMove.valuesArray;
+
+            toMove.axesAmt = 0;
+            toMove.valuesArray = nullptr;
         }
 
         return *this;
@@ -102,6 +147,17 @@ public:
     {
         if ((uint8_t)axis < axesAmt)
             valuesArray[(uint8_t)axis] = value;
+    }
+
+
+private:
+    void allocateMemory(uint8_t axesAmt)
+    {
+        if (axesAmt > 3)
+            axesAmt = 3;
+
+        this->axesAmt = axesAmt;
+        valuesArray = new float[axesAmt];
     }
 };
 
