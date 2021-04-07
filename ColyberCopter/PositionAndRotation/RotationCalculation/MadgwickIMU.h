@@ -32,7 +32,7 @@ private:
 
 
 public:
-    MadgwickIMU(Interfaces::ISensorsData& sensorsData, float sampleFrequency, float beta = DefaultBeta); // TODO: maybe use global Instance instead of passing reference through the constructor
+    MadgwickIMU(Interfaces::ISensorsData& sensorsData, float sampleFrequency, float beta = DefaultBeta); // TODO: maybe use global Instance instead of passing reference through the constructor (or use as an external library and make adapter class)
     void updateRotationCalculation() override;
     vector3Float getAngles_deg() override;
     vector3Float getAngles_rad() override;
