@@ -11,12 +11,11 @@
 #define MAININSTANCES_H
 
 // TODO: set the order of include files
-#include <SimpleTasker.h>
+#include <ITasker.h>
 #include "../Interfaces/IAHRS.h"
 #include "../Interfaces/ISensorsData.h"
 #include "../Interfaces/IVirtualPilot.h"
 #include <PacketCommunication.h>
-#include "../Sensors/Sensor.h"
 #include "../Failsafe/FailsafeManager.h"
 #include "../Debug/DebugMessenger.h"
 
