@@ -104,13 +104,10 @@ namespace Instance
 // MainInstances:
     ITasker& tasker = Assemble::simpleTasker;
     IAHRS& ahrs = Assemble::PositionAndRotation::ahrs;
-    Motors& motors = Assemble::Motors::quadXMotors;
     ISensorsData& sensorsData = Assemble::sensorsMediator;
     IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
-
     PacketCommunication& pilotPacketComm = Assemble::Communication::rmtPacketComm;
-
-    FailsafeManager& failsafe = Assemble::Failsafe::failsafeManager;
+    FailsafeManager& failsafeManager = Assemble::Failsafe::failsafeManager;
     DebugMessenger& debMes = Assemble::serialDebugMessenger;
 
 
@@ -122,6 +119,9 @@ namespace Instance
     Sensor& baro = noSensor;
     Sensor& gps = noSensor;
     Sensor& btmRangefinder = noSensor;
+
+// MotorsInstance:
+    Motors& motors = Assemble::Motors::quadXMotors;
 }
 
 
@@ -184,9 +184,9 @@ void setupDrone()
 
 void setupFailsafe()
 {
-    Instance::failsafe.initializeFailsafe();
-    //Instance::failsafe.addFailsafeScenario(&Assemble::failsafeScenarioCommLost);
-    Instance::failsafe.addFailsafeScenario(&Assemble::Failsafe::failsafeTiltExceeding);
+    Instance::failsafeManager.initializeFailsafe();
+    //Instance::failsafeManager.addFailsafeScenario(&Assemble::Failsafe::failsafeScenarioCommLost);
+    Instance::failsafeManager.addFailsafeScenario(&Assemble::Failsafe::failsafeTiltExceeding);
 }
 
 
