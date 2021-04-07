@@ -34,7 +34,7 @@ namespace Config
     extern const float TiltExceedingAngleThreshold;
 
     extern const float AccLPFCutOffFreq;
-	extern const float GyroLPFCutOffFreq;
+    extern const float GyroLPFCutOffFreq;
 
     extern const float LevelingPID_kP;
     extern const float LevelingPID_kI;
