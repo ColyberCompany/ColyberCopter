@@ -6,6 +6,7 @@
  */
 
 #include "../Failsafe/FailsafeActions/DisarmMotors.h"
+#include "../Instances/MainInstances.h"
 #include "../Instances/MotorsInstance.h"
 
 using Enums::StateType;
@@ -14,4 +15,5 @@ using Enums::StateType;
 void DisarmMotors::execute()
 {
     Instance::motors.setState(StateType::Disabled);
+    Instance::virtualPilot.setFlightMode(Enums::FlightModeTypes::UNARMED);
 }
