@@ -13,6 +13,8 @@
 #include <NMEAGPS.h>
 #include <Task.h>
 
+// TODO: implementations in cpp file
+
 
 class NeoGPSAdapter : public Sensor, public Task
 {
@@ -34,10 +36,6 @@ public:
     {
         // TODO: execute
     }
-
-    uint16_t startBackgroundCalibration(uint16_t) override { return 0; }
-    FloatAxisVector getOffset() const override { return FloatAxisVector(0); }
-    void setOffset(FloatAxisVector offset) override {}
 };
 
 
