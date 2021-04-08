@@ -11,26 +11,13 @@
 #define TILTEXCEEDING_H
 
 #include "FailsafeScenario.h"
-#include "../../Interfaces/IAHRS.h"
 
 
 class TiltExceeding : public FailsafeScenario
 {
-private:
-    Interfaces::IAHRS& ahrs;
-
 public:
-    TiltExceeding(Interfaces::IAHRS& ahrs, IExecutable* failsafeAction);
-    void execute() override;
-
-private:
-    /**
-     * @brief Determines if pitch and roll are out of range.
-     * 
-     * @return true if angles are too high,
-     * returns false if angles are nominal.
-     */
-    bool checkIfAnglesExceeds();
+    TiltExceeding(IExecutable* failsafeAction);
+    bool hasFailOccurred() override;
 };
 
 

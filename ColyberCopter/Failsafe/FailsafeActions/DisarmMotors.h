@@ -12,16 +12,11 @@
 #define MOTORSDISARM_H
 
 #include <IExecutable.h>
-#include "../../Interfaces/IMotors.h"
 
 
-class MotorsDisarm : public IExecutable
+class DisarmMotors : public IExecutable
 {
-private:
-    Interfaces::IMotors& motors;
-
 public:
-    MotorsDisarm(Interfaces::IMotors& motors);
     void execute() override;
 };
 

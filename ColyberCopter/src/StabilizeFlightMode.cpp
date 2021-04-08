@@ -7,20 +7,32 @@
 
 #include "../FlightModes/StabilizeFlightMode.h"
 #include "../Common/Constants.h"
+#include "../Instances/MainInstances.h"
+#include "../config.h"
 
-using Interfaces::IAHRS;
 using Enums::FlightModeTypes;
 using Consts::RoundAngle;;
 using Consts::StraightAngle;
 
+using Config::LevelingPID_kP;
+using Config::LevelingPID_kI;
+using Config::LevelingPID_kD;
+using Config::LevelingPID_IMax;
+using Config::HeadHoldPID_kP;
+using Config::HeadHoldPID_kI;
+using Config::HeadHoldPID_kD;
+using Config::HeadHoldPID_IMax;
 
-StabilizeFlightMode::StabilizeFlightMode(IAHRS& _ahrs)
+
+StabilizeFlightMode::StabilizeFlightMode()
     : FlightMode(FlightModeTypes::STABILIZE, nullptr),
-    ahrs(_ahrs),
-    levelingXPID(DeltaTime_s),
-    levelingYPID(DeltaTime_s),
-    headingHoldPID(DeltaTime_s)
+    levelingXPID(Config::MainInterval_s),
+    levelingYPID(Config::MainInterval_s),
+    headingHoldPID(Config::MainInterval_s)
 {
+    levelingXPID.setGains(LevelingPID_kP, LevelingPID_kI, LevelingPID_kD, LevelingPID_IMax);
+    levelingYPID.setGains(LevelingPID_kP, LevelingPID_kI, LevelingPID_kD, LevelingPID_IMax);
+    headingHoldPID.setGains(HeadHoldPID_kP, HeadHoldPID_kI, HeadHoldPID_kD, HeadHoldPID_IMax);
 }
 
 
@@ -77,7 +89,7 @@ void StabilizeFlightMode::updateLeveling(ControlSticks& inputOutputSticks)
 {
     float finalPitch = inputOutputSticks.getPitch() / 10.f; // TODO: make that max tilt angle can be set
     float finalRoll = inputOutputSticks.getRoll() / 10.f;
-    vector3Float angles = ahrs.getAngles_deg();
+    vector3Float angles = Instance::ahrs.getAngles_deg();
 
     inputOutputSticks.setPitch(levelingXPID.update(finalPitch, angles.x) + 0.5f);
     inputOutputSticks.setRoll(levelingYPID.update(finalRoll, angles.y) + 0.5f);
@@ -94,14 +106,14 @@ void StabilizeFlightMode::updateHeadingHolding(ControlSticks& inputOutputSticks)
 
 void StabilizeFlightMode::updateHeadingToHold(int16_t yawStick)
 {
-    headingToHold -= ((float)(yawStick / 2.f) * DeltaTime_s);
+    headingToHold -= ((float)(yawStick / 2.f) * Config::MainInterval_s);
     headingToHold = correctHeading(headingToHold);
 }
 
 
 void StabilizeFlightMode::calculateHeadingError()
 {
-    headingError = headingToHold - ahrs.getHeading_deg();
+    headingError = headingToHold - Instance::ahrs.getHeading_deg();
 
     if (headingError > StraightAngle)
         headingError -= RoundAngle;
@@ -112,7 +124,7 @@ void StabilizeFlightMode::calculateHeadingError()
 
 void StabilizeFlightMode::setHeadingToHoldToCurrentReading()
 {
-    headingToHold = ahrs.getHeading_deg();
+    headingToHold = Instance::ahrs.getHeading_deg();
 }
 
 

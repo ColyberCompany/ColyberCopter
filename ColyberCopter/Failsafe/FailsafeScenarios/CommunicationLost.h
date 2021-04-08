@@ -10,19 +10,20 @@
 #define COMMUNICATIONLOST_H
 
 #include "FailsafeScenario.h"
-#include <IConnectionStatus.h>
-#include "../../Interfaces/IMotors.h"
+
+#ifdef ARDUINO
+    #include <Arduino.h>
+#endif
 
 
 class CommunicationLost : public FailsafeScenario
 {
 private:
-    const uint8_t ConnectionStabilityThreshold = 60;
-    IConnectionStatus& connectionStatus;
+    const uint8_t ConnectionStabilityThreshold = 50; // TODO: probably it should be somewhere else
 
 public:
-    CommunicationLost(IConnectionStatus& connectionStatus, IExecutable* failsafeAction);
-    void execute() override;
+    CommunicationLost(IExecutable* failsafeAction);
+    bool hasFailOccurred() override;
 };
 
 

@@ -14,26 +14,40 @@
 #endif
 
 #include "Enums/BaudRateTypes.h"
+#include "Common/Vector3.h"
 
 
 namespace Config
 {
-    const uint16_t MainFrequency_Hz = 250;
-    const uint16_t MainInterval_us = 1000000 / MainFrequency_Hz;
-    const float MainInterval_s = 1.f / MainFrequency_Hz; // delta time between next main loop executions
+    extern const uint16_t MainFrequency_Hz;
+    extern const uint16_t MainInterval_us;
+    extern const float MainInterval_s; // delta time between next main loop executions
 
-    const Enums::BaudRateTypes RmtCtrlSerialBaudRate = Enums::BaudRateTypes::BAUD_115200;
+    extern const Enums::BaudRateTypes RmtCtrlSerialBaudRate;
 
-    const size_t RmtCtrlMaxComBufferSize = 40;
-    const size_t RmtCtrlMaxQueuedBuffers = 30;
-    const uint16_t RmtCtrlReceivingFrequency_Hz = 220;
+    extern const size_t RmtCtrlMaxComBufferSize;
+    extern const size_t RmtCtrlMaxQueuedBuffers;
+    extern const uint16_t RmtCtrlReceivingFrequency_Hz;
 
-    const uint8_t MaxTaskerTasks = 15;
+    extern const uint8_t MaxTaskerTasks;
 
-    const float TiltExceedingAngleThreshold = 60;
+    extern const float TiltExceedingAngleThreshold;
 
-    const float AccLPFCutOffFreq = 5.f;
-	const float GyroLPFCutOffFreq = 10.f;
+    extern const float AccLPFCutOffFreq;
+    extern const float GyroLPFCutOffFreq;
+
+    extern const float LevelingPID_kP;
+    extern const float LevelingPID_kI;
+    extern const float LevelingPID_kD;
+    extern const uint16_t LevelingPID_IMax;
+
+    extern const float HeadHoldPID_kP;
+    extern const float HeadHoldPID_kI;
+    extern const float HeadHoldPID_kD;
+    extern const uint16_t HeadHoldPID_IMax;
+
+    extern const vector3Int16 AccOffset;
+    extern const vector3Int16 GyroOffset;
 }
 
 

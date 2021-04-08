@@ -10,13 +10,11 @@
 #define STABILIZEFLIGHTMODE_H
 
 #include "FlightMode.h"
-#include "../Interfaces/IAHRS.h"
 #include <PID.h>
 
 
 class StabilizeFlightMode : public FlightMode
 {
-    Interfaces::IAHRS& ahrs;
     PID levelingXPID;
     PID levelingYPID;
     PID headingHoldPID;
@@ -26,8 +24,7 @@ class StabilizeFlightMode : public FlightMode
 
 
 public:
-    StabilizeFlightMode(Interfaces::IAHRS& ahrs);
-
+    StabilizeFlightMode();
     StabilizeFlightMode(const StabilizeFlightMode&) = delete;
     StabilizeFlightMode& operator=(const StabilizeFlightMode&) = delete;
 

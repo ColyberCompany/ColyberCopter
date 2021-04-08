@@ -10,7 +10,7 @@
 #define SENSOR_H
 
 #include "SensorsMediator.h"
-#include "../Common/FloatAxesVector.h"
+#include "../Common/FloatAxisVector.h"
 #include "../Enums/SensorTypes.h"
 
 

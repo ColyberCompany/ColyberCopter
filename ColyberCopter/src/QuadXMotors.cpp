@@ -8,14 +8,12 @@
 #include "../Motors/QuadXMotors.h"
 #include "../config.h"
 
-using Interfaces::IMotors;
 using Enums::StateType;
 
 
 QuadXMotors::QuadXMotors()
     : motorsTimer(TIM3)
 {
-    motorsState = StateType::Disabled;
 }
 
 
@@ -40,7 +38,7 @@ bool QuadXMotors::initializeMotors()
     motorsTimer.resume();
 
 
-    setMotorsState(StateType::Disabled);
+    setState(StateType::Disabled);
 
     return true;
 }
@@ -48,7 +46,7 @@ bool QuadXMotors::initializeMotors()
 
 void QuadXMotors::updatePower(const ControlSticks& stickValues)
 {
-    if (motorsState == StateType::Enabled)
+    if (getState() == StateType::Enabled)
     {
         int16_t flPower = stickValues.getThrottle() - stickValues.getPitch() + stickValues.getRoll() + stickValues.getYaw();
         int16_t frPower = stickValues.getThrottle() - stickValues.getPitch() - stickValues.getRoll() - stickValues.getYaw();
@@ -72,22 +70,4 @@ void QuadXMotors::updatePower(const ControlSticks& stickValues)
         motorsTimer.setCaptureCompare(3, MinPower);
         motorsTimer.setCaptureCompare(4, MinPower);
     }
-}
-
-
-void QuadXMotors::setMotorsState(StateType state)
-{
-    motorsState = state;
-
-    if (motorsState == StateType::Disabled)
-    {
-        ControlSticks zeroSticks(0, 0, 0, 0);
-        updatePower(zeroSticks);
-    }
-}
-
-
-StateType QuadXMotors::getMotorsState()
-{
-    return motorsState;
 }
