@@ -57,19 +57,28 @@ public:
      * @return Amount of seconds that the calibration process will take.
      * You can call getOffset() method after that time and get new offset values.
      */
-    virtual uint16_t startBackgroundCalibration(uint16_t amtOfSamples) = 0;
+    virtual uint16_t startBackgroundCalibration(uint16_t amtOfSamples)
+    {
+        // Don't need to calibrate by default
+        return 0;
+    }
 
     /**
      * @brief Getter of the calibration values.
      * @return Current calibration values.
      */
-    virtual FloatAxisVector getOffset() const = 0;
+    virtual FloatAxisVector getOffset() const
+    {
+        return FloatAxisVector();
+    }
 
     /**
      * @brief Setter of the calibration values.
      * @param offset Calibration values (offset) to set.
      */
-    virtual void setOffset(FloatAxisVector offset) = 0;
+    virtual void setOffset(FloatAxisVector offset)
+    {
+    }
 
     /**
      * @brief Getter of name of this sensor. 
