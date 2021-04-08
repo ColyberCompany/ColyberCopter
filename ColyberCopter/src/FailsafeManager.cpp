@@ -8,24 +8,21 @@
 #include "../Failsafe/FailsafeManager.h"
 
 
-FailsafeManager::FailsafeManager()
-{
-}
-
-
 bool FailsafeManager::initializeFailsafe()
 {
-    // TODO: think if need to to put anything here
     return true;
 }
 
 
-void FailsafeManager::addFailsafeScenario(FailsafeScenario* failsafeScenario)
+bool FailsafeManager::addFailsafeScenario(FailsafeScenario* failsafeScenario)
 {
     if (failsafeScenario == nullptr)
-        return;
+        return false;
 
-    failsafeScenariosList.add(failsafeScenario);
+    if (failsafeScenariosList.contain(failsafeScenario))
+        return false;
+
+    return failsafeScenariosList.add(failsafeScenario);
 }
 
 

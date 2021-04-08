@@ -13,8 +13,6 @@
 #include <Task.h>
 #include <LinkedList.h>
 
-// TODO: add briefs to all methods
-
 
 class FailsafeManager : public Task
 {
@@ -22,10 +20,30 @@ private:
     LinkedList<FailsafeScenario*> failsafeScenariosList;
 
 public:
-    FailsafeManager();
+    /**
+     * @return false if something went wrong, true otherwise.
+     */
     bool initializeFailsafe();
-    void addFailsafeScenario(FailsafeScenario* failsafeScenario);
+
+    /**
+     * @brief Add new FailsafeScenario to the list that will be checked
+     * in a loop if has occured.
+     * @param failsafeScenario Pointer to the FailsafeScenario instance.
+     * @return false if failsafe scenario was not added, true otherwise.
+     */
+    bool addFailsafeScenario(FailsafeScenario* failsafeScenario);
+
+    /**
+     * @brief Remove FailsafeScenario so it won't be checked any more.
+     * @param failsafeScenario Pointer to the FailsafeScenario
+     * to be removed from the FailsafeManager list.
+     */
     void removeFailsafeScenario(FailsafeScenario* failsafeScenario);
+
+    /**
+     * @brief Checks one time all previously added failsafe scenarios
+     * using addFailsafeScenario() method.
+     */
     void runFailsafeCheckLoop();
 
 protected:

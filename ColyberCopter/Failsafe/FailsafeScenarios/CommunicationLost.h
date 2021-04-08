@@ -22,7 +22,7 @@ namespace FailsafeScenarios
     class CommunicationLost : public FailsafeScenario
     {
     private:
-        const uint8_t ConnectionStabilityThreshold = 50; // TODO: probably it should be somewhere else
+        const uint8_t ConnectionStabilityThreshold = 50;
 
     public:
         CommunicationLost(IExecutable* failsafeAction) : FailsafeScenario(failsafeAction) {}
