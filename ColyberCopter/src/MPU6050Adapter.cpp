@@ -9,6 +9,19 @@
 #include "../config.h"
 
 
+#define ENABLE_ACC_LPF
+#define ENABLE_GYRO_LPF
+
+#ifdef ENABLE_ACC_LPF
+    static const float AccLPFCutOffFreq = 5.f; // accelerometer low-pass filter cut off frequency
+#endif
+#ifdef ENABLE_GYRO_LPF
+    static const float GyroLPFCutOffFreq = 16.f; // gyroscope low-pass filter cut off frequency
+#endif
+
+
+
+
 MPU6050Adapter::AccCalib::AccCalib(SensorsMediator& sensorsMediator, MPU6050Adapter& _mpuAdapter)
     : Sensor(Enums::SensorTypes::ACCELEROMETER, sensorsMediator),
       mpuAdapter(_mpuAdapter)
@@ -188,20 +201,29 @@ void MPU6050Adapter::execute()
     mpu.readRawData();
 
     SimpleMPU6050::vector3Float& accNorm = mpu.getNormalizedAcceleration();
-    //accCalib.sensorsMediator.updateAcc(vector3Float(accNorm.x, accNorm.y, accNorm.z)); // without filter
-    accCalib.sensorsMediator.updateAcc(vector3Float(
-        accLPF.x.update(accNorm.x),
-        accLPF.y.update(accNorm.y),
-        accLPF.z.update(accNorm.z)
-    ));
+
+    #ifdef ENABLE_ACC_LPF
+        accCalib.sensorsMediator.updateAcc(vector3Float(
+            accLPF.x.update(accNorm.x),
+            accLPF.y.update(accNorm.y),
+            accLPF.z.update(accNorm.z)
+        ));
+    #else
+        accCalib.sensorsMediator.updateAcc(vector3Float(accNorm.x, accNorm.y, accNorm.z)); // without filter
+    #endif
+    
 
     SimpleMPU6050::vector3Float& gyroNorm = mpu.getNormalizedRotation();
-    //gyroCalib.sensorsMediator.updateGyro(vector3Float(gyroNorm.x, gyroNorm.y, gyroNorm.z)); // without filter
-    gyroCalib.sensorsMediator.updateGyro(vector3Float(
-        gyroLPF.x.update(gyroNorm.x),
-        gyroLPF.y.update(gyroNorm.y),
-        gyroLPF.z.update(gyroNorm.z)
-    ));
+
+    #ifdef ENABLE_GYRO_LPF
+        gyroCalib.sensorsMediator.updateGyro(vector3Float(
+            gyroLPF.x.update(gyroNorm.x),
+            gyroLPF.y.update(gyroNorm.y),
+            gyroLPF.z.update(gyroNorm.z)
+        ));
+    #else
+        gyroCalib.sensorsMediator.updateGyro(vector3Float(gyroNorm.x, gyroNorm.y, gyroNorm.z)); // without filter
+    #endif
 
     // You can update temperature there
 
@@ -253,8 +275,12 @@ void MPU6050Adapter::initializeMPU6050IfWasNotInitialized()
     gyroCalib.initResultFlag = true;
 
     // Configure filters
-    config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
-    config3AxisLPF(gyroLPF, Config::GyroLPFCutOffFreq);
+    #ifdef ENABLE_ACC_LPF
+        config3AxisLPF(accLPF, AccLPFCutOffFreq);
+    #endif
+    #ifdef ENABLE_GYRO_LPF
+        config3AxisLPF(gyroLPF, GyroLPFCutOffFreq);
+    #endif
 }
 
 

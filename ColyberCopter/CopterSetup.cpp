@@ -208,8 +208,8 @@ void initializeSensors()
 
 void setSensorsOffsets()
 {
-    Instance::accel.setOffset(FloatAxisVector(3, 188.00, 26.00, -38.00));
-    Instance::gyro.setOffset(FloatAxisVector(3, -142.00, 123.00, -8.00));
+    Instance::accel.setOffset(FloatAxisVector(3, 376.00, 23.00, -33.00));
+    Instance::gyro.setOffset(FloatAxisVector(3, -135.00, 123.00, -4.00));
 }
 
 
@@ -223,7 +223,7 @@ void setupFlightModes()
     Assemble::FlightModes::stabilizeFlightMode.setLevelingYPIDGains(1.69, 0.7, 0.5, 104);
     Assemble::FlightModes::stabilizeFlightMode.setHeadingHoldPIDGains(2.24, 1.11, 0.97, 85);
 
-    Instance::virtualPilot.initializeFlightModes();
+    Instance::virtualPilot.initializeFlightModes(); // TODO: this method returns false if not all flight modes were initialized. This should be checked!
 }
 
 

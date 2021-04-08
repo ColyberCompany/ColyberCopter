@@ -28,12 +28,9 @@ namespace Config
     const size_t RmtCtrlMaxQueuedBuffers = 30;
     const uint16_t RmtCtrlReceivingFrequency_Hz = 220;
 
-    const uint8_t MaxTaskerTasks = 15;
+    const uint8_t MaxTaskerTasks = 25;
 
-    const float TiltExceedingAngleThreshold = 60;
-
-    const float AccLPFCutOffFreq = 5.f;
-	const float GyroLPFCutOffFreq = 10.f;
+    const float TiltExceedingAngleThreshold = 67;
 }
 
 

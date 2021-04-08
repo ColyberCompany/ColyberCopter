@@ -14,6 +14,9 @@ using Consts::RoundAngle;;
 using Consts::StraightAngle;
 
 
+static const float LevelingPIDLPFCutOffFreq = 18.f;
+
+
 StabilizeFlightMode::StabilizeFlightMode(IAHRS& _ahrs)
     : FlightMode(FlightModeTypes::STABILIZE, nullptr),
     ahrs(_ahrs),
@@ -21,6 +24,8 @@ StabilizeFlightMode::StabilizeFlightMode(IAHRS& _ahrs)
     levelingYPID(DeltaTime_s),
     headingHoldPID(DeltaTime_s)
 {
+    levelingXPID.setupDerivativeLowPassFilter(LevelingPIDLPFCutOffFreq);
+    levelingYPID.setupDerivativeLowPassFilter(LevelingPIDLPFCutOffFreq);
 }
 
 
