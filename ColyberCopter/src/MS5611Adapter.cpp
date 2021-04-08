@@ -30,13 +30,6 @@ bool MS5611Adapter::initialize()
 }
 
 
-uint16_t MS5611Adapter::startBackgroundCalibration(uint16_t)
-{
-    // Don't need to calibrate baro
-    return 0;
-}
-
-
 const char* MS5611Adapter::getName()
 {
     return "MS5611_barometer";

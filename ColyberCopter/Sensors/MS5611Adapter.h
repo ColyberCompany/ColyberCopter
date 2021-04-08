@@ -29,7 +29,6 @@ public:
     MS5611Adapter(SensorsMediator& sensorsMediator, ITasker& tasker);
 
     bool initialize() override;
-    uint16_t startBackgroundCalibration(uint16_t) override;
     const char* getName() override;
 
 private:
