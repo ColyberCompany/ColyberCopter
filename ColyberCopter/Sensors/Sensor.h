@@ -63,13 +63,17 @@ public:
      * @brief Getter of the calibration values.
      * @return Current calibration values.
      */
-    virtual FloatAxisVector getOffset() const = 0;
+    virtual FloatAxisVector getOffset() const
+    {
+        return FloatAxisVector();
+    }
 
     /**
      * @brief Setter of the calibration values.
      * @param offset Calibration values (offset) to set.
      */
-    virtual void setOffset(FloatAxisVector offset) = 0;
+    virtual void setOffset(FloatAxisVector offset)
+    {}
 
     /**
      * @brief Getter of name of this sensor. 
