@@ -29,13 +29,11 @@ public:
     MS5611Adapter(SensorsMediator& sensorsMediator, ITasker& tasker);
 
     bool initialize() override;
-    void execute() override;
-
     uint16_t startBackgroundCalibration(uint16_t) override;
-    FloatAxisVector getOffset() const override;
-    void setOffset(FloatAxisVector) override;
-
     const char* getName() override;
+
+private:
+    void execute() override;
 };
 
 

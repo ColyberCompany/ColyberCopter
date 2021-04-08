@@ -30,12 +30,6 @@ bool MS5611Adapter::initialize()
 }
 
 
-void MS5611Adapter::execute()
-{
-    sensorsMediator.updatePressure(baro.getSmoothPressure());
-}
-
-
 uint16_t MS5611Adapter::startBackgroundCalibration(uint16_t)
 {
     // Don't need to calibrate baro
@@ -43,18 +37,13 @@ uint16_t MS5611Adapter::startBackgroundCalibration(uint16_t)
 }
 
 
-FloatAxisVector MS5611Adapter::getOffset() const
-{
-    return FloatAxisVector();
-}
-
-
-void MS5611Adapter::setOffset(FloatAxisVector)
-{
-}
-
-
 const char* MS5611Adapter::getName()
 {
     return "MS5611_barometer";
+}
+
+
+void MS5611Adapter::execute()
+{
+    sensorsMediator.updatePressure(baro.getSmoothPressure());
 }
