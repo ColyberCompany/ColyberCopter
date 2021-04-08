@@ -1,5 +1,5 @@
 /**
- * @file FloatAxesVector.h
+ * @file FloatAxisVector.h
  * @author Jan Wielgus
  * @brief This class is used to create one, two or three
  * dimensional vector to store different sized vector
