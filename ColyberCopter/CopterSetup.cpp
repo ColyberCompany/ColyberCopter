@@ -8,11 +8,10 @@
 
 // TODO: set the order of include files
 #include "CopterSetup.h"
-#include "Instances/MainInstances.h"
 #include "config.h"
 #include <SimpleTasker.h>
-#include "Failsafe/Failsafe.h"
-#include "Failsafe/FailsafeActions/MotorsDisarm.h"
+#include "Failsafe/FailsafeManager.h"
+#include "Failsafe/FailsafeActions/DisarmMotors.h"
 #include "Failsafe/FailsafeScenarios/CommunicationLost.h"
 #include "Failsafe/FailsafeScenarios/TiltExceeding.h"
 #include "FlightModes/StabilizeFlightMode.h"
@@ -34,6 +33,7 @@
 #include "Tasks.h"
 #include "Communication/CommData.h"
 #include "Communication/DataPackets.h"
+#include "Motors/Motors.h"
 
 using namespace Interfaces;
 
@@ -59,11 +59,17 @@ namespace Assemble
 {
     SimpleTasker simpleTasker(Config::MaxTaskerTasks);
     SensorsMediator sensorsMediator;
-    MadgwickIMU madgwickIMU(sensorsMediator, Config::MainFrequency_Hz); // or MadgwickAHRS
-    NoPosCalcTemp tempNoPosCalc;
-    AHRS ahrs(tempNoPosCalc, madgwickIMU);
-    QuadXMotors quadXMotors;
     SerialDebugMessenger serialDebugMessenger(Serial1);
+
+    namespace Motors {
+        QuadXMotors quadXMotors;
+    }
+
+    namespace PositionAndRotation {
+        MadgwickIMU madgwickIMU(sensorsMediator, Config::MainFrequency_Hz); // or MadgwickAHRS
+        NoPosCalcTemp tempNoPosCalc;
+        AHRS ahrs(tempNoPosCalc, madgwickIMU);
+    }
 
     namespace Communication {
         StreamComm rmtCtrlCommStream(&Serial2, Config::RmtCtrlMaxComBufferSize);
@@ -72,11 +78,11 @@ namespace Assemble
 
 
     namespace FlightModes {
-        UnarmedFlightMode unarmedFlightMode(quadXMotors);
-        StabilizeFlightMode stabilizeFlightMode(ahrs);
+        UnarmedFlightMode unarmedFlightMode;
+        StabilizeFlightMode stabilizeFlightMode;
     }
 
-    VirtualPilot virtualPilotInstance(quadXMotors, FlightModes::unarmedFlightMode);
+    VirtualPilot virtualPilotInstance(FlightModes::unarmedFlightMode);
 
     namespace Sensors {
         MPU6050Adapter mpu6050(sensorsMediator);
@@ -84,11 +90,12 @@ namespace Assemble
         NoSensor noSensor(sensorsMediator);
     }
 
-
-    Failsafe failsafe;
-    MotorsDisarm failsafeActionMotorsDisarm(quadXMotors);
-    CommunicationLost failsafeScenarioCommLost(Communication::rmtPacketComm, &failsafeActionMotorsDisarm);
-    TiltExceeding failsafeTiltExceeding(ahrs, &failsafeActionMotorsDisarm);
+    namespace Failsafe { // TODO: try to improve names of objects inside
+        FailsafeManager failsafeManager;
+        DisarmMotors failsafeActionDisarmMotors;
+        //CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
+        TiltExceeding failsafeTiltExceeding(&failsafeActionDisarmMotors);
+    }
 }
 
 
@@ -96,14 +103,11 @@ namespace Instance
 {
 // MainInstances:
     ITasker& tasker = Assemble::simpleTasker;
-    IAHRS& ahrs = Assemble::ahrs;
-    IMotors& motors = Assemble::quadXMotors;
+    IAHRS& ahrs = Assemble::PositionAndRotation::ahrs;
     ISensorsData& sensorsData = Assemble::sensorsMediator;
     IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
-
     PacketCommunication& pilotPacketComm = Assemble::Communication::rmtPacketComm;
-
-    Failsafe& failsafe = Assemble::failsafe;
+    FailsafeManager& failsafeManager = Assemble::Failsafe::failsafeManager;
     DebugMessenger& debMes = Assemble::serialDebugMessenger;
 
 
@@ -115,15 +119,20 @@ namespace Instance
     Sensor& baro = noSensor;
     Sensor& gps = noSensor;
     Sensor& btmRangefinder = noSensor;
+
+// MotorsInstance:
+    Motors& motors = Assemble::Motors::quadXMotors;
 }
 
 
 
 class : public Task
 {
-    void execute() override
-    {
-        //Serial1.println(Instance::rotation.getPitch_deg());
+    void execute() override {
+        /*
+        Serial1.print(Instance::ahrs.getPitch_deg());
+        Serial1.print('\t');
+        Serial1.println(Instance::ahrs.getRoll_deg());*/
     }
 } debugTask;
 
@@ -175,9 +184,9 @@ void setupDrone()
 
 void setupFailsafe()
 {
-    Instance::failsafe.initializeFailsafe();
-    //Instance::failsafe.addFailsafeScenario(&Assemble::failsafeScenarioCommLost);
-    Instance::failsafe.addFailsafeScenario(&Assemble::failsafeTiltExceeding);
+    Instance::failsafeManager.initializeFailsafe();
+    //Instance::failsafeManager.addFailsafeScenario(&Assemble::Failsafe::failsafeScenarioCommLost);
+    Instance::failsafeManager.addFailsafeScenario(&Assemble::Failsafe::failsafeTiltExceeding);
 }
 
 
@@ -206,35 +215,29 @@ void setupFlightModes()
 {
     Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::unarmedFlightMode);
     Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::stabilizeFlightMode); // TODO: think whether to pass flight modes by reference
-
-    // TODO: make config values for default pid gains
-    Assemble::FlightModes::stabilizeFlightMode.setLevelingXPIDGains(1.69, 0.7, 0.5, 104);
-    Assemble::FlightModes::stabilizeFlightMode.setLevelingYPIDGains(1.69, 0.7, 0.5, 104);
-    Assemble::FlightModes::stabilizeFlightMode.setHeadingHoldPIDGains(2.24, 1.11, 0.97, 85);
+    // add other flight modes...
 
     Instance::virtualPilot.initializeFlightModes();
 }
 
 
-void addTasksToTasker()
+void addTasksToTasker() // TODO: maybe there shouldn't be this method and all tasks be added during initialization?
 {
     using Instance::tasker;
 
-    Instance::debMes.showMessage(1);
-
-    tasker.addTask(&Assemble::failsafe, 10);
-    tasker.addTask(&Assemble::ahrs, Config::MainFrequency_Hz);
+    tasker.addTask(&Assemble::Failsafe::failsafeManager, 10);
+    tasker.addTask(&Assemble::PositionAndRotation::ahrs, Config::MainFrequency_Hz);
     tasker.addTask(&Assemble::Sensors::mpu6050, Config::MainFrequency_Hz);
-
-    Instance::debMes.showMessage(2);
 
     tasker.addTask(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz);
     tasker.addTask(&Assemble::Sensors::hmc5883l, 75);
 
-    Instance::debMes.showMessage(3);
-
     tasker.addTask(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
+
     tasker.addTask(&debugTask, 50);
+
+    //tasker.addTask(&Tasks::calibTask, 1);
+    //Tasks::calibTask.pauseExecutionFor_s(5);
 }
 
 

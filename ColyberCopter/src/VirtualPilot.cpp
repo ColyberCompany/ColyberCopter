@@ -7,15 +7,13 @@
 
 #include "../VirtualPilot.h"
 #include "../Instances/MainInstances.h"
+#include "../Instances/MotorsInstance.h"
 #include "../Communication/CommData.h"
 
-using Interfaces::IMotors;
-using Enums::StateType;
 using Enums::FlightModeTypes;
 
 
-VirtualPilot::VirtualPilot(IMotors& _motors, FlightMode& initialFlightMode)
-    : motors(_motors)
+VirtualPilot::VirtualPilot(FlightMode& initialFlightMode)
 {
     this->currentFlightMode = &initialFlightMode;
 }
@@ -23,10 +21,9 @@ VirtualPilot::VirtualPilot(IMotors& _motors, FlightMode& initialFlightMode)
 
 bool VirtualPilot::addFlightMode(FlightMode* flightMode)
 {
-    Iterator<FlightMode*>* iterator = flightModesArray.getIterator();
-
-    while (iterator->hasNext())
-        if (iterator->next()->getType() == flightMode->getType())
+    auto iter = flightModesArray.getIterator();
+    while (iter->hasNext())
+        if (iter->next()->getType() == flightMode->getType())
             return false; // flight mode instance of this type was already added
 
     flightModesArray.add(flightMode);
@@ -36,11 +33,10 @@ bool VirtualPilot::addFlightMode(FlightMode* flightMode)
 
 bool VirtualPilot::initializeFlightModes()
 {
-    Iterator<FlightMode*>* iterator = flightModesArray.getIterator();
     bool result = true;
-
-    while (iterator->hasNext())
-        result = result && iterator->next()->initializeFlightMode();
+    auto iter = flightModesArray.getIterator();
+    while (iter->hasNext())
+        result = result && iter->next()->initializeFlightMode();
 
     return result;
 }
@@ -73,7 +69,7 @@ void VirtualPilot::runVirtualPilot()
                                 commData.pilot.stick.roll);
 
     currentFlightMode->executeFlightModeLoop(virtualSticks);
-    motors.updatePower(virtualSticks);
+    Instance::motors.updatePower(virtualSticks);
 }
 
 

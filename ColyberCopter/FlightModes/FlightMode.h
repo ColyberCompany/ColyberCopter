@@ -23,9 +23,6 @@ private:
     const Enums::FlightModeTypes type;
     FlightMode* const baseFlightMode;
 
-protected:
-    static const float DeltaTime_s;
-
 
 public:
     /**
