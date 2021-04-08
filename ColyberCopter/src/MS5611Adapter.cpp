@@ -45,7 +45,7 @@ uint16_t MS5611Adapter::startBackgroundCalibration(uint16_t)
 
 FloatAxisVector MS5611Adapter::getOffset() const
 {
-    return FloatAxisVector(0);
+    return FloatAxisVector();
 }
 
 

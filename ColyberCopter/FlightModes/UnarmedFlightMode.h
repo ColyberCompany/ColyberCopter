@@ -10,45 +10,21 @@
 #define UNARMEDFLIGHTMODE_H
 
 #include "FlightMode.h"
-#include "../Interfaces/IMotors.h"
 
 
 class UnarmedFlightMode : public FlightMode
 {
-private:
-    Interfaces::IMotors& motors;
-
 public:
-    UnarmedFlightMode(Interfaces::IMotors& _motors)
-        :FlightMode(Enums::FlightModeTypes::UNARMED, nullptr),
-        motors(_motors)
-    {
-    }
-
+    UnarmedFlightMode();
     UnarmedFlightMode(const UnarmedFlightMode&) = delete;
     UnarmedFlightMode& operator=(const UnarmedFlightMode&) = delete;
 
-    void leave() override
-    {
-        motors.setMotorsState(Enums::StateType::Enabled);
-    }
-
-    void prepare() override
-    {
-        motors.setMotorsState(Enums::StateType::Disabled);
-    }
-
-    const char* getName() override
-    {
-        return "unarmed";
-    }
+    void leave() override;
+    void prepare() override;
+    const char* getName() override;
 
 protected:
-    void flightModeLoop(ControlSticks& inputOutputSticks) override
-    {
-        if (motors.getMotorsState() == Enums::StateType::Enabled)
-            motors.setMotorsState(Enums::StateType::Disabled);
-    }
+    void flightModeLoop(ControlSticks& inputOutputSticks) override;
 };
 
 

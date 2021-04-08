@@ -38,7 +38,7 @@ public:
 
     FloatAxisVector getOffset() const
     {
-        return FloatAxisVector(0);
+        return FloatAxisVector();
     }
 
     void setOffset(FloatAxisVector) override

@@ -58,7 +58,7 @@ uint16_t HMC5883LAdapter::startBackgroundCalibration(uint16_t amtOfSamples)
 FloatAxisVector HMC5883LAdapter::getOffset() const
 {
     const SimpleHMC5883L::vector3Int16& magOffset = compass.getCompassOffset();
-    return FloatAxisVector(3, magOffset.x, magOffset.y, magOffset.z);
+    return FloatAxisVector(magOffset.x, magOffset.y, magOffset.z);
 }
 
 

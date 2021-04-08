@@ -13,6 +13,8 @@ MPU6050Adapter::AccCalib::AccCalib(SensorsMediator& sensorsMediator, MPU6050Adap
     : Sensor(Enums::SensorTypes::ACCELEROMETER, sensorsMediator),
       mpuAdapter(_mpuAdapter)
 {
+    using Config::AccOffset;
+    setOffset(FloatAxisVector(AccOffset.x, AccOffset.y, AccOffset.z));
 }
 
 
@@ -67,7 +69,7 @@ uint16_t MPU6050Adapter::AccCalib::startBackgroundCalibration(uint16_t amtOfSamp
 FloatAxisVector MPU6050Adapter::AccCalib::getOffset() const
 {
     const SimpleMPU6050::vector3Int16& accOffset = mpuAdapter.mpu.getAccOffset();
-    return FloatAxisVector(3, accOffset.x, accOffset.y, accOffset.z);
+    return FloatAxisVector(accOffset.x, accOffset.y, accOffset.z);
 }
 
 
@@ -96,6 +98,8 @@ MPU6050Adapter::GyroCalib::GyroCalib(SensorsMediator& sensorsMediator, MPU6050Ad
     : Sensor(Enums::SensorTypes::GYROSCOPE, sensorsMediator),
       mpuAdapter(_mpuAdapter)
 {
+    using Config::GyroOffset;
+    setOffset(FloatAxisVector(GyroOffset.x, GyroOffset.y, GyroOffset.z));
 }
 
 
@@ -150,7 +154,7 @@ uint16_t MPU6050Adapter::GyroCalib::startBackgroundCalibration(uint16_t amtOfSam
 FloatAxisVector MPU6050Adapter::GyroCalib::getOffset() const
 {
     const SimpleMPU6050::vector3Int16& gyroOffset = mpuAdapter.mpu.getGyroOffset();
-    return FloatAxisVector(3, gyroOffset.x, gyroOffset.y, gyroOffset.z);
+    return FloatAxisVector(gyroOffset.x, gyroOffset.y, gyroOffset.z);
 }
 
 
@@ -166,7 +170,7 @@ void MPU6050Adapter::GyroCalib::setOffset(FloatAxisVector offset)
 
 const char* MPU6050Adapter::GyroCalib::getName()
 {
-    return "accelerometer";
+    return "gyroscope";
 }
 
 

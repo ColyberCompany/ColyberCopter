@@ -6,10 +6,9 @@
  */
 
 #include "../FlightModes/AltHoldFlightMode.h"
+#include "../Instances/MainInstances.h"
 #include "../config.h"
 
-
-using Interfaces::IAHRS;
 using Enums::FlightModeTypes;
 
 
@@ -20,11 +19,14 @@ const uint16_t AltHoldFlightMode::MaxClimbRate_cmPerSec = 100; // also for decli
 const float AltHoldFlightMode::ThrottleMultiplier = MaxClimbRate_cmPerSec / 500.f;
 
 
-AltHoldFlightMode::AltHoldFlightMode(StabilizeFlightMode& stabilizeFlightMode, IAHRS& _ahrs)
+AltHoldFlightMode::AltHoldFlightMode(StabilizeFlightMode& stabilizeFlightMode)
     : FlightMode(FlightModeTypes::ALT_HOLD, &stabilizeFlightMode),
-    ahrs(_ahrs),
-    altitudeHoldPID(DeltaTime_s)
+    altitudeHoldPID(Config::MainInterval_s)
 {
+    setAltHoldPIDGains(Config::AltHoldPID_kP,
+                       Config::AltHoldPID_kI,
+                       Config::AltHoldPID_kD,
+                       Config::AltHoldPID_IMax);
 }
 
 
@@ -74,19 +76,19 @@ void AltHoldFlightMode::updateAltitudeHolding(ControlSticks& inputOutputSticks)
 
 void AltHoldFlightMode::updateAltitudeToHold(uint16_t throttle)
 {
-    altitudeToHold_cm += throttleToClimbRate_cmPerSec(throttle) * DeltaTime_s;
+    altitudeToHold_cm += throttleToClimbRate_cmPerSec(throttle) * Config::MainInterval_s;
 }
 
 
 void AltHoldFlightMode::calculateAltitudeError()
 {
-    altitudeError_cm = altitudeToHold_cm - (ahrs.getAltitude_m() * 100.f);
+    altitudeError_cm = altitudeToHold_cm - (Instance::ahrs.getAltitude_m() * 100.f);
 }
 
 
 void AltHoldFlightMode::setAltitudeToHoldToCurrentReading()
 {
-    altitudeToHold_cm = ahrs.getAltitude_m() * 100.f;
+    altitudeToHold_cm = Instance::ahrs.getAltitude_m() * 100.f;
 }
 
 

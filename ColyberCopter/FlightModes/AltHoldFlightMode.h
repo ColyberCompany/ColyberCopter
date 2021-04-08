@@ -11,13 +11,11 @@
 
 #include "FlightMode.h"
 #include "StabilizeFlightMode.h"
-#include "../Interfaces/IAHRS.h"
 #include <PID.h>
 
 
 class AltHoldFlightMode : public FlightMode
 {
-    Interfaces::IAHRS& ahrs;
     PID altitudeHoldPID;
 
     float altitudeToHold_cm = 0;
@@ -30,7 +28,7 @@ class AltHoldFlightMode : public FlightMode
     static const float ThrottleMultiplier;
 
 public:
-    AltHoldFlightMode(StabilizeFlightMode& stabilizeFlightMode, Interfaces::IAHRS& ahrs);
+    AltHoldFlightMode(StabilizeFlightMode& stabilizeFlightMode);
 
     AltHoldFlightMode(const AltHoldFlightMode&) = delete;
     AltHoldFlightMode& operator=(const AltHoldFlightMode&) = delete;
