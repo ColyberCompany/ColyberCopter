@@ -18,8 +18,18 @@ namespace Tasks
 {
     class : public Task
     {
-        void execute() override
-        {
+        bool lastLedState = false;
+        void execute() override {
+            lastLedState = !lastLedState;
+            digitalWrite(LED_BUILTIN, lastLedState);
+        }
+    } oneHertz;
+
+
+
+    class : public Task
+    {
+        void execute() override {
             Instance::pilotPacketComm.receiveAndUpdatePackets();
         }
     } rmtCtrlReceiving;

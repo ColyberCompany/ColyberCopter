@@ -177,6 +177,8 @@ void setupDrone()
     debMes.showMessage(OKText);
     
 
+    pinMode(LED_BUILTIN, OUTPUT); // TODO: this is temporary, figure something out
+
     debMes.showMessage("Drone setup is complete!");
 }
 
@@ -233,6 +235,7 @@ void addTasksToTasker() // TODO: maybe there shouldn't be this method and all ta
     tasker.addTask(&Assemble::Sensors::hmc5883l, 75);
 
     tasker.addTask(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
+    tasker.addTask(&Tasks::oneHertz, 1.f);
 
     tasker.addTask(&debugTask, 50);
 
