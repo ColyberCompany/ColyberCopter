@@ -2,7 +2,7 @@
  * @file FailsafeManager.cpp
  * @author Jan Wielgus
  * @date 2020-09-01
- * 
+ *
  */
 
 #include "../Failsafe/FailsafeManager.h"
@@ -28,8 +28,12 @@ bool FailsafeManager::addFailsafeScenario(FailsafeScenario* failsafeScenario)
 
 void FailsafeManager::removeFailsafeScenario(FailsafeScenario* failsafeScenario)
 {
-    // TODO: implement removeFailsafeScenario method
-    // Check index of the element to be removed and use LinkedList remove method
+    for (int i=0; i<failsafeScenariosList.getSize(); i++)
+        if (failsafeScenariosList[i] == failsafeScenario)
+        {
+            failsafeScenariosList.remove(i);
+            return;
+        }
 }
 
 
