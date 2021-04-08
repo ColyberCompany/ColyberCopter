@@ -3,6 +3,7 @@
  * @author Jan Wielgus
  * @brief Failsafe scenario that thakes action if pitch or roll angle exceeds
  * the certain value.
+ * Implementation in src/FailsafeScenarios.cpp.
  * @date 2020-09-02
  * 
  */
@@ -13,12 +14,15 @@
 #include "FailsafeScenario.h"
 
 
-class TiltExceeding : public FailsafeScenario
+namespace FailsafeScenarios
 {
-public:
-    TiltExceeding(IExecutable* failsafeAction);
-    bool hasFailOccurred() override;
-};
+    class TiltExceeding : public FailsafeScenario
+    {
+    public:
+        TiltExceeding(IExecutable* failsafeAction) : FailsafeScenario(failsafeAction) {}
+        bool hasFailOccurred() override;
+    };
+}
 
 
 #endif

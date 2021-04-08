@@ -92,9 +92,9 @@ namespace Assemble
 
     namespace Failsafe { // TODO: try to improve names of objects inside
         FailsafeManager failsafeManager;
-        DisarmMotors failsafeActionDisarmMotors;
-        //CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
-        TiltExceeding failsafeTiltExceeding(&failsafeActionDisarmMotors);
+        FailsafeActions::DisarmMotors failsafeActionDisarmMotors;
+        //FailsafeScenarios::CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
+        FailsafeScenarios::TiltExceeding failsafeTiltExceeding(&failsafeActionDisarmMotors);
     }
 }
 
