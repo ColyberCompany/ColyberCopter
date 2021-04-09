@@ -26,25 +26,6 @@ public:
         return false;
     }
 
-    bool isGood() const override
-    {
-        return false;
-    }
-
-    uint16_t startBackgroundCalibration(uint16_t) override
-    {
-        return 0;
-    }
-
-    FloatAxisVector getOffset() const
-    {
-        return FloatAxisVector();
-    }
-
-    void setOffset(FloatAxisVector) override
-    {
-    }
-
     const char* getName() override
     {
         return "no sensor";
