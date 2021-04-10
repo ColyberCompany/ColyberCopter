@@ -247,7 +247,6 @@ void addTasksToTasker() // TODO: maybe there shouldn't be this method and all ta
 void setupCommunication()
 {
     Serial2.begin(Config::RmtCtrlSerialBaudRate);
-    Assemble::Communication::rmtCtrlCommStream.begin();
     Instance::pilotPacketComm.adaptConnStabilityToFrequency(Config::RmtCtrlReceivingFrequency_Hz);
 
     Instance::pilotPacketComm.addReceiveDataPacketPointer(&DataPackets::steering);
