@@ -8,8 +8,10 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include "Headers.h"
 #include "../Common/Pair.h"
 #include "../Enums/LogType.h"
+#include "../config.h"
 #include <DataBuffer.h>
 #include <GrowingArray.h>
 #include <ITransmitter.h>
@@ -17,18 +19,29 @@
 
 class Logger
 {
-    ExtendedDataBuffer buffer;
-    GrowingArray<Pair<Enums::LogType, ITransmitter*>> bindings;
+    typedef Pair<Enums::LogType, ITransmitter*> Binding;
 
-    void log(Enums::LogType logType, const char* str);
-    void log(Enums::LogType logType, int i);
+    GrowingArray<Binding> bindings;
+
+    char buffer[Config::MaxLogSize + Enums::LogType::Count + 1];
+    uint8_t startIndex;
+    uint8_t endIndex = Enums::LogType::Count + 1;
+
+    void addToBuffer(const char* str);
+    void addToBuffer(int number);
+
+    void prepareHeader(Enums::LogType logType);
+
+    template <class T>
+    void log(Enums::LogType logType, T item);
 
     template <class First, class... Args>
     void log(Enums::LogType logType, First first, Args... args);
 
 public:
-    void setTransmitter(Enums::LogType logType, ITransmitter* transmitter);
-    ITransmitter* getTransmitter(Enums::LogType logType);
+    void bind(Enums::LogType logType, ITransmitter* transmitter);
+    void unbind(Enums::LogType logType, ITransmitter* transmitter);
+    GrowingArray<ITransmitter*> getTransmitters(Enums::LogType logType);
 
     template <class First, class... Args>
     void error(First first, Args... args);
@@ -41,10 +54,28 @@ public:
 };
 
 
+template <class T>
+void Logger::log(Enums::LogType logType, T item)
+{
+    addToBuffer(item);
+
+    auto iter = bindings.getIterator();
+    while (iter->hasNext())
+    {
+        auto binding = iter->next();
+        if (binding.first & logType)
+        {
+            prepareHeader((Enums::LogType)(logType & binding.first));
+            binding.second->send((uint8_t*)buffer[startIndex], endIndex - startIndex);
+        }
+    }
+}
+
+
 template<class First, class... Args>
 void Logger::log(Enums::LogType logType, First first, Args... args)
 {
-    log(logType, first);
+    addToBuffer(first);
     log(logType, args...);
 }
 

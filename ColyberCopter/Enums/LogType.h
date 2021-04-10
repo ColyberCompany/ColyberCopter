@@ -16,7 +16,9 @@ namespace Enums
         Base = 1,
         Info = 2,
         Debug = 4,
-        Error = 8
+        Error = 8,
+
+        Count = 4
     };
 }
 
