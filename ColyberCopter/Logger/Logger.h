@@ -69,6 +69,8 @@ void Logger::log(Enums::LogType logType, T item)
             binding.second->send((uint8_t*)buffer[startIndex], endIndex - startIndex);
         }
     }
+
+    endIndex = Enums::LogType::Count + 1;
 }
 
 

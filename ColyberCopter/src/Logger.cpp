@@ -54,9 +54,7 @@ inline void Logger::prepareHeader(LogType logType)
     for (uint8_t i = 0; i < Enums::LogType::Count; i++)
     {
         if (logType & type)
-        {
             buffer[--startIndex] = Headers[i];
-        }
 
         type = (LogType)(type*2);
     }
