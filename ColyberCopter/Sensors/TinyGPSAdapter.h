@@ -10,8 +10,11 @@
 
 class TinyGPSAdapter: public Sensor, public IExecutable
 {
+    TinyGPSPlus gps;
 
 public:
+    TinyGPSAdapter(SensorsMediator& SensorsMediator);
+
     void execute() override;
 
     bool initialize() override;
