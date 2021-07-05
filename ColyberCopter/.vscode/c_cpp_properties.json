@@ -1,0 +1,52 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\**",
+                "C:\\Program Files (x86)\\Arduino\\libraries\\**",
+                "C:\\Users\\janwi\\AppData\\Local\\Arduino15\\packages\\STM32\\tools\\**",
+                "C:\\Users\\janwi\\AppData\\Local\\Arduino15\\packages\\STM32\\hardware\\stm32\\1.9.0\\**",
+                "C:\\Users\\janwi\\Documents\\GitHub\\ColyberCompany\\ColyberFlightController\\ColyberCopter",
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\ByteTypes",
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\FilteringLibraries",
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\PID",
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\Tasker",
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\SimpleDataStructures",
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\PacketCommunication",
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\SimpleMPU6050",
+                "C:\\Users\\janwi\\Documents\\Arduino\\libraries\\SimpleHMC5883L"
+            ],
+            "forcedInclude": [
+                "C:\\Users\\janwi\\AppData\\Local\\Arduino15\\packages\\STM32\\hardware\\stm32\\1.9.0\\cores\\arduino\\Arduino.h"
+            ],
+            "intelliSenseMode": "msvc-x64",
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "defines": [
+                "USBCON"
+            ]
+        },
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/jan/.arduino15/packages/STM32/tools/**",
+                "/home/jan/Downloads/arduino-1.8.10/libraries/**",
+                "/home/jan/.arduino15/packages/STM32/hardware/stm32/1.9.0/**",
+                "/home/jan/Arduino/libraries/**"
+            ],
+            "forcedInclude": [
+                "/home/jan/.arduino15/packages/STM32/hardware/stm32/1.9.0/cores/arduino/Arduino.h"
+            ],
+            "defines": [
+                "USBCON"
+            ],
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14"
+        }
+    ],
+    "version": 4
+}
