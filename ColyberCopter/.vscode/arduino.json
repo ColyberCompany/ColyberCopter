@@ -1,6 +1,0 @@
-{
-    "sketch": "ColyberCopter.ino",
-    "configuration": "pnum=BLUEPILL_F103C8,upload_method=serialMethod,xserial=generic,usb=none,xusb=FS,opt=osstd,rtlib=nano",
-    "board": "STMicroelectronics:stm32:GenF1",
-    "output": "../build"
-}
