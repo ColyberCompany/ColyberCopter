@@ -6,6 +6,7 @@
  */
 
 #include "../Sensors/HMC5883LAdapter.h"
+#include "../Instances/MainInstances.h"
 
 
 HMC5883LAdapter::HMC5883LAdapter(SensorsMediator& sensorsMediator, SimpleMPU6050* mpu6050)
@@ -51,7 +52,7 @@ uint16_t HMC5883LAdapter::startBackgroundCalibration(uint16_t amtOfSamples)
 
     calibCounter.reset(amtOfSamples);
 
-    return getInterval_s() * amtOfSamples + 1;
+    return Instance::tasker.getTaskInterval_s(this) * amtOfSamples + 1;
 }
 
 

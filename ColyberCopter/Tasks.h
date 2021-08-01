@@ -9,14 +9,14 @@
 #ifndef TASKS_H
 #define TASKS_H
 
-#include <Task.h>
+#include <IExecutable.h>
 #include "Instances/MainInstances.h" // Exemption: this file can include Instances, because only CopterSetup.h includes this file.
 #include "Instances/SensorInstances.h"
 
 
 namespace Tasks
 {
-    class : public Task
+    class : public IExecutable
     {
         bool lastLedState = false;
         void execute() override {
@@ -27,16 +27,16 @@ namespace Tasks
 
 
 
-    class : public Task
+    class : public IExecutable
     {
         void execute() override {
-            Instance::pilotPacketComm.receiveAndUpdatePackets();
+            Instance::pilotPacketComm.receive();
         }
     } rmtCtrlReceiving;
 
 
-
-    class CalibTask : public Task
+/*
+    class CalibTask : public IExecutable
     {
         Sensor& sensor;
         bool isCalibrating_flag = false;
@@ -63,8 +63,9 @@ namespace Tasks
                 isCalibrating_flag = false;
             }
         }
-    } calibTask(Instance::gyro);
-
+    } calibTask(Instance::gyro); // what is it for??? (This instance is probably temprary to calibrate gyro in addTasksToTasker() CopterSetup.cpp. By the way I think that this function should be inside file with tasks definitions)
+    // TODO: rebuild this task to use removing tasks from tasker (this task should be added only when needed).
+*/
 
     // add other tasks here
 }
