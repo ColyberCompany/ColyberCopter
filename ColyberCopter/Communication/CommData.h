@@ -9,8 +9,7 @@
 #ifndef COMMDATA_H
 #define COMMDATA_H
 
-#include <ByteTypes.h>
-
+#include <byteType.h>
 
 struct CommData
 {

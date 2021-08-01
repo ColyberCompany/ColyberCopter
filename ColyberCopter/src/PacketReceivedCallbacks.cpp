@@ -10,10 +10,8 @@
 #include "../Instances/MainInstances.h"
 #include "../Instances/FlightModeInstances.h"
 
-using namespace PacketReceivedCallbacks;
 
-
-void steeringCallback()
+void PacketReceivedCallbacks::steeringCallback()
 {
     // VirtualPilot get data directly from received variables.
 
@@ -21,14 +19,14 @@ void steeringCallback()
 }
 
 
-void flightModeChangeCallback()
+void PacketReceivedCallbacks::flightModeChangeCallback()
 {
     uint8_t newFlightModeType = commData.flightMode;
     Instance::virtualPilot.setFlightMode((Enums::FlightModeTypes)newFlightModeType);
 }
 
 
-void pidTuningCallback()
+void PacketReceivedCallbacks::pidTuningCallback()
 {
     using Assemble::FlightModes::stabilizeFlightMode;
     using Instance::debMes;
