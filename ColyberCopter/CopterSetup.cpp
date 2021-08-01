@@ -9,7 +9,7 @@
 // TODO: set the order of include files
 #include "CopterSetup.h"
 #include "config.h"
-#include <SimpleTasker.h>
+#include <Tasker.h>
 #include "Failsafe/FailsafeManager.h"
 #include "Failsafe/FailsafeActions/DisarmMotors.h"
 #include "Failsafe/FailsafeScenarios/CommunicationLost.h"
@@ -25,7 +25,7 @@
 #include "Sensors/HMC5883LAdapter.h"
 #include "Motors/QuadXMotors.h"
 #include <StreamComm.h>
-#include <PacketCommunicationWithQueue.h>
+#include <PacketCommunication.h>
 #include "VirtualPilot.h"
 #include "Sensors/NoSensor.h"
 #include "Debug/SerialDebugMessenger.h"
@@ -38,14 +38,14 @@
 using namespace Interfaces;
 
 
-// Helper functions
+// Setup functions
 void addTasksToTasker();
 void setupFailsafe();
 void initializeSensors();
 void setupFlightModes();
 void setupCommunication();
 
-// Helper^2 functions
+// Helper functions
 bool initSensor(Sensor* sensorToInit);
 
 
@@ -57,7 +57,7 @@ HardwareSerial Serial2(PA3, PA2);
 
 namespace Assemble
 {
-    SimpleTasker simpleTasker(Config::MaxTaskerTasks);
+    Tasker tasker(Config::MaxTaskerTasks);
     SensorsMediator sensorsMediator;
     SerialDebugMessenger serialDebugMessenger(Serial1);
 
@@ -72,8 +72,8 @@ namespace Assemble
     }
 
     namespace Communication {
-        StreamComm rmtCtrlCommStream(&Serial2, Config::RmtCtrlMaxComBufferSize);
-        PacketCommunicationWithQueue rmtPacketComm(&rmtCtrlCommStream, Config::RmtCtrlMaxQueuedBuffers); // Remote comm instance
+        PacketComm::StreamComm<Config::RmtCtrlMaxComBufferSize> rmtCtrlCommStream(&Serial2);
+        PacketComm::PacketCommunication rmtPacketComm(&rmtCtrlCommStream); // Remote comm instance
     }
 
 
@@ -102,11 +102,11 @@ namespace Assemble
 namespace Instance
 {
 // MainInstances:
-    ITasker& tasker = Assemble::simpleTasker;
+    Tasker& tasker = Assemble::tasker;
     IAHRS& ahrs = Assemble::PositionAndRotation::ahrs;
     ISensorsData& sensorsData = Assemble::sensorsMediator;
     IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
-    PacketCommunication& pilotPacketComm = Assemble::Communication::rmtPacketComm;
+    PacketComm::PacketCommunication& pilotPacketComm = Assemble::Communication::rmtPacketComm;
     FailsafeManager& failsafeManager = Assemble::Failsafe::failsafeManager;
     DebugMessenger& debMes = Assemble::serialDebugMessenger;
 
@@ -126,7 +126,7 @@ namespace Instance
 
 
 
-class : public Task
+class : public IExecutable
 {
     void execute() override {
         /*
@@ -227,19 +227,19 @@ void addTasksToTasker() // TODO: maybe there shouldn't be this method and all ta
 {
     using Instance::tasker;
 
-    tasker.addTask(&Assemble::Failsafe::failsafeManager, 10);
-    tasker.addTask(&Assemble::PositionAndRotation::ahrs, Config::MainFrequency_Hz);
-    tasker.addTask(&Assemble::Sensors::mpu6050, Config::MainFrequency_Hz);
+    tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
+    tasker.addTask_Hz(&Assemble::PositionAndRotation::ahrs, Config::MainFrequency_Hz);
+    tasker.addTask_Hz(&Assemble::Sensors::mpu6050, Config::MainFrequency_Hz);
 
-    tasker.addTask(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz);
-    tasker.addTask(&Assemble::Sensors::hmc5883l, 75);
+    tasker.addTask_Hz(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz);
+    tasker.addTask_Hz(&Assemble::Sensors::hmc5883l, 75);
 
-    tasker.addTask(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
-    tasker.addTask(&Tasks::oneHertz, 1.f);
+    tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
+    tasker.addTask_Hz(&Tasks::oneHertz, 1.f);
 
-    tasker.addTask(&debugTask, 50);
+    tasker.addTask_Hz(&debugTask, 50);
 
-    //tasker.addTask(&Tasks::calibTask, 1);
+    //tasker.addTask_Hz(&Tasks::calibTask, 1);
     //Tasks::calibTask.pauseExecutionFor_s(5);
 }
 
@@ -249,9 +249,9 @@ void setupCommunication()
     Serial2.begin(Config::RmtCtrlSerialBaudRate);
     Instance::pilotPacketComm.adaptConnStabilityToFrequency(Config::RmtCtrlReceivingFrequency_Hz);
 
-    Instance::pilotPacketComm.addReceiveDataPacketPointer(&DataPackets::steering);
-    Instance::pilotPacketComm.addReceiveDataPacketPointer(&DataPackets::flightModeChange);
-    Instance::pilotPacketComm.addReceiveDataPacketPointer(&DataPackets::pidTuning);
+    Instance::pilotPacketComm.registerReceivePacket(&DataPackets::steering);
+    Instance::pilotPacketComm.registerReceivePacket(&DataPackets::flightModeChange);
+    Instance::pilotPacketComm.registerReceivePacket(&DataPackets::pidTuning);
     // add other data packets that could be received...
 }
 
