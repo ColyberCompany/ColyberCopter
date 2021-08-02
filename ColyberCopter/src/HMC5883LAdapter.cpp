@@ -41,6 +41,7 @@ void HMC5883LAdapter::execute()
 }
 
 
+// TODO: change sensor calibration everywhere that it only starts a background task which terminates itself automatically and don't require execute() method to execute calibrationLoop() method
 uint16_t HMC5883LAdapter::startBackgroundCalibration(uint16_t amtOfSamples)
 {
     compass.setCompassOffset(0, 0, 0);
