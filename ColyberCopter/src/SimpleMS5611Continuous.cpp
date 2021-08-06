@@ -71,7 +71,7 @@ bool SimpleMS5611Continuous::MS5611ReadingTask::shouldGetTemperatureAndRequestPr
 
 
 
-SimpleMS5611Continuous::SimpleMS5611Continuous(ITasker& _tasker)
+SimpleMS5611Continuous::SimpleMS5611Continuous(Tasker& _tasker)
     : tasker(_tasker),
     pressureFilter_pascal(PressurePerTemperatureRequests + 1),
     readingTask(*this)
@@ -87,8 +87,7 @@ bool SimpleMS5611Continuous::initialize()
     static bool initialized = false;
     if (!initialized)
     {
-        float readingTaskFrequency = 1000000.f / RequestWaitTime_us;
-        tasker.addTask(&readingTask, readingTaskFrequency);
+        tasker.addTask_us(&readingTask, RequestWaitTime_us);
         initialized = true;
     }
     

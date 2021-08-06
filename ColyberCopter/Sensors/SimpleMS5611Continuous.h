@@ -12,14 +12,14 @@
 #define SIMPLEMS5611CONTINUOUS_H
 
 #include <SimpleMS5611.h>
-#include <ITasker.h>
+#include <Tasker.h>
 #include <IExecutable.h>
 #include <AverageFilter.h>
 
 
 class SimpleMS5611Continuous : public SimpleMS5611
 {
-    class MS5611ReadingTask : public Task
+    class MS5611ReadingTask : public IExecutable
     {
         SimpleMS5611Continuous& ms5611;
         uint8_t actionCounter = 0; // used to get temperature every 20th measurement, from 1 to PressurePerTemperatureRequests, 0 indicates first pressure request
@@ -42,7 +42,7 @@ class SimpleMS5611Continuous : public SimpleMS5611
     };
 
 
-    ITasker& tasker;
+    Tasker& tasker;
     AverageFilter<int32_t> pressureFilter_pascal;
 
     float smoothPressure_mbar = 0.f;
@@ -51,9 +51,12 @@ class SimpleMS5611Continuous : public SimpleMS5611
 
     static const uint8_t PressurePerTemperatureRequests = 19; // How many pressure requests are per one temperature request
 
+public:
+    friend class MS5611ReadingTask;
+
 
 public:
-    SimpleMS5611Continuous(ITasker& tasker);
+    SimpleMS5611Continuous(Tasker& tasker);
 
     /**
      * @brief Initialize the MS5611 baro.
@@ -88,9 +91,6 @@ private:
     void averagePressure();
     void updateSmoothPressure();
     void executeNewReadingEvent();
-
-
-    friend class MS5611ReadingTask;
 };
 
 

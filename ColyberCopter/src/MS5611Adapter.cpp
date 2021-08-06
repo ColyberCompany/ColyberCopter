@@ -6,11 +6,12 @@
  */
 
 #include "../Sensors/MS5611Adapter.h"
+#include "../Instances/MainInstances.h"
 
 
-MS5611Adapter::MS5611Adapter(SensorsMediator& sensorsMediator, ITasker& tasker)
+MS5611Adapter::MS5611Adapter(SensorsMediator& sensorsMediator)
     : Sensor(Enums::SensorTypes::BAROMETER, sensorsMediator),
-    baro(tasker)
+    baro(Instance::tasker)
 {
 }
 
@@ -23,8 +24,7 @@ bool MS5611Adapter::initialize()
         attempts++;
     } while (initResultFlag == false && attempts < 3);
 
-    if (isGood())
-        baro.setNewReadingEvent(this);
+    baro.setNewReadingEvent(this);
 
     return initResultFlag;
 }

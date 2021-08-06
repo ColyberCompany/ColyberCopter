@@ -89,7 +89,7 @@ namespace Assemble
     namespace Sensors {
         MPU6050Adapter mpu6050(sensorsMediator);
         HMC5883LAdapter hmc5883l(sensorsMediator, mpu6050.getMPU6050Ptr());
-        MS5611Adapter ms5611(sensorsMediator, simpleTasker);
+        MS5611Adapter ms5611(sensorsMediator);
         NoSensor noSensor(sensorsMediator);
     }
 
@@ -228,12 +228,12 @@ void addTasksToTasker() // TODO: maybe there shouldn't be this method and all ta
 {
     using Instance::tasker;
 
+    tasker.addTask_Hz(&Assemble::Sensors::mpu6050, Config::MainFrequency_Hz);
+    tasker.addTask_Hz(&Assemble::Sensors::hmc5883l, 75);
+
     tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
     tasker.addTask_Hz(&Assemble::PositionAndRotation::ahrs, Config::MainFrequency_Hz);
-    tasker.addTask_Hz(&Assemble::Sensors::mpu6050, Config::MainFrequency_Hz);
-
     tasker.addTask_Hz(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz);
-    tasker.addTask_Hz(&Assemble::Sensors::hmc5883l, 75);
 
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
     tasker.addTask_Hz(&Tasks::oneHertz, 1.f);

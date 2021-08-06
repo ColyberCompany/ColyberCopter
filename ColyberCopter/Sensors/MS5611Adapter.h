@@ -12,7 +12,7 @@
 #include "Sensor.h"
 #include "SensorsMediator.h"
 #include "SimpleMS5611Continuous.h"
-#include <ITasker.h>
+#include <Tasker.h>
 #include <IExecutable.h>
 
 
@@ -26,7 +26,7 @@ class MS5611Adapter : public Sensor, private IExecutable
 
 
 public:
-    MS5611Adapter(SensorsMediator& sensorsMediator, ITasker& tasker);
+    MS5611Adapter(SensorsMediator& sensorsMediator);
 
     bool initialize() override;
     const char* getName() override;
