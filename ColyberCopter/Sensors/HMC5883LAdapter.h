@@ -13,12 +13,12 @@
 #include <SimpleHMC5883L.h>
 #include <SimpleMPU6050.h>
 #include "SensorsMediator.h"
-#include <Task.h>
+#include <IExecutable.h>
 #include "../Common/Vector3.h"
 #include "../Common/Counter.h"
 
 
-class HMC5883LAdapter: public Sensor, public Task
+class HMC5883LAdapter: public Sensor, public IExecutable
 {
     SimpleHMC5883L compass;
     SimpleMPU6050* mpu; // used to enable compass bypass on GY86.

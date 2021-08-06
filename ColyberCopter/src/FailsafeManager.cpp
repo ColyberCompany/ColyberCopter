@@ -2,45 +2,48 @@
  * @file FailsafeManager.cpp
  * @author Jan Wielgus
  * @date 2020-09-01
- * 
+ *
  */
 
 #include "../Failsafe/FailsafeManager.h"
 
-
-FailsafeManager::FailsafeManager()
-{
-}
+using SimpleDataStructures::LinkedListIterator;
 
 
 bool FailsafeManager::initializeFailsafe()
 {
-    // TODO: think if need to to put anything here
     return true;
 }
 
 
-void FailsafeManager::addFailsafeScenario(FailsafeScenario* failsafeScenario)
+bool FailsafeManager::addFailsafeScenario(FailsafeScenario* failsafeScenario)
 {
     if (failsafeScenario == nullptr)
-        return;
+        return false;
 
-    failsafeScenariosList.add(failsafeScenario);
+    if (failsafeScenariosList.contains(failsafeScenario))
+        return false;
+
+    return failsafeScenariosList.add(failsafeScenario);
 }
 
 
 void FailsafeManager::removeFailsafeScenario(FailsafeScenario* failsafeScenario)
 {
-    // TODO: implement removeFailsafeScenario method
-    // Check index of the element to be removed and use LinkedList remove method
+    for (int i=0; i<failsafeScenariosList.size(); i++)
+        if (failsafeScenariosList[i] == failsafeScenario)
+        {
+            failsafeScenariosList.remove(i);
+            return;
+        }
 }
 
 
 void FailsafeManager::runFailsafeCheckLoop()
 {
-    auto iter = failsafeScenariosList.getIterator();
-    while (iter->hasNext())
-        iter->next()->runFailsafeActionIfFailHasOccurred();
+    LinkedListIterator<FailsafeScenario*> iter(failsafeScenariosList);
+    while (iter.hasNext())
+        iter.next()->runFailsafeActionIfFailHasOccurred();
 }
 
 

@@ -17,8 +17,6 @@ namespace Config
 
     const Enums::BaudRateTypes RmtCtrlSerialBaudRate = Enums::BaudRateTypes::BAUD_115200;
 
-    const size_t RmtCtrlMaxComBufferSize = 40;
-    const size_t RmtCtrlMaxQueuedBuffers = 30;
     const uint16_t RmtCtrlReceivingFrequency_Hz = 220;
 
     const uint8_t MaxTaskerTasks = 25;

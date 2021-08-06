@@ -2,11 +2,10 @@
  * @file MotorsDisarm.h
  * @author Jan Wielgus
  * @brief Failsafe action that disarm immediately motors.
+ * Implementation in src/FailsafeActions.cpp.
  * @date 2020-09-01
  * 
  */
-
-// TODO: consider making one pair of h and cpp files for all failsafe actions
 
 #ifndef MOTORSDISARM_H
 #define MOTORSDISARM_H
@@ -14,11 +13,14 @@
 #include <IExecutable.h>
 
 
-class DisarmMotors : public IExecutable
+namespace FailsafeActions
 {
-public:
-    void execute() override;
-};
+    class DisarmMotors : public IExecutable
+    {
+    public:
+        void execute() override;
+    };
+}
 
 
 #endif
