@@ -18,104 +18,67 @@
 #include "../Enums/AxisType.h"
 
 
-class FloatAxisVector
+namespace Common
 {
-private:
-    float* valuesArray;
-    uint8_t axesAmt; // at most 3
-
-public:
-    /**
-     * @brief Creates zero axis object. 
-     */
-    FloatAxisVector()
+    class FloatAxisVector
     {
-        allocateMemory(0);
-    }
+    private:
+        float* valuesArray;
+        uint8_t axesAmt; // at most 3
 
-    /**
-     * @brief Creates one axis object.
-     */
-    FloatAxisVector(float x)
-    {
-        allocateMemory(1);
-        valuesArray[0] = x;
-    }
-
-    /**
-     * @brief Creates two axes object.
-     */
-    FloatAxisVector(float x, float y)
-    {
-        allocateMemory(2);
-        valuesArray[0] = x;
-        valuesArray[1] = y;
-    }
-
-    /**
-     * @brief Creates three axes object.
-     */
-    FloatAxisVector(float x, float y, float z)
-    {
-        allocateMemory(3);
-        valuesArray[0] = x;
-        valuesArray[1] = y;
-        valuesArray[2] = z;
-    }
-
-    /**
-     * @brief Copy ctor.
-     * @param other Other vector to make a copy.
-     */
-    FloatAxisVector(const FloatAxisVector& other)
-    {
-        axesAmt = other.axesAmt;
-        valuesArray = new float[axesAmt];
-        for (uint8_t i=0; i < axesAmt; i++)
-            valuesArray[i] = other.valuesArray[i];
-    }
-
-    FloatAxisVector(FloatAxisVector&& toMove)
-    {
-        axesAmt = toMove.axesAmt;
-        valuesArray = toMove.valuesArray;
-
-        toMove.axesAmt = 0;
-        toMove.valuesArray = nullptr;
-    }
-
-    ~FloatAxisVector()
-    {
-        delete[] valuesArray;
-    }
-
-    /**
-     * @brief Assignment operator. Changes amount of axes and their values.
-     * @param other Original axis vector to copy.
-     */
-    FloatAxisVector& operator=(const FloatAxisVector& other)
-    {
-        if (this != &other)
+    public:
+        /**
+         * @brief Creates zero axis object. 
+         */
+        FloatAxisVector()
         {
-            if (axesAmt != other.axesAmt)
-            {
-                delete[] valuesArray;
-                axesAmt = other.axesAmt;
-                valuesArray = new float[axesAmt];
-            }
-
-            for (int i = 0; i < axesAmt; i++)
-                    valuesArray[i] = other.valuesArray[i];
+            allocateMemory(0);
         }
 
-        return *this;
-    }
-
-    FloatAxisVector& operator=(FloatAxisVector&& toMove)
-    {
-        if (this != &toMove)
+        /**
+         * @brief Creates one axis object.
+         */
+        FloatAxisVector(float x)
         {
-            delete[] valuesArray;
+            allocateMemory(1);
+            valuesArray[0] = x;
+        }
+
+        /**
+         * @brief Creates two axes object.
+         */
+        FloatAxisVector(float x, float y)
+        {
+            allocateMemory(2);
+            valuesArray[0] = x;
+            valuesArray[1] = y;
+        }
+
+        /**
+         * @brief Creates three axes object.
+         */
+        FloatAxisVector(float x, float y, float z)
+        {
+            allocateMemory(3);
+            valuesArray[0] = x;
+            valuesArray[1] = y;
+            valuesArray[2] = z;
+        }
+
+        /**
+         * @brief Copy ctor.
+         * @param other Other vector to make a copy.
+         */
+        FloatAxisVector(const FloatAxisVector& other)
+        {
+            axesAmt = other.axesAmt;
+            valuesArray = new float[axesAmt];
+            for (uint8_t i=0; i < axesAmt; i++)
+                valuesArray[i] = other.valuesArray[i];
+        }
+
+        FloatAxisVector(FloatAxisVector&& toMove)
+        {
             axesAmt = toMove.axesAmt;
             valuesArray = toMove.valuesArray;
 
@@ -123,43 +86,83 @@ public:
             toMove.valuesArray = nullptr;
         }
 
-        return *this;
-    }
+        ~FloatAxisVector()
+        {
+            delete[] valuesArray;
+        }
 
-    /**
-     * @param axis Axis to get value from
-     * (for one dimensional types put AxisX)
-     * @return Value on specified axis.
-     */
-    float getAxis(Enums::AxisType axis)
-    {
-        if ((uint8_t)axis < axesAmt)
-            return valuesArray[(uint8_t)axis];
-        return 0;
-    }
+        /**
+         * @brief Assignment operator. Changes amount of axes and their values.
+         * @param other Original axis vector to copy.
+         */
+        FloatAxisVector& operator=(const FloatAxisVector& other)
+        {
+            if (this != &other)
+            {
+                if (axesAmt != other.axesAmt)
+                {
+                    delete[] valuesArray;
+                    axesAmt = other.axesAmt;
+                    valuesArray = new float[axesAmt];
+                }
 
-    /**
-     * @brief Setter of one axis value. 
-     * @param value New value for the axis.
-     * @param axis Which axis.
-     */
-    void setAxis(float value, Enums::AxisType axis)
-    {
-        if ((uint8_t)axis < axesAmt)
-            valuesArray[(uint8_t)axis] = value;
-    }
+                for (int i = 0; i < axesAmt; i++)
+                        valuesArray[i] = other.valuesArray[i];
+            }
+
+            return *this;
+        }
+
+        FloatAxisVector& operator=(FloatAxisVector&& toMove)
+        {
+            if (this != &toMove)
+            {
+                delete[] valuesArray;
+                axesAmt = toMove.axesAmt;
+                valuesArray = toMove.valuesArray;
+
+                toMove.axesAmt = 0;
+                toMove.valuesArray = nullptr;
+            }
+
+            return *this;
+        }
+
+        /**
+         * @param axis Axis to get value from
+         * (for one dimensional types put AxisX)
+         * @return Value on specified axis.
+         */
+        float getAxis(Enums::AxisType axis)
+        {
+            if ((uint8_t)axis < axesAmt)
+                return valuesArray[(uint8_t)axis];
+            return 0;
+        }
+
+        /**
+         * @brief Setter of one axis value. 
+         * @param value New value for the axis.
+         * @param axis Which axis.
+         */
+        void setAxis(float value, Enums::AxisType axis)
+        {
+            if ((uint8_t)axis < axesAmt)
+                valuesArray[(uint8_t)axis] = value;
+        }
 
 
-private:
-    void allocateMemory(uint8_t axesAmt)
-    {
-        if (axesAmt > 3)
-            axesAmt = 3;
+    private:
+        void allocateMemory(uint8_t axesAmt)
+        {
+            if (axesAmt > 3)
+                axesAmt = 3;
 
-        this->axesAmt = axesAmt;
-        valuesArray = new float[axesAmt];
-    }
-};
+            this->axesAmt = axesAmt;
+            valuesArray = new float[axesAmt];
+        }
+    };
+}
 
 
 #endif
