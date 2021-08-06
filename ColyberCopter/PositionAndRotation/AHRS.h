@@ -12,12 +12,12 @@
 #define AHRS_H
 
 #include "../Interfaces/IAHRS.h"
-#include <Task.h>
+#include <IExecutable.h>
 #include "../Interfaces/IRotationCalculation.h"
 #include "../Interfaces/IPositionCalculation.h"
 
 
-class AHRS : public Interfaces::IAHRS, public Task
+class AHRS : public Interfaces::IAHRS, public IExecutable
 {
 private:
     Interfaces::IPositionCalculation& positionCalculation;

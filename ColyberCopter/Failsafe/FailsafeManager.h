@@ -10,14 +10,14 @@
 #define FAILSAFE_H
 
 #include "FailsafeScenarios/FailsafeScenario.h"
-#include <Task.h>
+#include <IExecutable.h>
 #include <LinkedList.h>
 
 
-class FailsafeManager : public Task
+class FailsafeManager : public IExecutable
 {
 private:
-    LinkedList<FailsafeScenario*> failsafeScenariosList;
+    SimpleDataStructures::LinkedList<FailsafeScenario*> failsafeScenariosList;
 
 public:
     /**

@@ -6,6 +6,7 @@
  */
 
 #include "../Sensors/HMC5883LAdapter.h"
+#include "../Instances/MainInstances.h"
 
 
 HMC5883LAdapter::HMC5883LAdapter(SensorsMediator& sensorsMediator, SimpleMPU6050* mpu6050)
@@ -40,6 +41,7 @@ void HMC5883LAdapter::execute()
 }
 
 
+// TODO: change sensor calibration everywhere that it only starts a background task which terminates itself automatically and don't require execute() method to execute calibrationLoop() method
 uint16_t HMC5883LAdapter::startBackgroundCalibration(uint16_t amtOfSamples)
 {
     compass.setCompassOffset(0, 0, 0);
@@ -51,7 +53,7 @@ uint16_t HMC5883LAdapter::startBackgroundCalibration(uint16_t amtOfSamples)
 
     calibCounter.reset(amtOfSamples);
 
-    return getInterval_s() * amtOfSamples + 1;
+    return Instance::tasker.getTaskInterval_s(this) * amtOfSamples + 1;
 }
 
 

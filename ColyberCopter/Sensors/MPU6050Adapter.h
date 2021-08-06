@@ -13,12 +13,12 @@
 #include "SensorsMediator.h"
 #include "../Common/Counter.h"
 #include "../Common/Vector3.h"
-#include <Task.h>
+#include <IExecutable.h>
 #include <SimpleMPU6050.h>
 #include <LowPassFilter.h>
 
 
-class MPU6050Adapter: public Task
+class MPU6050Adapter: public IExecutable
 {
     class AccCalib: public Sensor
     {

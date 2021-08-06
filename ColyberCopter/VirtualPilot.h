@@ -12,15 +12,15 @@
 
 #include "Interfaces/IVirtualPilot.h"
 #include "FlightModes/FlightMode.h"
-#include <Task.h>
+#include <IExecutable.h>
 #include <GrowingArray.h>
 
 
-class VirtualPilot : public Interfaces::IVirtualPilot, public Task
+class VirtualPilot : public Interfaces::IVirtualPilot, public IExecutable
 {
 private:
     FlightMode* currentFlightMode;
-    GrowingArray<FlightMode*> flightModesArray;
+    SimpleDataStructures::GrowingArray<FlightMode*> flightModesArray;
 
 public:
     VirtualPilot(FlightMode& initialFlightMode);

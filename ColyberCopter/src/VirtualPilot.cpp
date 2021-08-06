@@ -9,8 +9,10 @@
 #include "../Instances/MainInstances.h"
 #include "../Instances/MotorsInstance.h"
 #include "../Communication/CommData.h"
+#include <ArrayIterator.h>
 
 using Enums::FlightModeTypes;
+using SimpleDataStructures::ArrayIterator;
 
 
 VirtualPilot::VirtualPilot(FlightMode& initialFlightMode)
@@ -21,9 +23,9 @@ VirtualPilot::VirtualPilot(FlightMode& initialFlightMode)
 
 bool VirtualPilot::addFlightMode(FlightMode* flightMode)
 {
-    auto iter = flightModesArray.getIterator();
-    while (iter->hasNext())
-        if (iter->next()->getType() == flightMode->getType())
+    ArrayIterator<FlightMode*> iter(flightModesArray);
+    while (iter.hasNext())
+        if (iter.next()->getType() == flightMode->getType())
             return false; // flight mode instance of this type was already added
 
     flightModesArray.add(flightMode);
@@ -34,9 +36,9 @@ bool VirtualPilot::addFlightMode(FlightMode* flightMode)
 bool VirtualPilot::initializeFlightModes()
 {
     bool result = true;
-    auto iter = flightModesArray.getIterator();
-    while (iter->hasNext())
-        result = result && iter->next()->initializeFlightMode();
+    ArrayIterator<FlightMode*> iter(flightModesArray);
+    while (iter.hasNext())
+        result = result && iter.next()->initializeFlightMode();
 
     return result;
 }
@@ -88,11 +90,10 @@ void VirtualPilot::execute()
 
 FlightMode* VirtualPilot::getFlightModePtrByType(FlightModeTypes flightModeType)
 {
-    Iterator<FlightMode*>* iter = flightModesArray.getIterator();
-
-    while (iter->hasNext())
+    ArrayIterator<FlightMode*> iter(flightModesArray);
+    while (iter.hasNext())
     {
-        FlightMode* temp = iter->next();
+        FlightMode* temp = iter.next();
         if (temp->getType() == flightModeType)
             return temp;
     }
@@ -103,10 +104,10 @@ FlightMode* VirtualPilot::getFlightModePtrByType(FlightModeTypes flightModeType)
 
 void VirtualPilot::executePrepareAndLeaveMethods(const FlightMode* oldFlightMode, const FlightMode* newFlightMode)
 {
-    Iterator<FlightMode*>* iterator = flightModesArray.getIterator();
-    while (iterator->hasNext())
+    ArrayIterator<FlightMode*> iter(flightModesArray);
+    while (iter.hasNext())
     {
-        FlightMode* checked = iterator->next();
+        FlightMode* checked = iter.next();
         bool wasUsed = oldFlightMode->checkIfSuperiorOrEqualOf(checked);
         bool willBeUsed = newFlightMode->checkIfSuperiorOrEqualOf(checked);
 
