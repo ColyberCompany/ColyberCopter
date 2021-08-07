@@ -8,6 +8,7 @@
 #include "../PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
 
 using Interfaces::ISensorsData;
+using Common::vector3Float;
 
 MadgwickAHRS::MadgwickAHRS(ISensorsData* sensorData, float sampleFrequency, float beta)
     : MadgwickBase(sampleFrequency, beta)
@@ -28,17 +29,17 @@ MadgwickAHRS::MadgwickAHRS(ISensorsData* sensorData, float sampleFrequency, floa
 void MadgwickAHRS::updateRotationCalculation()
 {
     // Convert gyroscope degrees/sec to radians/sec
-	Common::vector3Float rawGyro = sensorsData->getGyro_degPerSec();
+	vector3Float rawGyro = sensorsData->getGyro_degPerSec();
 	gx = rawGyro.x * 0.0174533f;
 	gy = rawGyro.y * 0.0174533f;
 	gz = rawGyro.z * 0.0174533f;
 
-    Common::vector3Float normAcc = sensorsData->getAcc_normVector();
+    vector3Float normAcc = sensorsData->getAcc_normVector();
     ax = normAcc.x;
     ay = normAcc.y;
     az = normAcc.z;
 
-    Common::vector3Float normMag = sensorsData->getMag_normVector();
+    vector3Float normMag = sensorsData->getMag_normVector();
     mx = normMag.x;
     my = normMag.y;
     mz = normMag.z;
@@ -145,13 +146,13 @@ void MadgwickAHRS::updateRotationCalculation()
 }
 
 
-Common::vector3Float MadgwickAHRS::getAngles_deg()
+vector3Float MadgwickAHRS::getAngles_deg()
 {
     return angles_deg;
 }
 
 
-Common::vector3Float MadgwickAHRS::getAngles_rad()
+vector3Float MadgwickAHRS::getAngles_rad()
 {
     return angles_rad;
 }

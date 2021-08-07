@@ -8,13 +8,16 @@
 #include "../Sensors/MPU6050Adapter.h"
 #include "../config.h"
 
+using Common::vector3Float;
+using Common::FloatAxisVector;
+
 
 MPU6050Adapter::AccCalib::AccCalib(SensorsMediator& sensorsMediator, MPU6050Adapter& _mpuAdapter)
     : Sensor(Enums::SensorTypes::ACCELEROMETER, sensorsMediator),
       mpuAdapter(_mpuAdapter)
 {
     using Config::AccOffset;
-    setOffset(Common::FloatAxisVector(AccOffset.x, AccOffset.y, AccOffset.z));
+    setOffset(FloatAxisVector(AccOffset.x, AccOffset.y, AccOffset.z));
 }
 
 
@@ -66,14 +69,14 @@ uint16_t MPU6050Adapter::AccCalib::startBackgroundCalibration(uint16_t amtOfSamp
 }
 
 
-Common::FloatAxisVector MPU6050Adapter::AccCalib::getOffset() const
+FloatAxisVector MPU6050Adapter::AccCalib::getOffset() const
 {
     const SimpleMPU6050::vector3Int16& accOffset = mpuAdapter.mpu.getAccOffset();
-    return Common::FloatAxisVector(accOffset.x, accOffset.y, accOffset.z);
+    return FloatAxisVector(accOffset.x, accOffset.y, accOffset.z);
 }
 
 
-void MPU6050Adapter::AccCalib::setOffset(Common::FloatAxisVector offset)
+void MPU6050Adapter::AccCalib::setOffset(FloatAxisVector offset)
 {
     using Enums::AxisType;
     mpuAdapter.mpu.setAccOffset(
@@ -99,7 +102,7 @@ MPU6050Adapter::GyroCalib::GyroCalib(SensorsMediator& sensorsMediator, MPU6050Ad
       mpuAdapter(_mpuAdapter)
 {
     using Config::GyroOffset;
-    setOffset(Common::FloatAxisVector(GyroOffset.x, GyroOffset.y, GyroOffset.z));
+    setOffset(FloatAxisVector(GyroOffset.x, GyroOffset.y, GyroOffset.z));
 }
 
 
@@ -151,14 +154,14 @@ uint16_t MPU6050Adapter::GyroCalib::startBackgroundCalibration(uint16_t amtOfSam
 }
 
 
-Common::FloatAxisVector MPU6050Adapter::GyroCalib::getOffset() const
+FloatAxisVector MPU6050Adapter::GyroCalib::getOffset() const
 {
     const SimpleMPU6050::vector3Int16& gyroOffset = mpuAdapter.mpu.getGyroOffset();
-    return Common::FloatAxisVector(gyroOffset.x, gyroOffset.y, gyroOffset.z);
+    return FloatAxisVector(gyroOffset.x, gyroOffset.y, gyroOffset.z);
 }
 
 
-void MPU6050Adapter::GyroCalib::setOffset(Common::FloatAxisVector offset)
+void MPU6050Adapter::GyroCalib::setOffset(FloatAxisVector offset)
 {
     using Enums::AxisType;
     mpuAdapter.mpu.setGyroOffset(
@@ -193,7 +196,7 @@ void MPU6050Adapter::execute()
 
     SimpleMPU6050::vector3Float& accNorm = mpu.getNormalizedAcceleration();
     //accCalib.sensorsMediator.updateAcc(vector3Float(accNorm.x, accNorm.y, accNorm.z)); // without filter
-    accCalib.sensorsMediator.updateAcc(Common::vector3Float(
+    accCalib.sensorsMediator.updateAcc(vector3Float(
         accLPF.x.update(accNorm.x),
         accLPF.y.update(accNorm.y),
         accLPF.z.update(accNorm.z)
@@ -201,7 +204,7 @@ void MPU6050Adapter::execute()
 
     SimpleMPU6050::vector3Float& gyroNorm = mpu.getNormalizedRotation();
     //gyroCalib.sensorsMediator.updateGyro(vector3Float(gyroNorm.x, gyroNorm.y, gyroNorm.z)); // without filter
-    gyroCalib.sensorsMediator.updateGyro(Common::vector3Float(
+    gyroCalib.sensorsMediator.updateGyro(vector3Float(
         gyroLPF.x.update(gyroNorm.x),
         gyroLPF.y.update(gyroNorm.y),
         gyroLPF.z.update(gyroNorm.z)

@@ -13,6 +13,8 @@
 using Enums::FlightModeTypes;
 using Common::Consts::RoundAngle;
 using Common::Consts::StraightAngle;
+using Common::ControlSticks;
+using Common::vector3Float;
 
 using Config::LevelingPID_kP;
 using Config::LevelingPID_kI;
@@ -74,7 +76,7 @@ const char* StabilizeFlightMode::getName()
 }
 
 
-void StabilizeFlightMode::flightModeLoop(Common::ControlSticks& inputOutputSticks)
+void StabilizeFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
 {
     if (inputOutputSticks.getThrottle() < 100)
         return;
@@ -85,18 +87,18 @@ void StabilizeFlightMode::flightModeLoop(Common::ControlSticks& inputOutputStick
 
 
 
-void StabilizeFlightMode::updateLeveling(Common::ControlSticks& inputOutputSticks)
+void StabilizeFlightMode::updateLeveling(ControlSticks& inputOutputSticks)
 {
     float finalPitch = inputOutputSticks.getPitch() / 10.f; // TODO: make that max tilt angle can be set
     float finalRoll = inputOutputSticks.getRoll() / 10.f;
-    Common::vector3Float angles = Instance::ahrs.getAngles_deg();
+    vector3Float angles = Instance::ahrs.getAngles_deg();
 
     inputOutputSticks.setPitch(levelingXPID.update(finalPitch, angles.x) + 0.5f);
     inputOutputSticks.setRoll(levelingYPID.update(finalRoll, angles.y) + 0.5f);
 }
 
 
-void StabilizeFlightMode::updateHeadingHolding(Common::ControlSticks& inputOutputSticks)
+void StabilizeFlightMode::updateHeadingHolding(ControlSticks& inputOutputSticks)
 {
     updateHeadingToHold(inputOutputSticks.getYaw());
     calculateHeadingError();

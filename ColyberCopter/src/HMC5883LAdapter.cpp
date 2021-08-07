@@ -8,6 +8,9 @@
 #include "../Sensors/HMC5883LAdapter.h"
 #include "../Instances/MainInstances.h"
 
+using Common::vector3Float;
+using Common::FloatAxisVector;
+
 
 HMC5883LAdapter::HMC5883LAdapter(SensorsMediator& sensorsMediator, SimpleMPU6050* mpu6050)
     : Sensor(Enums::SensorTypes::MAGNETOMETER, sensorsMediator)
@@ -37,7 +40,7 @@ void HMC5883LAdapter::execute()
     calibrationLoop();
 
     SimpleHMC5883L::vector3Float norm = compass.getNormalized();
-    sensorsMediator.updateMag(Common::vector3Float(norm.x, norm.y, norm.z));
+    sensorsMediator.updateMag(vector3Float(norm.x, norm.y, norm.z));
 }
 
 
@@ -57,14 +60,14 @@ uint16_t HMC5883LAdapter::startBackgroundCalibration(uint16_t amtOfSamples)
 }
 
 
-Common::FloatAxisVector HMC5883LAdapter::getOffset() const
+FloatAxisVector HMC5883LAdapter::getOffset() const
 {
     const SimpleHMC5883L::vector3Int16& magOffset = compass.getCompassOffset();
-    return Common::FloatAxisVector(magOffset.x, magOffset.y, magOffset.z);
+    return FloatAxisVector(magOffset.x, magOffset.y, magOffset.z);
 }
 
 
-void HMC5883LAdapter::setOffset(Common::FloatAxisVector offset)
+void HMC5883LAdapter::setOffset(FloatAxisVector offset)
 {
     using Enums::AxisType;
     compass.setCompassOffset(

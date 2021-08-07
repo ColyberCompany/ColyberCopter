@@ -9,6 +9,7 @@
 #include "../config.h"
 
 using Enums::StateType;
+using Common::ControlSticks;
 
 
 QuadXMotors::QuadXMotors()
@@ -44,7 +45,7 @@ bool QuadXMotors::initializeMotors()
 }
 
 
-void QuadXMotors::updatePower(const Common::ControlSticks& stickValues)
+void QuadXMotors::updatePower(const ControlSticks& stickValues)
 {
     if (getState() == StateType::Enabled)
     {

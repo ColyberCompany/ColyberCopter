@@ -9,6 +9,7 @@
 #include "../config.h"
 
 using Enums::FlightModeTypes;
+using Common::ControlSticks;
 
 
 FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMode)
@@ -42,7 +43,7 @@ bool FlightMode::initializeFlightMode()
 }
 
 
-void FlightMode::executeFlightModeLoop(Common::ControlSticks& inputOutputSticks)
+void FlightMode::executeFlightModeLoop(ControlSticks& inputOutputSticks)
 {
     flightModeLoop(inputOutputSticks);
     if (baseFlightMode != nullptr)
@@ -50,7 +51,7 @@ void FlightMode::executeFlightModeLoop(Common::ControlSticks& inputOutputSticks)
 }
 
 
-void FlightMode::resetSticks(Common::ControlSticks& sticks)
+void FlightMode::resetSticks(ControlSticks& sticks)
 {
     sticks.setThrottle(0);
     sticks.setYaw(0);

@@ -8,6 +8,8 @@
 #include "../FlightModes/UnarmedFlightMode.h"
 #include "../Instances/MotorsInstance.h"
 
+using Common::ControlSticks;
+
 
 UnarmedFlightMode::UnarmedFlightMode()
     : FlightMode(Enums::FlightModeTypes::UNARMED, nullptr)
@@ -33,7 +35,7 @@ const char* UnarmedFlightMode::getName()
 }
 
 
-void UnarmedFlightMode::flightModeLoop(Common::ControlSticks& inputOutputSticks)
+void UnarmedFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
 {
     if (Instance::motors.getState() == Enums::StateType::Enabled)
         Instance::motors.setState(Enums::StateType::Disabled);

@@ -13,6 +13,7 @@
 
 using Enums::FlightModeTypes;
 using SimpleDataStructures::ArrayIterator;
+using Common::ControlSticks;
 
 
 VirtualPilot::VirtualPilot(FlightMode& initialFlightMode)
@@ -65,7 +66,7 @@ bool VirtualPilot::setFlightMode(FlightModeTypes flightModeType)
 
 void VirtualPilot::runVirtualPilot()
 {
-    Common::ControlSticks virtualSticks(commData.pilot.stick.throttle,
+    ControlSticks virtualSticks(commData.pilot.stick.throttle,
                                 commData.pilot.stick.yaw,
                                 commData.pilot.stick.pitch,
                                 commData.pilot.stick.roll);
