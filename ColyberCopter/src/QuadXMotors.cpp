@@ -9,6 +9,7 @@
 #include "../config.h"
 
 using Enums::StateType;
+using Common::ControlSticks;
 
 
 QuadXMotors::QuadXMotors()

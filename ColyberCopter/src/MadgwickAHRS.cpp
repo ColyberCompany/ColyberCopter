@@ -8,6 +8,7 @@
 #include "../PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
 
 using Interfaces::ISensorsData;
+using Common::vector3Float;
 
 MadgwickAHRS::MadgwickAHRS(ISensorsData* sensorData, float sampleFrequency, float beta)
     : MadgwickBase(sampleFrequency, beta)

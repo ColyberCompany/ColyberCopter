@@ -8,6 +8,9 @@
 #include "../Sensors/HMC5883LAdapter.h"
 #include "../Instances/MainInstances.h"
 
+using Common::vector3Float;
+using Common::FloatAxisVector;
+
 
 HMC5883LAdapter::HMC5883LAdapter(SensorsMediator& sensorsMediator, SimpleMPU6050* mpu6050)
     : Sensor(Enums::SensorTypes::MAGNETOMETER, sensorsMediator)

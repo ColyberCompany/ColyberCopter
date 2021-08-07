@@ -20,7 +20,7 @@ namespace Interfaces
         virtual ~IPositionCalculation() {}
 
         virtual void updatePositionCalculation() = 0;
-        virtual vector3Double getPosition() = 0;
+        virtual Common::vector3Double getPosition() = 0;
     };
 }
 

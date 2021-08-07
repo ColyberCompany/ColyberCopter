@@ -27,7 +27,7 @@ private:
     // calibration
     SimpleHMC5883L::vector3Int16 mins;
     SimpleHMC5883L::vector3Int16 maxs;
-    Counter calibCounter;
+    Common::Counter calibCounter;
 
 
 public:
@@ -45,9 +45,9 @@ public:
      */
     uint16_t startBackgroundCalibration(uint16_t amtOfSamples) override;
 
-    FloatAxisVector getOffset() const override;
+    Common::FloatAxisVector getOffset() const override;
 
-    void setOffset(FloatAxisVector offset) override;
+    void setOffset(Common::FloatAxisVector offset) override;
 
     const char* getName() override
     {

@@ -23,8 +23,8 @@ private:
         q0q0, q1q1, q2q2, q3q3;
 
 
-    vector3Float angles_deg; // x-pitch, y-roll, z-yaw
-    vector3Float angles_rad; // x-pitch, y-roll, z-yaw
+    Common::vector3Float angles_deg; // x-pitch, y-roll, z-yaw
+    Common::vector3Float angles_rad; // x-pitch, y-roll, z-yaw
     Interfaces::ISensorsData& sensorsData;
 
     float ax, ay, az;
@@ -34,8 +34,8 @@ private:
 public:
     MadgwickIMU(Interfaces::ISensorsData& sensorsData, float sampleFrequency, float beta = DefaultBeta); // TODO: maybe use global Instance instead of passing reference through the constructor (or use as an external library and make adapter class)
     void updateRotationCalculation() override;
-    vector3Float getAngles_deg() override;
-    vector3Float getAngles_rad() override;
+    Common::vector3Float getAngles_deg() override;
+    Common::vector3Float getAngles_rad() override;
 };
 
 

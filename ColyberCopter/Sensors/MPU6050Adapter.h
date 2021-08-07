@@ -24,8 +24,8 @@ class MPU6050Adapter: public IExecutable
     {
         MPU6050Adapter& mpuAdapter;
 
-        vector3<int32_t> calibSumVector; // TODO: think how to make that this variables don't occupy memory all the time (they are needed for a short period or never). // Maybe something wih that, that probably always only one sensor will be calibrated at once (also all sensors are calibrated in the simmilar way).
-        Counter calibCounter;
+        Common::vector3<int32_t> calibSumVector; // TODO: think how to make that this variables don't occupy memory all the time (they are needed for a short period or never). // Maybe something wih that, that probably always only one sensor will be calibrated at once (also all sensors are calibrated in the simmilar way).
+        Common::Counter calibCounter;
 
     public:
         /**
@@ -46,8 +46,8 @@ class MPU6050Adapter: public IExecutable
         void calibrationLoop();
 
         uint16_t startBackgroundCalibration(uint16_t amtOfSamples) override;
-        FloatAxisVector getOffset() const override;
-        void setOffset(FloatAxisVector offset) override;
+        Common::FloatAxisVector getOffset() const override;
+        void setOffset(Common::FloatAxisVector offset) override;
 
         const char* getName() override;
 
@@ -59,8 +59,8 @@ class MPU6050Adapter: public IExecutable
     {
         MPU6050Adapter& mpuAdapter;
 
-        vector3<int32_t> calibSumVector; // TODO: think how to make that this variables don't occupy memory all the time (they are needed for a short period or never). // Maybe something wih that, that probably always only one sensor will be calibrated at once (also all sensors are calibrated in the simmilar way).
-        Counter calibCounter;
+        Common::vector3<int32_t> calibSumVector; // TODO: think how to make that this variables don't occupy memory all the time (they are needed for a short period or never). // Maybe something wih that, that probably always only one sensor will be calibrated at once (also all sensors are calibrated in the simmilar way).
+        Common::Counter calibCounter;
 
     public:
         /**
@@ -80,8 +80,8 @@ class MPU6050Adapter: public IExecutable
         void calibrationLoop();
 
         uint16_t startBackgroundCalibration(uint16_t amtOfSamples) override;
-        FloatAxisVector getOffset() const override;
-        void setOffset(FloatAxisVector offset) override;
+        Common::FloatAxisVector getOffset() const override;
+        void setOffset(Common::FloatAxisVector offset) override;
 
         const char* getName() override;
 
@@ -96,7 +96,7 @@ private:
     GyroCalib gyroCalib;
 
     // Filtering stuff:
-    typedef vector3<LowPassFilter<float>> ThreeAxesLPF;
+    typedef Common::vector3<LowPassFilter<float>> ThreeAxesLPF;
     ThreeAxesLPF accLPF; // accelerometer low-pass filter
     ThreeAxesLPF gyroLPF; // gyro low-pass filter
 

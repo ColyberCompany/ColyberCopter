@@ -13,28 +13,31 @@
 #endif
 
 
-template <class T>
-struct vector3
+namespace Common
 {
-    T x;
-    T y;
-    T z;
-
-    vector3() {}
-
-    vector3(T x, T y, T z)
+    template <class T>
+    struct vector3
     {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-    }
-};
+        T x;
+        T y;
+        T z;
 
-typedef vector3<float> vector3Float;
-typedef vector3<double> vector3Double;
+        vector3() {}
 
-typedef vector3<int16_t> vector3Int16;
-typedef vector3<int32_t> vector3Int32;
+        vector3(T x, T y, T z)
+        {
+            this->x = x;
+            this->y = y;
+            this->z = z;
+        }
+    };
+
+    typedef vector3<float> vector3Float;
+    typedef vector3<double> vector3Double;
+
+    typedef vector3<int16_t> vector3Int16;
+    typedef vector3<int32_t> vector3Int32;
+}
 
 
 #endif

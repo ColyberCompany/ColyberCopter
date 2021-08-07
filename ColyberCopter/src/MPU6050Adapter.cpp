@@ -8,6 +8,9 @@
 #include "../Sensors/MPU6050Adapter.h"
 #include "../config.h"
 
+using Common::vector3Float;
+using Common::FloatAxisVector;
+
 
 MPU6050Adapter::AccCalib::AccCalib(SensorsMediator& sensorsMediator, MPU6050Adapter& _mpuAdapter)
     : Sensor(Enums::SensorTypes::ACCELEROMETER, sensorsMediator),

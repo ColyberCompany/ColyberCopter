@@ -8,6 +8,7 @@
 #include "../PositionAndRotation/RotationCalculation/MadgwickIMU.h"
 
 using Interfaces::ISensorsData;
+using Common::vector3Float;
 
 
 MadgwickIMU::MadgwickIMU(ISensorsData& _sensorsData, float sampleFrequency, float beta)
