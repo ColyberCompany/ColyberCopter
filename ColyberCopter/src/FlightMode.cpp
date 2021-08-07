@@ -42,7 +42,7 @@ bool FlightMode::initializeFlightMode()
 }
 
 
-void FlightMode::executeFlightModeLoop(ControlSticks& inputOutputSticks)
+void FlightMode::executeFlightModeLoop(Common::ControlSticks& inputOutputSticks)
 {
     flightModeLoop(inputOutputSticks);
     if (baseFlightMode != nullptr)
@@ -50,7 +50,7 @@ void FlightMode::executeFlightModeLoop(ControlSticks& inputOutputSticks)
 }
 
 
-void FlightMode::resetSticks(ControlSticks& sticks)
+void FlightMode::resetSticks(Common::ControlSticks& sticks)
 {
     sticks.setThrottle(0);
     sticks.setYaw(0);

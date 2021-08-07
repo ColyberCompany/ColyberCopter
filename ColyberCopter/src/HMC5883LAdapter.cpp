@@ -37,7 +37,7 @@ void HMC5883LAdapter::execute()
     calibrationLoop();
 
     SimpleHMC5883L::vector3Float norm = compass.getNormalized();
-    sensorsMediator.updateMag(vector3Float(norm.x, norm.y, norm.z));
+    sensorsMediator.updateMag(Common::vector3Float(norm.x, norm.y, norm.z));
 }
 
 
@@ -57,14 +57,14 @@ uint16_t HMC5883LAdapter::startBackgroundCalibration(uint16_t amtOfSamples)
 }
 
 
-FloatAxisVector HMC5883LAdapter::getOffset() const
+Common::FloatAxisVector HMC5883LAdapter::getOffset() const
 {
     const SimpleHMC5883L::vector3Int16& magOffset = compass.getCompassOffset();
-    return FloatAxisVector(magOffset.x, magOffset.y, magOffset.z);
+    return Common::FloatAxisVector(magOffset.x, magOffset.y, magOffset.z);
 }
 
 
-void HMC5883LAdapter::setOffset(FloatAxisVector offset)
+void HMC5883LAdapter::setOffset(Common::FloatAxisVector offset)
 {
     using Enums::AxisType;
     compass.setCompassOffset(

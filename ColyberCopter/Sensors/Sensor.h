@@ -67,16 +67,16 @@ public:
      * @brief Getter of the calibration values.
      * @return Current calibration values.
      */
-    virtual FloatAxisVector getOffset() const
+    virtual Common::FloatAxisVector getOffset() const
     {
-        return FloatAxisVector();
+        return Common::FloatAxisVector();
     }
 
     /**
      * @brief Setter of the calibration values.
      * @param offset Calibration values (offset) to set.
      */
-    virtual void setOffset(FloatAxisVector offset)
+    virtual void setOffset(Common::FloatAxisVector offset)
     {
     }
 

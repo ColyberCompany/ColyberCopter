@@ -28,8 +28,8 @@ private:
 		q2q2, q2q3, q3q3;
     
 
-    vector3Float angles_deg; // x-pitch, y-roll, z-yaw
-    vector3Float angles_rad; // x-pitch, y-roll, z-yaw
+    Common::vector3Float angles_deg; // x-pitch, y-roll, z-yaw
+    Common::vector3Float angles_rad; // x-pitch, y-roll, z-yaw
     Interfaces::ISensorsData* sensorsData;
 
     float ax, ay, az;
@@ -40,8 +40,8 @@ private:
 public:
     MadgwickAHRS(Interfaces::ISensorsData* sensorData, float sampleFrequency, float beta = DefaultBeta);
     void updateRotationCalculation() override;
-    vector3Float getAngles_deg() override;
-    vector3Float getAngles_rad() override;
+    Common::vector3Float getAngles_deg() override;
+    Common::vector3Float getAngles_rad() override;
 };
 
 

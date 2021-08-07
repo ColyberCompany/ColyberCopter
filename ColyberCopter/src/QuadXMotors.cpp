@@ -44,7 +44,7 @@ bool QuadXMotors::initializeMotors()
 }
 
 
-void QuadXMotors::updatePower(const ControlSticks& stickValues)
+void QuadXMotors::updatePower(const Common::ControlSticks& stickValues)
 {
     if (getState() == StateType::Enabled)
     {

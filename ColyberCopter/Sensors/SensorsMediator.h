@@ -27,9 +27,9 @@ public:
     SensorsMediator() {};
 
 private:
-    vector3Float accReading;
-    vector3Float gyroReading;
-    vector3Float magReading;
+    Common::vector3Float accReading;
+    Common::vector3Float gyroReading;
+    Common::vector3Float magReading;
     float pressureReading;
     double latitude;
     double longitude;
@@ -38,17 +38,17 @@ private:
 
 
 public:
-    void updateAcc(const vector3Float& newReading)
+    void updateAcc(const Common::vector3Float& newReading)
     {
         accReading = newReading;
     }
 
-    void updateGyro(const vector3Float& newReading)
+    void updateGyro(const Common::vector3Float& newReading)
     {
         gyroReading = newReading;
     }
 
-    void updateMag(const vector3Float& newReading)
+    void updateMag(const Common::vector3Float& newReading)
     {
         magReading = newReading;
     }
@@ -79,17 +79,17 @@ public:
     // Interface
     // //// \/ \/
 
-    vector3Float getAcc_normVector() override
+    Common::vector3Float getAcc_normVector() override
     {
         return accReading;
     }
     
-    vector3Float getGyro_degPerSec() override
+    Common::vector3Float getGyro_degPerSec() override
     {
         return gyroReading;
     }
 
-    vector3Float getMag_normVector() override
+    Common::vector3Float getMag_normVector() override
     {
         return magReading;
     }

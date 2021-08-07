@@ -33,7 +33,7 @@ const char* UnarmedFlightMode::getName()
 }
 
 
-void UnarmedFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
+void UnarmedFlightMode::flightModeLoop(Common::ControlSticks& inputOutputSticks)
 {
     if (Instance::motors.getState() == Enums::StateType::Enabled)
         Instance::motors.setState(Enums::StateType::Disabled);

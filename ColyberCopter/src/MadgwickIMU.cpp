@@ -24,12 +24,12 @@ MadgwickIMU::MadgwickIMU(ISensorsData& _sensorsData, float sampleFrequency, floa
 void MadgwickIMU::updateRotationCalculation()
 {
     // Convert gyroscope degrees/sec to radians/sec
-    vector3Float rawGyro = sensorsData.getGyro_degPerSec();
+    Common::vector3Float rawGyro = sensorsData.getGyro_degPerSec();
 	gx = rawGyro.x * 0.0174533f;
 	gy = rawGyro.y * 0.0174533f;
 	gz = rawGyro.z * 0.0174533f;
 
-    vector3Float normAcc = sensorsData.getAcc_normVector();
+    Common::vector3Float normAcc = sensorsData.getAcc_normVector();
     ax = normAcc.x;
     ay = normAcc.y;
     az = normAcc.z;
@@ -113,13 +113,13 @@ void MadgwickIMU::updateRotationCalculation()
 }
 
 
-vector3Float MadgwickIMU::getAngles_deg()
+Common::vector3Float MadgwickIMU::getAngles_deg()
 {
     return angles_deg;
 }
 
 
-vector3Float MadgwickIMU::getAngles_rad()
+Common::vector3Float MadgwickIMU::getAngles_rad()
 {
     return angles_rad;
 }

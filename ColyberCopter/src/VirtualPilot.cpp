@@ -65,7 +65,7 @@ bool VirtualPilot::setFlightMode(FlightModeTypes flightModeType)
 
 void VirtualPilot::runVirtualPilot()
 {
-    ControlSticks virtualSticks(commData.pilot.stick.throttle,
+    Common::ControlSticks virtualSticks(commData.pilot.stick.throttle,
                                 commData.pilot.stick.yaw,
                                 commData.pilot.stick.pitch,
                                 commData.pilot.stick.roll);

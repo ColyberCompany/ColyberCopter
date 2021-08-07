@@ -31,7 +31,7 @@ public:
     QuadXMotors();
 
     bool initializeMotors() override;
-    void updatePower(const ControlSticks& stickValues) override;
+    void updatePower(const Common::ControlSticks& stickValues) override;
 };
 
 
