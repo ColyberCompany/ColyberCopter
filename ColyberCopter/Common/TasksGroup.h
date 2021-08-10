@@ -1,11 +1,9 @@
 /**
  * @file TasksGroup.h
  * @author Antoni Wielgus
- * @brief 
+ * @brief This classes is used to group tasks into one
  * @date 2021-08-09
- * 
  */
-
 
 #ifndef TASKSGROUP_H
 #define TASKSGROUP_H
@@ -30,11 +28,10 @@ namespace Common
         TasksGroup(uint8_t maxTasksAmount);
         ~TasksGroup();
 
-        void addTask(IExecutable* task);
+        bool addTask(IExecutable* task);
         void execute() override;
     };
 }
-
 
 
 #endif

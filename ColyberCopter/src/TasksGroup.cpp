@@ -2,7 +2,6 @@
  * @file TasksGroup.cpp
  * @author Antoni Wielgus
  * @date 2021-08-09
- * 
  */
 
 #include "../Common/TasksGroup.h"
@@ -23,15 +22,20 @@ TasksGroup::~TasksGroup()
         delete[] tasksArray;
 }
 
-void TasksGroup::addTask(IExecutable* task)
+bool TasksGroup::addTask(IExecutable* task)
 {
+    if (tasksAmount >= MaxTasksAmount)
+        return false;
+
     tasksArray[tasksAmount] = task;
     tasksAmount++;
+
+    return true;
 }
 
 void TasksGroup::execute()
 {
-    for (int i = 0; i < tasksAmount; i++)
+    for (uint8_t i = 0; i < tasksAmount; i++)
         tasksArray[i]->execute();
 }
 
