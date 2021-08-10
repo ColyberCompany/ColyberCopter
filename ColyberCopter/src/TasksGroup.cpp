@@ -35,7 +35,7 @@ bool TasksGroup::addTask(IExecutable* task)
 
 void TasksGroup::execute()
 {
-    for (uint8_t i = 0; i < tasksAmount; i++)
+    for (uint8_t i = 0; i < tasksAmount; ++i)
         tasksArray[i]->execute();
 }
 
