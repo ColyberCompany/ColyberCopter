@@ -87,7 +87,7 @@ bool SimpleMS5611Continuous::initialize()
     static bool initialized = false;
     if (!initialized)
     {
-        tasker.addTask_us(&readingTask, RequestWaitTime_us);
+        tasker.addTask_us(&readingTask, RequestWaitTime_us, TaskType::NO_CATCHING_UP);
         initialized = true;
     }
     
