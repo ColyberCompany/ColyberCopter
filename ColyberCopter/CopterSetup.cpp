@@ -34,6 +34,7 @@
 #include "Communication/CommData.h"
 #include "Communication/DataPackets.h"
 #include "Motors/Motors.h"
+#include "Common/TasksGroup.h"
 
 using namespace Interfaces;
 
@@ -95,6 +96,11 @@ namespace Assemble
         FailsafeActions::DisarmMotors failsafeActionDisarmMotors;
         //FailsafeScenarios::CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
         FailsafeScenarios::TiltExceeding failsafeTiltExceeding(&failsafeActionDisarmMotors);
+    }
+
+    namespace TaskGroups {
+        Common::TasksGroup mainFrequency(5);
+        Common::TasksGroup oneHertz(4);
     }
 }
 
@@ -223,24 +229,22 @@ void setupFlightModes()
 }
 
 
-void addTasksToTasker() // TODO: maybe there shouldn't be this method and all tasks be added during initialization?
+void addTasksToTasker()
 {
     using Instance::tasker;
 
+    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::mpu6050);
+    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::PositionAndRotation::ahrs);
+    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
+    tasker.addTask_Hz(&Assemble::TaskGroups::mainFrequency, Config::MainFrequency_Hz);
+
+    Assemble::TaskGroups::oneHertz.addTask(&Tasks::builtinDiodeBlink);
+    tasker.addTask_Hz(&Assemble::TaskGroups::oneHertz, 1.f);
+
     tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
-    tasker.addTask_Hz(&Assemble::PositionAndRotation::ahrs, Config::MainFrequency_Hz);
-    tasker.addTask_Hz(&Assemble::Sensors::mpu6050, Config::MainFrequency_Hz);
-
-    tasker.addTask_Hz(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz);
     tasker.addTask_Hz(&Assemble::Sensors::hmc5883l, 75);
-
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
-    tasker.addTask_Hz(&Tasks::oneHertz, 1.f);
-
     tasker.addTask_Hz(&debugTask, 50);
-
-    //tasker.addTask_Hz(&Tasks::calibTask, 1);
-    //Tasks::calibTask.pauseExecutionFor_s(5);
 }
 
 
@@ -262,7 +266,7 @@ void setupCommunication()
 
 bool initSensor(Sensor* sensorToInit)
 {
-    Instance::debMes.showMessage("Initializing:"); // TODO: add variadic version of showMessage that receive multiple strings to show and use it there
+    Instance::debMes.showMessage("Initializing:");
     Instance::debMes.showMessage(sensorToInit->getName());
 
     bool sensorInitResult = sensorToInit->initialize();

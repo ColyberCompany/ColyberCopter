@@ -22,7 +22,7 @@ namespace Tasks
             lastLedState = !lastLedState;
             digitalWrite(LED_BUILTIN, lastLedState);
         }
-    } oneHertz;
+    } builtinDiodeBlink;
 
 
 
