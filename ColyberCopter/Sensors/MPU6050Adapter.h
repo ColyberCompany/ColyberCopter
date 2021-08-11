@@ -10,7 +10,6 @@
 #define MPU6050ADAPTER_H
 
 #include "Sensor.h"
-#include "SensorsMediator.h"
 #include "../Common/Counter.h"
 #include "../Common/Vector3.h"
 #include <IExecutable.h>
@@ -23,19 +22,19 @@ class MPU6050Adapter: public IExecutable
     class AccCalib: public Sensor
     {
         MPU6050Adapter& mpuAdapter;
+        Common::vector3Float& smAccHandler; // SensorsMediator acc handler
 
         Common::vector3<int32_t> calibSumVector; // TODO: think how to make that this variables don't occupy memory all the time (they are needed for a short period or never). // Maybe something wih that, that probably always only one sensor will be calibrated at once (also all sensors are calibrated in the simmilar way).
         Common::Counter calibCounter;
 
     public:
         /**
-         * @param sensorsMediator Reference to the sensorsMediator.
          * @param mpu6050 Reference to the mpu6050 instance.
          */
-        AccCalib(SensorsMediator& sensorsMediator, MPU6050Adapter& mpuAdapter);
+        AccCalib(MPU6050Adapter& mpuAdapter);
 
         // initialization is in adapter class
-        bool initialize() override;
+        bool initSensor() override;
 
         /**
          * @brief Runs one calibration loop if sensor need to calibrate
@@ -64,13 +63,12 @@ class MPU6050Adapter: public IExecutable
 
     public:
         /**
-         * @param sensorsMediator Reference to the sensorsMediator.
          * @param mpu6050 Reference to the mpu6050 instance.
          */
-        GyroCalib(SensorsMediator& sensorsMediator, MPU6050Adapter& mpuAdapter);
+        GyroCalib(MPU6050Adapter& mpuAdapter);
 
         // initialization is in adapter class
-        bool initialize() override;
+        bool initSensor() override;
 
         /**
          * @brief Runs one calibration loop if sensor need to calibrate
@@ -102,7 +100,7 @@ private:
 
 
 public:
-    MPU6050Adapter(SensorsMediator& sensorsMediator);
+    MPU6050Adapter();
     
     void execute() override;
     Sensor* getAccSensor();

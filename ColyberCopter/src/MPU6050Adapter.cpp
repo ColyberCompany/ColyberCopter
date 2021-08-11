@@ -7,21 +7,23 @@
 
 #include "../Sensors/MPU6050Adapter.h"
 #include "../config.h"
+#include "../Instances/SensorsMediatorInstance.h"
 
 using Common::vector3Float;
 using Common::FloatAxisVector;
 
 
-MPU6050Adapter::AccCalib::AccCalib(SensorsMediator& sensorsMediator, MPU6050Adapter& _mpuAdapter)
-    : Sensor(Enums::SensorTypes::ACCELEROMETER, sensorsMediator),
-      mpuAdapter(_mpuAdapter)
+MPU6050Adapter::AccCalib::AccCalib(MPU6050Adapter& _mpuAdapter)
+    : Sensor(Enums::SensorTypes::ACCELEROMETER),
+      mpuAdapter(_mpuAdapter),
+      smAccHandler(*Instance::sensorsMediator.getAccReadingHandler())
 {
     using Config::AccOffset;
     setOffset(FloatAxisVector(AccOffset.x, AccOffset.y, AccOffset.z));
 }
 
 
-bool MPU6050Adapter::AccCalib::initialize()
+bool MPU6050Adapter::AccCalib::initSensor()
 {
     mpuAdapter.initializeMPU6050IfWasNotInitialized();
     return isGood();
@@ -183,9 +185,9 @@ const char* MPU6050Adapter::GyroCalib::getName()
 
 
 
-MPU6050Adapter::MPU6050Adapter(SensorsMediator& sensorsMediator)
-    : accCalib(sensorsMediator, *this),
-    gyroCalib(sensorsMediator, *this)
+MPU6050Adapter::MPU6050Adapter()
+    : accCalib(*this),
+    gyroCalib(*this)
 {
 }
 

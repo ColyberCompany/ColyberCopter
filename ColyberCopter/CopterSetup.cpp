@@ -128,6 +128,9 @@ namespace Instance
 
 // MotorsInstance:
     Motors& motors = Assemble::Motors::quadXMotors;
+
+// SensorsMediatorInstance:
+    SensorsMediator& sensorsMediator = Assemble::sensorsMediator;
 }
 
 
