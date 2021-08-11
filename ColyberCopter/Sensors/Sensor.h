@@ -9,44 +9,66 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
-#include "SensorsMediator.h"
 #include "../Common/FloatAxisVector.h"
 #include "../Enums/SensorTypes.h"
 
 
 class Sensor
 {
-protected:
+    bool initResult_flag = false;
     const Enums::SensorTypes type;
-    SensorsMediator& sensorsMediator;
-    bool initResultFlag = false; // TODO: change name to initResultFlag
+
 
 public:
-    Sensor(Enums::SensorTypes _type, SensorsMediator& _sensorsMediator)
-        : type(_type),
-          sensorsMediator(_sensorsMediator)
+    Sensor(Enums::SensorTypes _type)
+        : type(_type)
     {
     }
+
+    Sensor(const Sensor&) = delete;
+    Sensor& operator=(const Sensor&) = delete;
 
     virtual ~Sensor() {}
 
     /**
      * @brief Initialize the sensor.
-     * Set initResultFlag here (true if initialized successfully)!
-     * @return false if sensor wasn't initialized successfully,
-     * returns true otherwise.
+     * @return true if sensor was initialized successfully, false otherwise.
      */
-    virtual bool initialize() = 0;
+    bool initialize()
+    {
+        initResult_flag = initSensor();
+        return initResult_flag;
+    }
 
     /**
-     * @brief Check if sensor was initialized with good result and if
-     * is working at the moment.
-     * @return if initialize() method returned false or sensor
-     * is not working.
+     * @brief Check if sensor was initialized with successful result.
+     * @return true if sensor was initialized, false otherwise.
      */
-    virtual bool isGood() const
+    bool isInitialized() const
     {
-        return initResultFlag;
+        return initResult_flag;
+    }
+
+    /**
+     * @brief Check if sensor is currently updating new measurements in sensorsMediator.
+     * @return true if sensor is running.
+     */
+    virtual bool isOperating() const
+    {
+        return initResult_flag; // by default
+    }
+
+    /**
+     * @brief Name getter of this sensor.
+     */
+    virtual const char* getName() = 0;
+
+    /**
+     * @brief Get type of the current sensor.
+     */
+    Enums::SensorTypes getType()
+    {
+        return type;
     }
 
     /**
@@ -57,7 +79,7 @@ public:
      * @return Amount of seconds that the calibration process will take.
      * You can call getOffset() method after that time and get new offset values.
      */
-    virtual uint16_t startBackgroundCalibration(uint16_t amtOfSamples)
+    virtual uint16_t startBackgroundCalibration(uint16_t amtOfSamples) // TODO: calibration process to rebuild (issue on github)
     {
         // Don't need to calibrate by default
         return 0;
@@ -80,18 +102,13 @@ public:
     {
     }
 
-    /**
-     * @brief Getter of name of this sensor. 
-     */
-    virtual const char* getName() = 0;
 
+private:
     /**
-     * @return Type of the current sensor.
+     * @brief Communicate with the sensor and initialze it.
+     * @return whether initialization was successful or not.
      */
-    Enums::SensorTypes getType()
-    {
-        return type;
-    }
+    virtual bool initSensor() = 0;
 };
 
 
