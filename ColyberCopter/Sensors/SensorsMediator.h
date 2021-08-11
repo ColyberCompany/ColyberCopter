@@ -4,7 +4,6 @@
  * @brief This class is used to exchange sensor readings
  * between sensors and rest of the project.
  * @date 2020-11-25
- * 
  */
 
 
@@ -23,10 +22,6 @@
  */
 class SensorsMediator : public Interfaces::ISensorsData
 {
-public:
-    SensorsMediator() {};
-
-private:
     Common::vector3Float accReading;
     Common::vector3Float gyroReading;
     Common::vector3Float magReading;
@@ -36,43 +31,22 @@ private:
     float bottomRangefinderReading;
     float temperatureReading;
 
+    bool initFlags[18] = {};
+
 
 public:
-    void updateAcc(const Common::vector3Float& newReading)
-    {
-        accReading = newReading;
-    }
+    SensorsMediator();
+    SensorsMediator(const SensorsMediator&) = delete;
+    SensorsMediator& operator=(const SensorsMediator&) = delete;
 
-    void updateGyro(const Common::vector3Float& newReading)
-    {
-        gyroReading = newReading;
-    }
-
-    void updateMag(const Common::vector3Float& newReading)
-    {
-        magReading = newReading;
-    }
-    
-    void updatePressure(float newReading)
-    {
-        pressureReading = newReading;
-    }
-
-    void updateLatLong(double latitude, double longitude)
-    {
-        this->latitude = latitude;
-        this->longitude = longitude;
-    }
-
-    void updateBottomRangefinder(float newReading)
-    {
-        bottomRangefinderReading = newReading;
-    }
-
-    void updateTemperatureReading(float newReading)
-    {
-        temperatureReading = newReading;
-    }
+    Common::vector3Float* getAccReadingHandler();
+    Common::vector3Float* getGyroReadingHandler();
+    Common::vector3Float* getMagReadingHandler();
+    float* getPressureReadingHandler();
+    double* getLatitudeReadingHandler();
+    double* getLongitudeReadingHandler();
+    float* getBottomRangefinderReadingHandler();
+    float* getRemperatureReadingHandler();
 
 
     // //// \/ \/
@@ -118,6 +92,10 @@ public:
     {
         return temperatureReading;
     }
+
+
+private:
+    bool checkInitFlag(uint8_t idx);
 };
 
 
