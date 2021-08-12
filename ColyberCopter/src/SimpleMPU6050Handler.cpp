@@ -18,8 +18,11 @@ bool SimpleMPU6050Handler::initialize()
     if (sensorInitialized_flag)
         return true;
 
-    sensorInitialized_flag = SimpleMPU6050::initialize();
-    config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
+    if (sensorInitialized_flag = SimpleMPU6050::initialize())
+    {
+        config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
+        SimpleMPU6050::enableCompassBypass();
+    }
 
     return sensorInitialized_flag;
 }
@@ -63,8 +66,7 @@ void SimpleMPU6050Handler::config3AxisLPF(ThreeAxesLPF& lpf, float cutoffFreq)
 
 
 MPU6050Acc::MPU6050Acc(SimpleMPU6050Handler& simpleMPU6050Handler)
-    : Accelerometer(Enums::SensorTypes::ACCELEROMETER),
-      mpu(simpleMPU6050Handler)
+    : mpu(simpleMPU6050Handler)
 {
 }
 
@@ -93,8 +95,7 @@ Common::vector3Float MPU6050Acc::get_norm()
 
 
 MPU6050Gyro::MPU6050Gyro(SimpleMPU6050Handler& simpleMPU6050Handler)
-    : Gyroscope(Enums::SensorTypes::GYROSCOPE),
-      mpu(simpleMPU6050Handler)
+    : mpu(simpleMPU6050Handler)
 {
 }
 

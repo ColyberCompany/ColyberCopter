@@ -15,8 +15,8 @@
 class Accelerometer : public Sensor
 {
 public:
-    Accelerometer(Enums::SensorTypes type)
-        : Sensor(type)
+    Accelerometer()
+        : Sensor(Enums::SensorTypes::ACCELEROMETER)
     {
     }
     
