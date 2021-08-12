@@ -9,7 +9,7 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
-#include "../Enums/SensorTypes.h"
+#include "../../Enums/SensorTypes.h"
 
 
 class Sensor
