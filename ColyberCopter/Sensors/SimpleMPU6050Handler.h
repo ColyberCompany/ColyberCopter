@@ -1,12 +1,12 @@
 /**
  * @file SimpleMPU6050Handler.h
  * @author Jan Wielgus
- * @brief Obtaining acc ang gyro radings using SimpleMPU6050 library.
+ * @brief Obtaining acc ang gyro readings using SimpleMPU6050 library.
  * @date 2021-08-12
  */
 
-#ifndef MPU6050ADAPTER_H
-#define MPU6050ADAPTER_H
+#ifndef SIMPLEMPU6050HANDLER_H
+#define SIMPLEMPU6050HANDLER_H
 
 #include "Base/Accelerometer.h"
 #include "Base/Gyroscope.h"
