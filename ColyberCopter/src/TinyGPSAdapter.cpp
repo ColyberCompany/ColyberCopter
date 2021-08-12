@@ -18,25 +18,17 @@ bool TinyGPSAdapter::initialize()
 {
     gpsSerial.begin(Enums::BAUD_9600);
 
-    // TODO: implementation
-/*
-    if(gps.charsProcessed() < 10 && gps.encode(gpsSerial.read()) == 0)
-        initResultFlag = false;
-    else
-        initResultFlag = true;
-
-    return initResultFlag;
-*/
-
-    return false;
+    return true;
 }
 
 void TinyGPSAdapter::execute()
 {
     while(gpsSerial.available() > 0)
     {
-        if(gps.encode(gpsSerial.read()) && gps.location.isValid())
-            sensorsMediator.updateLatLong(gps.location.lat(), gps.location.lng());        
+        if(gps.encode(gpsSerial.read()))
+        {
+            sensorsMediator.updateLatLong(gps.location.lat(), gps.location.lng());
+        }    
     }   
 }
 
