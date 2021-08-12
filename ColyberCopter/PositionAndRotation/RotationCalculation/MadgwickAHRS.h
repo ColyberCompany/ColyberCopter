@@ -12,7 +12,6 @@
 
 #include "MadgwickBase.h"
 #include "../../Interfaces/IRotationCalculation.h"
-#include "../../Interfaces/ISensorsData.h"
 
 
 class MadgwickAHRS : protected MadgwickBase, public Interfaces::IRotationCalculation
@@ -28,9 +27,8 @@ private:
 		q2q2, q2q3, q3q3;
     
 
-    vector3Float angles_deg; // x-pitch, y-roll, z-yaw
-    vector3Float angles_rad; // x-pitch, y-roll, z-yaw
-    Interfaces::ISensorsData* sensorsData;
+    Common::vector3Float angles_deg; // x-pitch, y-roll, z-yaw
+    Common::vector3Float angles_rad; // x-pitch, y-roll, z-yaw
 
     float ax, ay, az;
     float gx, gy, gz;
@@ -38,10 +36,10 @@ private:
 
 
 public:
-    MadgwickAHRS(Interfaces::ISensorsData* sensorData, float sampleFrequency, float beta = DefaultBeta);
+    MadgwickAHRS(float sampleFrequency, float beta = DefaultBeta);
     void updateRotationCalculation() override;
-    vector3Float getAngles_deg() override;
-    vector3Float getAngles_rad() override;
+    Common::vector3Float getAngles_deg() override;
+    Common::vector3Float getAngles_rad() override;
 };
 
 

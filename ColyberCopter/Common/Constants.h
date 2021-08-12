@@ -7,19 +7,20 @@
  * 
  */
 
-
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
 
-namespace Consts
+namespace Common
 {
-    const float RoundAngle = 360.f;
-    const float StraightAngle = 180.f;
+    namespace Consts
+    {
+        const float RoundAngle = 360.f;
+        const float StraightAngle = 180.f;
 
-    const char* const OKText = "OK";
-}
+        const char* const OKText = "OK";
+    }
+} 
 
 
 #endif
-

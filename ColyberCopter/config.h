@@ -25,8 +25,7 @@ namespace Config
 
     extern const Enums::BaudRateTypes RmtCtrlSerialBaudRate;
 
-    extern const size_t RmtCtrlMaxComBufferSize;
-    extern const size_t RmtCtrlMaxQueuedBuffers;
+    inline constexpr size_t RmtCtrlMaxComBufferSize = 40;
     extern const uint16_t RmtCtrlReceivingFrequency_Hz;
 
     extern const uint8_t MaxTaskerTasks;
@@ -46,8 +45,8 @@ namespace Config
     extern const float HeadHoldPID_kD;
     extern const uint16_t HeadHoldPID_IMax;
 
-    extern const vector3Int16 AccOffset;
-    extern const vector3Int16 GyroOffset;
+    extern const Common::vector3Int16 AccOffset;
+    extern const Common::vector3Int16 GyroOffset;
 }
 
 

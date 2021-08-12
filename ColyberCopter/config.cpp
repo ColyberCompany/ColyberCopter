@@ -17,8 +17,6 @@ namespace Config
 
     const Enums::BaudRateTypes RmtCtrlSerialBaudRate = Enums::BaudRateTypes::BAUD_115200;
 
-    const size_t RmtCtrlMaxComBufferSize = 40;
-    const size_t RmtCtrlMaxQueuedBuffers = 30;
     const uint16_t RmtCtrlReceivingFrequency_Hz = 220;
 
     const uint8_t MaxTaskerTasks = 15;
@@ -38,6 +36,6 @@ namespace Config
     const float HeadHoldPID_kD = 0.97f;
     const uint16_t HeadHoldPID_IMax = 85;
 
-    const vector3Int16 AccOffset = {188, 26, -38};
-    const vector3Int16 GyroOffset = {-142, 123, -8};
+    const Common::vector3Int16 AccOffset = {411, 16, -38};
+    const Common::vector3Int16 GyroOffset = {-137, 127, -5};
 }

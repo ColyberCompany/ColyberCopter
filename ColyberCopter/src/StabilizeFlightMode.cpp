@@ -11,8 +11,10 @@
 #include "../config.h"
 
 using Enums::FlightModeTypes;
-using Consts::RoundAngle;;
-using Consts::StraightAngle;
+using Common::Consts::RoundAngle;
+using Common::Consts::StraightAngle;
+using Common::ControlSticks;
+using Common::vector3Float;
 
 using Config::LevelingPID_kP;
 using Config::LevelingPID_kI;

@@ -5,15 +5,13 @@
  * 
  */
 
-#include "../Communication/PacketReceivedEvents.h"
+#include "../Communication/PacketReceivedCallbacks.h"
 #include "../Communication/CommData.h"
 #include "../Instances/MainInstances.h"
 #include "../Instances/FlightModeInstances.h"
 
-using namespace PacketReceivedEvents;
 
-
-void Steering::execute()
+void PacketReceivedCallbacks::steeringCallback()
 {
     // VirtualPilot get data directly from received variables.
 
@@ -21,14 +19,14 @@ void Steering::execute()
 }
 
 
-void FlightModeChange::execute()
+void PacketReceivedCallbacks::flightModeChangeCallback()
 {
     uint8_t newFlightModeType = commData.flightMode;
     Instance::virtualPilot.setFlightMode((Enums::FlightModeTypes)newFlightModeType);
 }
 
 
-void PIDTuning::execute()
+void PacketReceivedCallbacks::pidTuningCallback()
 {
     using Assemble::FlightModes::stabilizeFlightMode;
     using Instance::debMes;

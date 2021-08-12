@@ -12,12 +12,12 @@
 #define AHRS_H
 
 #include "../Interfaces/IAHRS.h"
-#include <Task.h>
+#include <IExecutable.h>
 #include "../Interfaces/IRotationCalculation.h"
 #include "../Interfaces/IPositionCalculation.h"
 
 
-class AHRS : public Interfaces::IAHRS, public Task
+class AHRS : public Interfaces::IAHRS, public IExecutable
 {
 private:
     Interfaces::IPositionCalculation& positionCalculation;
@@ -66,12 +66,12 @@ public:
         return rotationCalculation.getAngles_deg().z;
     }
 
-    vector3Float getAngles_deg() override
+    Common::vector3Float getAngles_deg() override
     {
         return rotationCalculation.getAngles_deg();
     }
 
-    vector3Double getPosition() override
+    Common::vector3Double getPosition() override
     {
         return positionCalculation.getPosition();
     }

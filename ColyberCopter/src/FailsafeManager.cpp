@@ -7,6 +7,8 @@
 
 #include "../Failsafe/FailsafeManager.h"
 
+using SimpleDataStructures::LinkedListIterator;
+
 
 bool FailsafeManager::initializeFailsafe()
 {
@@ -19,7 +21,7 @@ bool FailsafeManager::addFailsafeScenario(FailsafeScenario* failsafeScenario)
     if (failsafeScenario == nullptr)
         return false;
 
-    if (failsafeScenariosList.contain(failsafeScenario))
+    if (failsafeScenariosList.contains(failsafeScenario))
         return false;
 
     return failsafeScenariosList.add(failsafeScenario);
@@ -28,7 +30,7 @@ bool FailsafeManager::addFailsafeScenario(FailsafeScenario* failsafeScenario)
 
 void FailsafeManager::removeFailsafeScenario(FailsafeScenario* failsafeScenario)
 {
-    for (int i=0; i<failsafeScenariosList.getSize(); i++)
+    for (int i=0; i<failsafeScenariosList.size(); i++)
         if (failsafeScenariosList[i] == failsafeScenario)
         {
             failsafeScenariosList.remove(i);
@@ -39,9 +41,9 @@ void FailsafeManager::removeFailsafeScenario(FailsafeScenario* failsafeScenario)
 
 void FailsafeManager::runFailsafeCheckLoop()
 {
-    auto iter = failsafeScenariosList.getIterator();
-    while (iter->hasNext())
-        iter->next()->runFailsafeActionIfFailHasOccurred();
+    LinkedListIterator<FailsafeScenario*> iter(failsafeScenariosList);
+    while (iter.hasNext())
+        iter.next()->runFailsafeActionIfFailHasOccurred();
 }
 
 

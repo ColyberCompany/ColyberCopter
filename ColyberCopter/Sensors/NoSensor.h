@@ -10,18 +10,17 @@
 #ifndef NOSENSOR_H
 #define NOSENSOR_H
 
-#include "Sensor.h"
-#include "SensorsMediator.h"
+#include "Base/Sensor.h"
 
 
-class NoSensor: public Sensor
+class NoSensor : public Sensor
 {
 public:
-    NoSensor(SensorsMediator& sensorsMediator)
-        : Sensor(Enums::SensorTypes::NO_SENSOR, sensorsMediator)
+    NoSensor()
+        : Sensor(Enums::SensorTypes::NO_SENSOR)
     {}
 
-    bool initialize() override
+    bool initSensor() override
     {
         return false;
     }

@@ -19,8 +19,8 @@ namespace Interfaces
         virtual ~IRotationCalculation() {}
 
         virtual void updateRotationCalculation() = 0;
-        virtual vector3Float getAngles_deg() = 0;
-        virtual vector3Float getAngles_rad() = 0;
+        virtual Common::vector3Float getAngles_deg() = 0;
+        virtual Common::vector3Float getAngles_rad() = 0;
     };
 }
 
