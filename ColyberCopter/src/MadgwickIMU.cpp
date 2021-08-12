@@ -6,14 +6,13 @@
  */
 
 #include "../PositionAndRotation/RotationCalculation/MadgwickIMU.h"
+#include "../Instances/SensorInstances.h"
 
-using Interfaces::ISensorsData;
 using Common::vector3Float;
 
 
-MadgwickIMU::MadgwickIMU(ISensorsData& _sensorsData, float sampleFrequency, float beta)
-    : MadgwickBase(sampleFrequency, beta),
-	sensorsData(_sensorsData)
+MadgwickIMU::MadgwickIMU(float sampleFrequency, float beta)
+    : MadgwickBase(sampleFrequency, beta)
 {
     _2q0 = _2q1 = _2q2 = _2q3 = 0;
 	_4q0 = _4q1 = _4q2 = 0;
@@ -24,16 +23,16 @@ MadgwickIMU::MadgwickIMU(ISensorsData& _sensorsData, float sampleFrequency, floa
 
 void MadgwickIMU::updateRotationCalculation()
 {
-    // Convert gyroscope degrees/sec to radians/sec
-    vector3Float rawGyro = sensorsData.getGyro_degPerSec();
-	gx = rawGyro.x * 0.0174533f;
-	gy = rawGyro.y * 0.0174533f;
-	gz = rawGyro.z * 0.0174533f;
+	auto gyro_degPerSec = Instance::gyro.get_degPerSec();
+	// Convert gyroscope degrees/sec to radians/sec
+	gx = gyro_degPerSec.x * 0.0174533f;
+	gy = gyro_degPerSec.y * 0.0174533f;
+	gz = gyro_degPerSec.z * 0.0174533f;
 
-    vector3Float normAcc = sensorsData.getAcc_normVector();
-    ax = normAcc.x;
-    ay = normAcc.y;
-    az = normAcc.z;
+	auto acc_norm = Instance::acc.get_norm();
+    ax = acc_norm.x;
+    ay = acc_norm.y;
+    az = acc_norm.z;
 
 	// Rate of change of quaternion from gyroscope
 	qDot1 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);

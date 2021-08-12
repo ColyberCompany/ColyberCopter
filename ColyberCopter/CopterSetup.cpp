@@ -6,35 +6,47 @@
  * 
  */
 
-// TODO: set the order of include files
+// General:
 #include "CopterSetup.h"
 #include "config.h"
 #include <Tasker.h>
+#include "Tasks.h"
+#include "Common/Constants.h"
+// Failsafe:
 #include "Failsafe/FailsafeManager.h"
 #include "Failsafe/FailsafeActions/DisarmMotors.h"
 #include "Failsafe/FailsafeScenarios/CommunicationLost.h"
 #include "Failsafe/FailsafeScenarios/TiltExceeding.h"
+// Flight modes:
 #include "FlightModes/StabilizeFlightMode.h"
 #include "FlightModes/UnarmedFlightMode.h"
+#include "VirtualPilot.h"
+// Position and rotation calculation:
 #include "PositionAndRotation/AHRS.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickIMU.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
 #include "PositionAndRotation/PositionCalculation/NoPosCalcTemp.h"
-#include "Sensors/SensorsMediator.h"
-#include "Sensors/MPU6050Adapter.h"
-#include "Sensors/HMC5883LAdapter.h"
+// Motors:
+#include "Motors/Motors.h"
 #include "Motors/QuadXMotors.h"
+// Communication:
 #include <StreamComm.h>
 #include <PacketCommunication.h>
-#include "VirtualPilot.h"
-#include "Sensors/NoSensor.h"
 #include "Debug/SerialDebugMessenger.h"
-#include "Common/Constants.h"
-#include "Tasks.h"
 #include "Communication/CommData.h"
 #include "Communication/DataPackets.h"
-#include "Motors/Motors.h"
 #include "Common/TasksGroup.h"
+// Sensors base:
+#include "Sensors/Base/Accelerometer.h"
+#include "Sensors/Base/Gyroscope.h"
+#include "Sensors/Base/Magnetometer.h"
+#include "Sensors/Base/Barometer.h"
+#include "Sensors/Base/GPS.h"
+#include "Sensors/Base/Rangefinder.h"
+#include "Sensors/NoSensor.h"
+// Sensors:
+#include "Sensors/SimpleMPU6050Handler.h"
+#include "Sensors/SimpleHMC5883LHandler.h"
 
 using namespace Interfaces;
 
@@ -59,7 +71,6 @@ HardwareSerial Serial2(PA3, PA2);
 namespace Assemble
 {
     Tasker tasker(Config::MaxTaskerTasks);
-    SensorsMediator sensorsMediator;
     SerialDebugMessenger serialDebugMessenger(Serial1);
 
     namespace Motors {
@@ -67,7 +78,7 @@ namespace Assemble
     }
 
     namespace PositionAndRotation {
-        MadgwickIMU madgwickIMU(sensorsMediator, Config::MainFrequency_Hz); // or MadgwickAHRS
+        MadgwickIMU madgwickIMU(Config::MainFrequency_Hz); // or MadgwickAHRS
         NoPosCalcTemp tempNoPosCalc;
         AHRS ahrs(tempNoPosCalc, madgwickIMU);
     }
@@ -86,9 +97,12 @@ namespace Assemble
     VirtualPilot virtualPilotInstance(FlightModes::unarmedFlightMode);
 
     namespace Sensors {
-        MPU6050Adapter mpu6050(sensorsMediator);
-        HMC5883LAdapter hmc5883l(sensorsMediator, mpu6050.getMPU6050Ptr());
-        NoSensor noSensor(sensorsMediator);
+        SimpleMPU6050Handler simpleMPU6050Handler;
+        MPU6050Acc mpu6050Acc(simpleMPU6050Handler);
+        MPU6050Gyro mpu6050Gyro(simpleMPU6050Handler);
+        SimpleHMC5883LHandler simpleHMC5883LHandler;
+        // other sensors..
+        NoSensor noSensor;
     }
 
     namespace Failsafe { // TODO: try to improve names of objects inside
@@ -110,7 +124,6 @@ namespace Instance
 // MainInstances:
     Tasker& tasker = Assemble::tasker;
     IAHRS& ahrs = Assemble::PositionAndRotation::ahrs;
-    ISensorsData& sensorsData = Assemble::sensorsMediator;
     IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
     PacketComm::PacketCommunication& pilotPacketComm = Assemble::Communication::rmtPacketComm;
     FailsafeManager& failsafeManager = Assemble::Failsafe::failsafeManager;
@@ -119,18 +132,17 @@ namespace Instance
 
 // SensorInstances:
     using Assemble::Sensors::noSensor;
-    Sensor& accel = *Assemble::Sensors::mpu6050.getAccSensor();
-    Sensor& gyro = *Assemble::Sensors::mpu6050.getGyroSensor();
-    Sensor& magn = Assemble::Sensors::hmc5883l;
-    Sensor& baro = noSensor;
-    Sensor& gps = noSensor;
-    Sensor& btmRangefinder = noSensor;
+    Accelerometer& acc = Assemble::Sensors::mpu6050Acc;
+    Gyroscope& gyro = Assemble::Sensors::mpu6050Gyro;
+    Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
+    //Barometer& baro = noSensor; // TODO: this should not compile
+
+    // Sensor& baro = noSensor;
+    // Sensor& gps = noSensor;
+    // Sensor& btmRangefinder = noSensor;
 
 // MotorsInstance:
     Motors& motors = Assemble::Motors::quadXMotors;
-
-// SensorsMediatorInstance:
-    SensorsMediator& sensorsMediator = Assemble::sensorsMediator;
 }
 
 
@@ -138,10 +150,9 @@ namespace Instance
 class : public IExecutable
 {
     void execute() override {
-        /*
-        Serial1.print(Instance::ahrs.getPitch_deg());
-        Serial1.print('\t');
-        Serial1.println(Instance::ahrs.getRoll_deg());*/
+        // Serial1.print(Instance::ahrs.getPitch_deg());
+        // Serial1.print('\t');
+        // Serial1.println(Instance::ahrs.getRoll_deg());
     }
 } debugTask;
 
@@ -208,12 +219,12 @@ void initializeSensors()
 
 
     // TODO: make a list from sensors and add enum with sensor types
-    initSensor(&Instance::accel);
+    initSensor(&Instance::acc);
     initSensor(&Instance::gyro);
     initSensor(&Instance::magn);
-    initSensor(&Instance::baro);
-    initSensor(&Instance::gps);
-    initSensor(&Instance::btmRangefinder);
+    //initSensor(&Instance::baro);
+    //initSensor(&Instance::gps);
+    //initSensor(&Instance::btmRangefinder);
     // new sensors goes here...
     
 
@@ -236,7 +247,7 @@ void addTasksToTasker()
 {
     using Instance::tasker;
 
-    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::mpu6050);
+    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::PositionAndRotation::ahrs);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
     tasker.addTask_Hz(&Assemble::TaskGroups::mainFrequency, Config::MainFrequency_Hz);
@@ -245,7 +256,7 @@ void addTasksToTasker()
     tasker.addTask_Hz(&Assemble::TaskGroups::oneHertz, 1.f);
 
     tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
-    tasker.addTask_Hz(&Assemble::Sensors::hmc5883l, 75);
+    tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
     tasker.addTask_Hz(&debugTask, 50);
 }

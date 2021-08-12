@@ -10,10 +10,10 @@
 #ifndef NOSENSOR_H
 #define NOSENSOR_H
 
-#include "Sensor.h"
+#include "Base/Sensor.h"
 
 
-class NoSensor: public Sensor
+class NoSensor : public Sensor
 {
 public:
     NoSensor()
