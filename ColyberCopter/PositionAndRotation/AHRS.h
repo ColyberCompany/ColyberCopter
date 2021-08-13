@@ -66,12 +66,12 @@ public:
         return rotationCalculation.getAngles_deg().z;
     }
 
-    vector3Float getAngles_deg() override
+    Common::vector3Float getAngles_deg() override
     {
         return rotationCalculation.getAngles_deg();
     }
 
-    vector3Double getPosition() override
+    Common::vector3Double getPosition() override
     {
         return positionCalculation.getPosition();
     }

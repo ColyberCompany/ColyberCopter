@@ -13,6 +13,7 @@
 
 using Enums::FlightModeTypes;
 using SimpleDataStructures::ArrayIterator;
+using Common::ControlSticks;
 
 
 VirtualPilot::VirtualPilot(FlightMode& initialFlightMode)

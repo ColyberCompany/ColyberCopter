@@ -43,6 +43,6 @@ namespace Config
     const float AltHoldPID_kD = 0.f;
     const uint16_t AltHoldPID_IMax = 0;
 
-    const vector3Int16 AccOffset = {188, 26, -38};
-    const vector3Int16 GyroOffset = {-142, 123, -8};
+    const Common::vector3Int16 AccOffset = {411, 16, -38};
+    const Common::vector3Int16 GyroOffset = {-137, 127, -5};
 }

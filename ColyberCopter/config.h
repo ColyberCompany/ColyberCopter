@@ -52,8 +52,8 @@ namespace Config
     extern const float AltHoldPID_kD;
     extern const uint16_t AltHoldPID_IMax;
 
-    extern const vector3Int16 AccOffset;
-    extern const vector3Int16 GyroOffset;
+    extern const Common::vector3Int16 AccOffset;
+    extern const Common::vector3Int16 GyroOffset;
 }
 
 

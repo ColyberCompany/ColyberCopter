@@ -6,36 +6,49 @@
  * 
  */
 
-// TODO: set the order of include files
+// General:
 #include "CopterSetup.h"
 #include "config.h"
 #include <Tasker.h>
+#include "Tasks.h"
+#include "Common/Constants.h"
+// Failsafe:
 #include "Failsafe/FailsafeManager.h"
 #include "Failsafe/FailsafeActions/DisarmMotors.h"
 #include "Failsafe/FailsafeScenarios/CommunicationLost.h"
 #include "Failsafe/FailsafeScenarios/TiltExceeding.h"
+// Flight modes:
 #include "FlightModes/UnarmedFlightMode.h"
 #include "FlightModes/StabilizeFlightMode.h"
 #include "FlightModes/AltHoldFlightMode.h"
+#include "VirtualPilot.h"
+// Position and rotation calculation:
 #include "PositionAndRotation/AHRS.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickIMU.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
 #include "PositionAndRotation/PositionCalculation/NoPosCalcTemp.h"
-#include "Sensors/SensorsMediator.h"
-#include "Sensors/MPU6050Adapter.h"
-#include "Sensors/HMC5883LAdapter.h"
-#include "Sensors/MS5611Adapter.h"
-#include "Sensors/NoSensor.h"
+// Motors:
+#include "Motors/Motors.h"
 #include "Motors/QuadXMotors.h"
+// Communication:
 #include <StreamComm.h>
 #include <PacketCommunication.h>
-#include "VirtualPilot.h"
 #include "Debug/SerialDebugMessenger.h"
-#include "Common/Constants.h"
-#include "Tasks.h"
 #include "Communication/CommData.h"
 #include "Communication/DataPackets.h"
-#include "Motors/Motors.h"
+#include "Common/TasksGroup.h"
+// Sensors base:
+#include "Sensors/Base/Accelerometer.h"
+#include "Sensors/Base/Gyroscope.h"
+#include "Sensors/Base/Magnetometer.h"
+#include "Sensors/Base/Barometer.h"
+#include "Sensors/Base/GPS.h"
+#include "Sensors/Base/Rangefinder.h"
+#include "Sensors/NoSensor.h"
+// Sensors:
+#include "Sensors/SimpleMPU6050Handler.h"
+#include "Sensors/SimpleHMC5883LHandler.h"
+#include "Sensors/MS5611Adapter.h"
 
 using namespace Interfaces;
 
@@ -60,7 +73,6 @@ HardwareSerial Serial2(PA3, PA2);
 namespace Assemble
 {
     Tasker tasker(Config::MaxTaskerTasks);
-    SensorsMediator sensorsMediator;
     SerialDebugMessenger serialDebugMessenger(Serial1);
 
     namespace Motors {
@@ -68,7 +80,7 @@ namespace Assemble
     }
 
     namespace PositionAndRotation {
-        MadgwickIMU madgwickIMU(sensorsMediator, Config::MainFrequency_Hz); // or MadgwickAHRS
+        MadgwickIMU madgwickIMU(Config::MainFrequency_Hz); // or MadgwickAHRS
         NoPosCalcTemp tempNoPosCalc;
         AHRS ahrs(tempNoPosCalc, madgwickIMU);
     }
@@ -87,10 +99,11 @@ namespace Assemble
     VirtualPilot virtualPilotInstance(FlightModes::unarmedFlightMode);
 
     namespace Sensors {
-        MPU6050Adapter mpu6050(sensorsMediator);
-        HMC5883LAdapter hmc5883l(sensorsMediator, mpu6050.getMPU6050Ptr());
-        MS5611Adapter ms5611(sensorsMediator);
-        NoSensor noSensor(sensorsMediator);
+        SimpleMPU6050Handler simpleMPU6050Handler;
+        SimpleHMC5883LHandler simpleHMC5883LHandler;
+        // TODO: add baro instance
+        // other sensors..
+        NoSensor noSensor;
     }
 
     namespace Failsafe { // TODO: try to improve names of objects inside
@@ -98,6 +111,11 @@ namespace Assemble
         FailsafeActions::DisarmMotors failsafeActionDisarmMotors;
         //FailsafeScenarios::CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
         FailsafeScenarios::TiltExceeding failsafeTiltExceeding(&failsafeActionDisarmMotors);
+    }
+
+    namespace TaskGroups {
+        Common::TasksGroup mainFrequency(5);
+        Common::TasksGroup oneHertz(4);
     }
 }
 
@@ -107,7 +125,6 @@ namespace Instance
 // MainInstances:
     Tasker& tasker = Assemble::tasker;
     IAHRS& ahrs = Assemble::PositionAndRotation::ahrs;
-    ISensorsData& sensorsData = Assemble::sensorsMediator;
     IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
     PacketComm::PacketCommunication& pilotPacketComm = Assemble::Communication::rmtPacketComm;
     FailsafeManager& failsafeManager = Assemble::Failsafe::failsafeManager;
@@ -116,12 +133,14 @@ namespace Instance
 
 // SensorInstances:
     using Assemble::Sensors::noSensor;
-    Sensor& accel = *Assemble::Sensors::mpu6050.getAccSensor();
-    Sensor& gyro = *Assemble::Sensors::mpu6050.getGyroSensor();
-    Sensor& magn = Assemble::Sensors::hmc5883l;
-    Sensor& baro = Assemble::Sensors::ms5611;
-    Sensor& gps = noSensor;
-    Sensor& btmRangefinder = noSensor;
+    Accelerometer& acc = Assemble::Sensors::simpleMPU6050Handler;
+    Gyroscope& gyro = Assemble::Sensors::simpleMPU6050Handler;
+    Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
+    //Barometer& baro = noSensor; // TODO: assign baro instance (uncomment extern)
+
+    // Sensor& baro = noSensor;
+    // Sensor& gps = noSensor;
+    // Sensor& btmRangefinder = noSensor;
 
 // MotorsInstance:
     Motors& motors = Assemble::Motors::quadXMotors;
@@ -132,7 +151,9 @@ namespace Instance
 class : public IExecutable
 {
     void execute() override {
-        //Serial1.println(Instance::sensorsData.getPressure_mbar());
+        // Serial1.print(Instance::ahrs.getPitch_deg());
+        // Serial1.print('\t');
+        // Serial1.println(Instance::ahrs.getRoll_deg());
     }
 } debugTask;
 
@@ -142,7 +163,7 @@ class : public IExecutable
 void setupDrone()
 {
     using Instance::debMes;
-    using Consts::OKText;
+    using Common::Consts::OKText;
 
     debMes.enableAndInitialize(); // Comment this line to disable all debug messages
     debMes.showMessage("Beginning drone setup");
@@ -199,12 +220,12 @@ void initializeSensors()
 
 
     // TODO: make a list from sensors and add enum with sensor types
-    initSensor(&Instance::accel);
+    initSensor(&Instance::acc);
     initSensor(&Instance::gyro);
     initSensor(&Instance::magn);
-    initSensor(&Instance::baro);
-    initSensor(&Instance::gps);
-    initSensor(&Instance::btmRangefinder);
+    //initSensor(&Instance::baro);
+    //initSensor(&Instance::gps);
+    //initSensor(&Instance::btmRangefinder);
     // new sensors goes here...
     
 
@@ -224,24 +245,22 @@ void setupFlightModes()
 }
 
 
-void addTasksToTasker() // TODO: maybe there shouldn't be this method and all tasks be added during initialization?
+void addTasksToTasker()
 {
     using Instance::tasker;
 
-    tasker.addTask_Hz(&Assemble::Sensors::mpu6050, Config::MainFrequency_Hz);
-    tasker.addTask_Hz(&Assemble::Sensors::hmc5883l, 75);
+    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
+    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::PositionAndRotation::ahrs);
+    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
+    tasker.addTask_Hz(&Assemble::TaskGroups::mainFrequency, Config::MainFrequency_Hz);
+
+    Assemble::TaskGroups::oneHertz.addTask(&Tasks::builtinDiodeBlink);
+    tasker.addTask_Hz(&Assemble::TaskGroups::oneHertz, 1.f);
 
     tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
-    tasker.addTask_Hz(&Assemble::PositionAndRotation::ahrs, Config::MainFrequency_Hz);
-    tasker.addTask_Hz(&Assemble::virtualPilotInstance, Config::MainFrequency_Hz);
-
+    tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
-    tasker.addTask_Hz(&Tasks::oneHertz, 1.f);
-
     tasker.addTask_Hz(&debugTask, 50);
-
-    //tasker.addTask_Hz(&Tasks::calibTask, 1);
-    //Tasks::calibTask.pauseExecutionFor_s(5);
 }
 
 
@@ -263,7 +282,7 @@ void setupCommunication()
 
 bool initSensor(Sensor* sensorToInit)
 {
-    Instance::debMes.showMessage("Initializing:"); // TODO: add variadic version of showMessage that receive multiple strings to show and use it there
+    Instance::debMes.showMessage("Initializing:");
     Instance::debMes.showMessage(sensorToInit->getName());
 
     bool sensorInitResult = sensorToInit->initialize();

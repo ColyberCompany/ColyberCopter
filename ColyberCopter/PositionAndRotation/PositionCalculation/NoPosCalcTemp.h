@@ -18,9 +18,9 @@ public:
     {
     }
 
-    vector3Double getPosition() override
+    Common::vector3Double getPosition() override
     {
-        return vector3Double(0, 0, 0);
+        return Common::vector3Double(0, 0, 0);
     }
 };
 

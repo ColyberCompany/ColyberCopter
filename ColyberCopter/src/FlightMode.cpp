@@ -9,6 +9,7 @@
 #include "../config.h"
 
 using Enums::FlightModeTypes;
+using Common::ControlSticks;
 
 
 FlightMode::FlightMode(FlightModeTypes flightModeType, FlightMode* baseFlightMode)

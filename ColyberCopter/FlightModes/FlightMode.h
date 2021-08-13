@@ -63,7 +63,7 @@ public:
      * @param inputOutputSticks Reference to the instance where are control sticks values
      * and also there will be put the output values.
      */
-    void executeFlightModeLoop(ControlSticks& inputOutputSticks);
+    void executeFlightModeLoop(Common::ControlSticks& inputOutputSticks);
 
     /**
      * @brief Called once every time when this flight mode was used, but won't be used now
@@ -91,13 +91,13 @@ protected:
      * Have to be overriden by concrete flight mode class.
      * Don't use executeFlightModeLoop() method inside.
      */
-    virtual void flightModeLoop(ControlSticks& inputOutputSticks) = 0;
+    virtual void flightModeLoop(Common::ControlSticks& inputOutputSticks) = 0;
 
 
     /**
      * @brief Set all stick values to 0.
      */
-    void resetSticks(ControlSticks& sticks);
+    void resetSticks(Common::ControlSticks& sticks);
 };
 
 

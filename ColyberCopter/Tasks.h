@@ -10,8 +10,7 @@
 #define TASKS_H
 
 #include <IExecutable.h>
-#include "Instances/MainInstances.h" // Exemption: this file can include Instances, because only CopterSetup.h includes this file.
-#include "Instances/SensorInstances.h"
+#include "Instances/MainInstances.h" // Exemption: this header file can include Instances, because only CopterSetup.h includes this file.
 
 
 namespace Tasks
@@ -23,7 +22,7 @@ namespace Tasks
             lastLedState = !lastLedState;
             digitalWrite(LED_BUILTIN, lastLedState);
         }
-    } oneHertz;
+    } builtinDiodeBlink;
 
 
 
@@ -33,39 +32,8 @@ namespace Tasks
             Instance::pilotPacketComm.receive();
         }
     } rmtCtrlReceiving;
+    
 
-
-/*
-    class CalibTask : public IExecutable
-    {
-        Sensor& sensor;
-        bool isCalibrating_flag = false;
-
-    public:
-        CalibTask(Sensor& _sensor) : sensor(_sensor) {}
-
-        void execute() override {
-            if (!isCalibrating_flag)
-            {
-                uint16_t time = sensor.startBackgroundCalibration(5000);
-                Instance::debMes.showMessage(time);
-                pauseExecutionFor_s(time);
-                isCalibrating_flag = true;
-            }
-            else
-            {
-                FloatAxisVector calib = sensor.getOffset();
-                Serial1.print(calib.getAxis(Enums::AxisType::AxisX));
-                Serial1.print(", ");
-                Serial1.print(calib.getAxis(Enums::AxisType::AxisY));
-                Serial1.print(", ");
-                Serial1.println(calib.getAxis(Enums::AxisType::AxisZ));
-                isCalibrating_flag = false;
-            }
-        }
-    } calibTask(Instance::gyro); // what is it for??? (This instance is probably temprary to calibrate gyro in addTasksToTasker() CopterSetup.cpp. By the way I think that this function should be inside file with tasks definitions)
-    // TODO: rebuild this task to use removing tasks from tasker (this task should be added only when needed).
-*/
 
     // add other tasks here
 }

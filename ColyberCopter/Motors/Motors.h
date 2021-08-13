@@ -31,7 +31,7 @@ public:
      * @brief Sets the motor power.
      * @param stickValues values of virtual sticks to be set on motors.
      */
-    virtual void updatePower(const ControlSticks& stickValues) = 0;
+    virtual void updatePower(const Common::ControlSticks& stickValues) = 0;
 
     /**
      * @brief Used to arm and disarm the motors.
@@ -44,7 +44,7 @@ public:
 
         if (motorsState == Enums::StateType::Disabled)
         {
-            ControlSticks zeroSticks(0, 0, 0, 0);
+            Common::ControlSticks zeroSticks(0, 0, 0, 0);
             updatePower(zeroSticks);
         }
     }

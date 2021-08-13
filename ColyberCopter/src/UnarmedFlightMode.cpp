@@ -8,6 +8,8 @@
 #include "../FlightModes/UnarmedFlightMode.h"
 #include "../Instances/MotorsInstance.h"
 
+using Common::ControlSticks;
+
 
 UnarmedFlightMode::UnarmedFlightMode()
     : FlightMode(Enums::FlightModeTypes::UNARMED, nullptr)
