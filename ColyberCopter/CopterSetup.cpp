@@ -98,8 +98,6 @@ namespace Assemble
 
     namespace Sensors {
         SimpleMPU6050Handler simpleMPU6050Handler;
-        MPU6050Acc mpu6050Acc(simpleMPU6050Handler);
-        MPU6050Gyro mpu6050Gyro(simpleMPU6050Handler);
         SimpleHMC5883LHandler simpleHMC5883LHandler;
         // other sensors..
         NoSensor noSensor;
@@ -132,8 +130,8 @@ namespace Instance
 
 // SensorInstances:
     using Assemble::Sensors::noSensor;
-    Accelerometer& acc = Assemble::Sensors::mpu6050Acc;
-    Gyroscope& gyro = Assemble::Sensors::mpu6050Gyro;
+    Accelerometer& acc = Assemble::Sensors::simpleMPU6050Handler;
+    Gyroscope& gyro = Assemble::Sensors::simpleMPU6050Handler;
     Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
     //Barometer& baro = noSensor; // TODO: this should not compile
 
