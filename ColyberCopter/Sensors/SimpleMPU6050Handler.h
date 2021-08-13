@@ -16,34 +16,50 @@
 #include <IExecutable.h>
 
 
-class SimpleMPU6050Handler : private SimpleMPU6050, public IExecutable
+class MPU6050Acc : public Accelerometer
 {
+public:
+    const char* getName() override;
+};
+
+
+class MPU6050Gyro : public Gyroscope
+{
+public:
+    const char* getName() override;
+};
+
+
+class SimpleMPU6050Handler : public MPU6050Acc, public MPU6050Gyro, public IExecutable
+{
+    SimpleMPU6050 mpu;
+    Common::vector3Float accFiltered;
+    Common::vector3Float gyroFiltered;
+
     typedef Common::vector3<LowPassFilter<float>> ThreeAxesLPF;
     ThreeAxesLPF accLPF; // accelerometer low-pass filter
-    bool sensorInitialized_flag = false;
-
-    Common::vector3Float accNormFiltered;
-    Common::vector3Float gyroNormFiltered;
 
 
 public:
     SimpleMPU6050Handler();
 
-    bool initialize();
-    Common::vector3Float getNormalizedAcceleration();
-    Common::vector3Float getNormalizedRotation();
-
-    using SimpleMPU6050::getAccOffset;
-    using SimpleMPU6050::getGyroOffset;
-    using SimpleMPU6050::setAccOffset;
-    using SimpleMPU6050::setGyroOffset;
-    using SimpleMPU6050::getTemperature;
-
 private:
+    bool initSensor() override;
+
+    /**
+     * @brief Accelerometer data.
+     */
+    Common::vector3Float get_norm() override;
+
+    /**
+     * @brief Gyroscope data.
+     */
+    Common::vector3Float get_degPerSec() override;
+
     /**
      * @brief Reads new data from MPU6050 and perform filtering.
      */
-    void execute() override;
+    void execute();
 
     /**
      * @brief Setup three low-pass filters.
@@ -51,34 +67,6 @@ private:
      * @param cutoffFreq It's cutoff frequency.
      */
     void config3AxisLPF(ThreeAxesLPF& lpf, float cutoffFreq);
-};
-
-
-
-class MPU6050Acc: public Accelerometer
-{
-    SimpleMPU6050Handler& mpu;
-
-public:
-    MPU6050Acc(SimpleMPU6050Handler& simpleMPU6050Handler);
-    bool initSensor() override;
-    const char* getName() override;
-
-    Common::vector3Float get_norm() override;
-};
-
-
-
-class MPU6050Gyro: public Gyroscope
-{
-    SimpleMPU6050Handler& mpu;
-
-public:
-    MPU6050Gyro(SimpleMPU6050Handler& simpleMPU6050Handler);
-    bool initSensor() override;
-    const char* getName() override;
-
-    Common::vector3Float get_degPerSec() override;
 };
 
 
