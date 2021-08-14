@@ -10,6 +10,7 @@
 #include "../config.h"
 
 using Enums::FlightModeTypes;
+using Common::ControlSticks;
 
 
 const uint16_t AltHoldFlightMode::MinOutputThrottle = 300;

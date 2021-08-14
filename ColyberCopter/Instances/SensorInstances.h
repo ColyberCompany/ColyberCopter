@@ -22,7 +22,7 @@ namespace Instance
     extern Accelerometer& acc;
     extern Gyroscope& gyro;
     extern Magnetometer& magn;
-    //extern Barometer& baro;
+    extern Barometer& baro;
     // extern other sensors...
 }
 

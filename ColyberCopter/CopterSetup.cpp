@@ -48,7 +48,7 @@
 // Sensors:
 #include "Sensors/SimpleMPU6050Handler.h"
 #include "Sensors/SimpleHMC5883LHandler.h"
-#include "Sensors/MS5611Adapter.h"
+#include "Sensors/SimpleMS5611Handler.h"
 
 using namespace Interfaces;
 
@@ -101,7 +101,7 @@ namespace Assemble
     namespace Sensors {
         SimpleMPU6050Handler simpleMPU6050Handler;
         SimpleHMC5883LHandler simpleHMC5883LHandler;
-        // TODO: add baro instance
+        SimpleMS5611Handler simpleMS5611Handler;
         // other sensors..
         NoSensor noSensor;
     }
@@ -136,9 +136,8 @@ namespace Instance
     Accelerometer& acc = Assemble::Sensors::simpleMPU6050Handler;
     Gyroscope& gyro = Assemble::Sensors::simpleMPU6050Handler;
     Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
-    //Barometer& baro = noSensor; // TODO: assign baro instance (uncomment extern)
+    Barometer& baro = Assemble::Sensors::simpleMS5611Handler;
 
-    // Sensor& baro = noSensor;
     // Sensor& gps = noSensor;
     // Sensor& btmRangefinder = noSensor;
 
@@ -223,7 +222,7 @@ void initializeSensors()
     initSensor(&Instance::acc);
     initSensor(&Instance::gyro);
     initSensor(&Instance::magn);
-    //initSensor(&Instance::baro);
+    initSensor(&Instance::baro);
     //initSensor(&Instance::gps);
     //initSensor(&Instance::btmRangefinder);
     // new sensors goes here...
@@ -259,6 +258,7 @@ void addTasksToTasker()
 
     tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
+    tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
     tasker.addTask_Hz(&debugTask, 50);
 }

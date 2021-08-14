@@ -41,9 +41,9 @@ public:
     const char* getName() override;
 
 private:
-    void flightModeLoop(ControlSticks& inputOutputSticks) override;
+    void flightModeLoop(Common::ControlSticks& inputOutputSticks) override;
 
-    void updateAltitudeHolding(ControlSticks& inputOutputSticks);
+    void updateAltitudeHolding(Common::ControlSticks& inputOutputSticks);
     void updateAltitudeToHold(uint16_t throttle);
     void calculateAltitudeError();
     void setAltitudeToHoldToCurrentReading();
