@@ -10,22 +10,29 @@
 #ifndef TINYGPSADAPTER_H
 #define TINYGPSADAPTER_H
 
-#include "Sensor.h"
+#include "Base/GPS.h"
 #include <IExecutable.h>
 #include <TinyGPS++.h>
 
 
-class TinyGPSAdapter: public Sensor, public IExecutable
+class TinyGPSAdapter: public GPS, public IExecutable
 {
     TinyGPSPlus gps;
     Stream& gpsSerial;
 
 public:
-    TinyGPSAdapter(SensorsMediator& SensorsMediator, Stream& gpsSerial);
+    TinyGPSAdapter(Stream& gpsSerial);
 
-    void execute() override;
-    bool initialize() override;
+    bool initSensor() override;
+    bool isOperating() const override;
     const char* getName() override;
+    double getLatitude_deg() override;
+    double getLongitude_deg() override;
+    uint8_t getSattelitesAmt() override;
+    float getSpeed_kmph() override;
+
+private:
+    void execute() override;
 };
 
 
