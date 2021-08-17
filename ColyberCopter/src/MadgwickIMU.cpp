@@ -9,6 +9,7 @@
 #include "../Instances/SensorInstances.h"
 
 using Common::vector3Float;
+using Common::Quaternion;
 
 
 MadgwickIMU::MadgwickIMU(float sampleFrequency, float beta)
@@ -122,4 +123,10 @@ vector3Float MadgwickIMU::getAngles_deg()
 vector3Float MadgwickIMU::getAngles_rad()
 {
     return angles_rad;
+}
+
+
+Quaternion MadgwickIMU::getQuaternion()
+{
+	return Quaternion(q0, q1, q2, q3);
 }

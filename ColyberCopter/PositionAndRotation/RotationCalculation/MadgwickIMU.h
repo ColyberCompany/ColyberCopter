@@ -34,6 +34,7 @@ public:
     void updateRotationCalculation() override;
     Common::vector3Float getAngles_deg() override;
     Common::vector3Float getAngles_rad() override;
+    Common::Quaternion getQuaternion() override;
 };
 
 
