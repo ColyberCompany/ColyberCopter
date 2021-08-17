@@ -23,7 +23,6 @@
 #include "VirtualPilot.h"
 // Position and rotation calculation:
 #include "PositionAndRotation/AHRS.h"
-#include "PositionAndRotation/RotationCalculation/MadgwickIMU.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
 #include "PositionAndRotation/PositionCalculation/NoPosCalcTemp.h"
 // Motors:
@@ -78,9 +77,9 @@ namespace Assemble
     }
 
     namespace PositionAndRotation {
-        MadgwickIMU madgwickIMU(Config::MainFrequency_Hz); // or MadgwickAHRS
+        MadgwickAHRS madgwickAHRS;
         NoPosCalcTemp tempNoPosCalc;
-        AHRS ahrs(tempNoPosCalc, madgwickIMU);
+        AHRS ahrs(tempNoPosCalc, madgwickAHRS);
     }
 
     namespace Communication {

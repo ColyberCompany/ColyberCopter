@@ -2,45 +2,76 @@
  * @file MadgwickAHRS.cpp
  * @author Jan Wielgus
  * @date 2020-09-01
- * 
  */
 
 #include "../PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
 #include "../Instances/SensorInstances.h"
+#include "../config.h"
 
 using Common::vector3Float;
 
-MadgwickAHRS::MadgwickAHRS(float sampleFrequency, float beta)
-    : MadgwickBase(sampleFrequency, beta)
+const float MadgwickAHRS::DefaultBeta = 0.1f;
+
+
+MadgwickAHRS::MadgwickAHRS(float _beta)
+	: beta(_beta),
+	  invSampleFreq(1.f / Config::MainFrequency_Hz)
 {
-    hx = hy = 0;
-	_2q0mx = _2q0my = _2q0mz = _2q1mx = 0;
-	_2bx = _2bz = _4bx = _4bz = 0;
-	_2q0 = _2q1 = _2q2 = _2q3 = 0;
-	_2q0q2 = _2q2q3 = 0;
-	q0q0 = q0q1 = q0q2 = q0q3 = 0;
-	q1q1 = q1q2 = q1q3 = 0;
-	q2q2 = q2q3 = q3q3 = 0;
 }
 
 
 void MadgwickAHRS::updateRotationCalculation()
 {
-    auto gyro_degPerSec = Instance::gyro.get_degPerSec();
-	// Convert gyroscope degrees/sec to radians/sec
-	gx = gyro_degPerSec.x * 0.0174533f;
-	gy = gyro_degPerSec.y * 0.0174533f;
-	gz = gyro_degPerSec.z * 0.0174533f;
+	auto acc = Instance::acc.get_norm();
+	auto gyro = Instance::gyro.get_degPerSec();
+	auto mag = Instance::magn.get_norm();
 
-	auto acc_norm = Instance::acc.get_norm();
-    ax = acc_norm.x;
-    ay = acc_norm.y;
-    az = acc_norm.z;
+	madgwickAHRSUpdate(
+		gyro.x * 0.0174533f, // in rad_per_sec
+		gyro.y * 0.0174533f, // in rad_per_sec
+		gyro.z * 0.0174533f, // in rad_per_sec
+		acc.x, acc.y, acc.z,
+		mag.x, mag.y, mag.z
+	);
+}
 
-	auto mag_norm = Instance::magn.get_norm();
-    mx = mag_norm.x;
-    my = mag_norm.y;
-    mz = mag_norm.z;
+
+vector3Float MadgwickAHRS::getAngles_deg()
+{
+	vector3Float angles_deg;
+	auto angles_rad = getAngles_rad();
+	angles_deg.x = angles_rad.x * 57.29578f;
+    angles_deg.y = angles_rad.y * 57.29578f;
+    angles_deg.z = angles_rad.z * 57.29578f;
+
+	return angles_deg;
+}
+
+
+vector3Float MadgwickAHRS::getAngles_rad()
+{
+	vector3Float angles_rad;
+	angles_rad.y = atan2f(q0 * q1 + q2 * q3, 0.5f - q1 * q1 - q2 * q2);		// roll
+	angles_rad.x = asinf(-2.0f * (q1 * q3 - q0 * q2));						// pitch
+	angles_rad.z = atan2f(q1 * q2 + q0 * q3, 0.5f - q2 * q2 - q3 * q3);		// roll (heading)
+
+	return angles_rad;
+}
+
+
+void MadgwickAHRS::madgwickAHRSUpdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz)
+{
+	float recipNorm;
+	float s0, s1, s2, s3;
+	float qDot1, qDot2, qDot3, qDot4;
+	float hx, hy;
+	float _2q0mx, _2q0my, _2q0mz, _2q1mx, _2bx, _2bz, _4bx, _4bz, _2q0, _2q1, _2q2, _2q3, _2q0q2, _2q2q3, q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3, q2q2, q2q3, q3q3;
+
+	// Use IMU algorithm if magnetometer measurement invalid (avoids NaN in magnetometer normalisation)
+	if((mx == 0.0f) && (my == 0.0f) && (mz == 0.0f)) {
+		madgwickAHRSUpdateIMU(gx, gy, gz, ax, ay, az);
+		return;
+	}
 
 	// Rate of change of quaternion from gyroscope
 	qDot1 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);
@@ -49,21 +80,19 @@ void MadgwickAHRS::updateRotationCalculation()
 	qDot4 = 0.5f * (q0 * gz + q1 * gy - q2 * gx);
 
 	// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)
-	//if (!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) // Should never occur, so skip
-	{
+	if(!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) {
+
 		// Normalise accelerometer measurement
-        /* Skip, accelerometer measurements are already normalized
 		recipNorm = invSqrt(ax * ax + ay * ay + az * az);
 		ax *= recipNorm;
 		ay *= recipNorm;
-		az *= recipNorm;*/
+		az *= recipNorm;   
 
 		// Normalise magnetometer measurement
-        /* Skip, magnetometer measurements are already normalized
 		recipNorm = invSqrt(mx * mx + my * my + mz * mz);
 		mx *= recipNorm;
 		my *= recipNorm;
-		mz *= recipNorm;*/
+		mz *= recipNorm;
 
 		// Auxiliary variables to avoid repeated arithmetic
 		_2q0mx = 2.0f * q0 * mx;
@@ -125,32 +154,86 @@ void MadgwickAHRS::updateRotationCalculation()
 	q1 *= recipNorm;
 	q2 *= recipNorm;
 	q3 *= recipNorm;
-
-
-
-
-	// Compute angles
-
-	// in radians
-	angles_rad.y = atan2f(q0 * q1 + q2 * q3, 0.5f - q1 * q1 - q2 * q2);		// roll
-	angles_rad.x = asinf(-2.0f * (q1 * q3 - q0 * q2));						// pitch
-	angles_rad.z = atan2f(q1 * q2 + q0 * q3, 0.5f - q2 * q2 - q3 * q3);		// roll (heading)
-
-	// in degrees
-    angles_deg.x = angles_rad.x * 57.29578f;
-    angles_deg.y = angles_rad.y * 57.29578f;
-    angles_deg.z = angles_rad.z * 57.29578f;
-    angles_deg.z += 180;
 }
 
 
-vector3Float MadgwickAHRS::getAngles_deg()
+void MadgwickAHRS::madgwickAHRSUpdateIMU(float gx, float gy, float gz, float ax, float ay, float az)
 {
-    return angles_deg;
+	float recipNorm;
+	float s0, s1, s2, s3;
+	float qDot1, qDot2, qDot3, qDot4;
+	float _2q0, _2q1, _2q2, _2q3, _4q0, _4q1, _4q2 ,_8q1, _8q2, q0q0, q1q1, q2q2, q3q3;
+
+	// Rate of change of quaternion from gyroscope
+	qDot1 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);
+	qDot2 = 0.5f * (q0 * gx + q2 * gz - q3 * gy);
+	qDot3 = 0.5f * (q0 * gy - q1 * gz + q3 * gx);
+	qDot4 = 0.5f * (q0 * gz + q1 * gy - q2 * gx);
+
+	// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)
+	if(!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) {
+
+		// Normalise accelerometer measurement
+		recipNorm = invSqrt(ax * ax + ay * ay + az * az);
+		ax *= recipNorm;
+		ay *= recipNorm;
+		az *= recipNorm;   
+
+		// Auxiliary variables to avoid repeated arithmetic
+		_2q0 = 2.0f * q0;
+		_2q1 = 2.0f * q1;
+		_2q2 = 2.0f * q2;
+		_2q3 = 2.0f * q3;
+		_4q0 = 4.0f * q0;
+		_4q1 = 4.0f * q1;
+		_4q2 = 4.0f * q2;
+		_8q1 = 8.0f * q1;
+		_8q2 = 8.0f * q2;
+		q0q0 = q0 * q0;
+		q1q1 = q1 * q1;
+		q2q2 = q2 * q2;
+		q3q3 = q3 * q3;
+
+		// Gradient decent algorithm corrective step
+		s0 = _4q0 * q2q2 + _2q2 * ax + _4q0 * q1q1 - _2q1 * ay;
+		s1 = _4q1 * q3q3 - _2q3 * ax + 4.0f * q0q0 * q1 - _2q0 * ay - _4q1 + _8q1 * q1q1 + _8q1 * q2q2 + _4q1 * az;
+		s2 = 4.0f * q0q0 * q2 + _2q0 * ax + _4q2 * q3q3 - _2q3 * ay - _4q2 + _8q2 * q1q1 + _8q2 * q2q2 + _4q2 * az;
+		s3 = 4.0f * q1q1 * q3 - _2q1 * ax + 4.0f * q2q2 * q3 - _2q2 * ay;
+		recipNorm = invSqrt(s0 * s0 + s1 * s1 + s2 * s2 + s3 * s3); // normalise step magnitude
+		s0 *= recipNorm;
+		s1 *= recipNorm;
+		s2 *= recipNorm;
+		s3 *= recipNorm;
+
+		// Apply feedback step
+		qDot1 -= beta * s0;
+		qDot2 -= beta * s1;
+		qDot3 -= beta * s2;
+		qDot4 -= beta * s3;
+	}
+
+	// Integrate rate of change of quaternion to yield quaternion
+	q0 += qDot1 * invSampleFreq;
+	q1 += qDot2 * invSampleFreq;
+	q2 += qDot3 * invSampleFreq;
+	q3 += qDot4 * invSampleFreq;
+
+	// Normalise quaternion
+	recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
+	q0 *= recipNorm;
+	q1 *= recipNorm;
+	q2 *= recipNorm;
+	q3 *= recipNorm;
 }
 
 
-vector3Float MadgwickAHRS::getAngles_rad()
+float MadgwickAHRS::invSqrt(float x)
 {
-    return angles_rad;
+	float halfx = 0.5f * x;
+	float y = x;
+	long i = *(long*)&y;
+	i = 0x5f3759df - (i>>1);
+	y = *(float*)&i;
+	y = y * (1.5f - (halfx * y * y));
+	return y;
 }
