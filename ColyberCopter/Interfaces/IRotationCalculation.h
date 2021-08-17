@@ -9,6 +9,7 @@
 #define IROTATIONCALCULATION_H
 
 #include "../Common/Vector3.h"
+#include "../Common/Quaternion.h"
 
 
 namespace Interfaces
@@ -21,6 +22,7 @@ namespace Interfaces
         virtual void updateRotationCalculation() = 0;
         virtual Common::vector3Float getAngles_deg() = 0;
         virtual Common::vector3Float getAngles_rad() = 0;
+        virtual Common::Quaternion getQuaternion() = 0;
     };
 }
 
