@@ -47,6 +47,7 @@ namespace Config
 
     extern const Common::vector3Int16 AccOffset;
     extern const Common::vector3Int16 GyroOffset;
+    extern const Common::vector3Int16 CompassOffset;
 }
 
 

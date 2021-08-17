@@ -1,45 +1,55 @@
 /**
  * @file MadgwickAHRS.h
  * @author Jan Wielgus
- * @brief Implementation of Madgwick algorithm that use gyro, accelerometer and
- * magnetometer to calculate all rotation angles.
- * @date 2020-09-01
+ * @brief
+ * Implementation of Madgwick's IMU and AHRS algorithms.
+ * See: http://www.x-io.co.uk/node/8#open_source_ahrs_and_imu_algorithms
  * 
+ * Date			Author          Notes
+ * 29/09/2011	SOH Madgwick    Initial release
+ * 02/10/2011	SOH Madgwick	Optimised for reduced CPU load
+ * 19/02/2012	SOH Madgwick	Magnetometer measurement is normalised
+ * 
+ * @date 2020-09-01
  */
 
 #ifndef MADGWICKAHRS_H
 #define MADGWICKAHRS_H
 
-#include "MadgwickBase.h"
 #include "../../Interfaces/IRotationCalculation.h"
 
 
-class MadgwickAHRS : protected MadgwickBase, public Interfaces::IRotationCalculation
+class MadgwickAHRS : public Interfaces::IRotationCalculation
 {
-private:
-    float hx, hy;
-	float _2q0mx, _2q0my, _2q0mz, _2q1mx,
-	    _2bx, _2bz, _4bx, _4bz,
-		_2q0, _2q1, _2q2, _2q3,
-		_2q0q2, _2q2q3,
-		q0q0, q0q1, q0q2, q0q3,
-		q1q1, q1q2, q1q3,
-		q2q2, q2q3, q3q3;
-    
+    static const float DefaultBeta;
 
-    Common::vector3Float angles_deg; // x-pitch, y-roll, z-yaw
-    Common::vector3Float angles_rad; // x-pitch, y-roll, z-yaw
+    const float beta;
+    const float invSampleFreq;
 
-    float ax, ay, az;
-    float gx, gy, gz;
-    float mx, my, mz;
-
+    float q0 = 1.0f;
+    float q1 = 0.0f;
+    float q2 = 0.0f;
+    float q3 = 0.0f;
 
 public:
-    MadgwickAHRS(float sampleFrequency, float beta = DefaultBeta);
+    MadgwickAHRS(float beta = DefaultBeta);
+
     void updateRotationCalculation() override;
     Common::vector3Float getAngles_deg() override;
     Common::vector3Float getAngles_rad() override;
+    Common::Quaternion getQuaternion() override;
+
+private:
+    void madgwickAHRSUpdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);
+    void madgwickAHRSUpdateIMU(float gx, float gy, float gz, float ax, float ay, float az);
+
+    /**
+     * @brief Fast inverse square-root
+     * See: http://en.wikipedia.org/wiki/Fast_inverse_square_root.
+     * @param x Number which square root will be extracted.
+     * @return Square root of parameter x.
+     */
+    static float invSqrt(float x);
 };
 
 

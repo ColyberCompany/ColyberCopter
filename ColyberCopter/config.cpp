@@ -38,4 +38,5 @@ namespace Config
 
     const Common::vector3Int16 AccOffset = {411, 16, -38};
     const Common::vector3Int16 GyroOffset = {-137, 127, -5};
+    const Common::vector3Int16 CompassOffset = {-110.50, -58.50, -337.50};
 }
