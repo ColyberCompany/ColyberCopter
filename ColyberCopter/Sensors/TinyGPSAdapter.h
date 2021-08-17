@@ -28,7 +28,7 @@ public:
     const char* getName() override;
     double getLatitude_deg() override;
     double getLongitude_deg() override;
-    uint8_t getSattelitesAmt() override;
+    uint16_t getSattelitesAmt() override;
     float getSpeed_kmph() override;
 
 private:

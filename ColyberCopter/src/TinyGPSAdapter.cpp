@@ -17,15 +17,14 @@ TinyGPSAdapter::TinyGPSAdapter(Stream& _gpsSerial)
 
 bool TinyGPSAdapter::initSensor()
 {
-    HardwareSerial
-    gpsSerial.begin(Enums::BAUD_9600);
-
     return true;
 }
 
 bool TinyGPSAdapter::isOperating() const
 {
-    if (gps.location.isValid() && gps.satellites.value() >= 3)
+    uint32_t satelitesAmt = const_cast<TinyGPSAdapter*>(this)->gps.satellites.value();
+
+    if (gps.location.isValid() && satelitesAmt >= 3)
         return true;
 
     return false;
@@ -46,7 +45,7 @@ double TinyGPSAdapter::getLongitude_deg()
     return gps.location.lng();
 }
 
-uint8_t TinyGPSAdapter::getSattelitesAmt()
+uint16_t TinyGPSAdapter::getSattelitesAmt()
 {
     return gps.satellites.value();
 }

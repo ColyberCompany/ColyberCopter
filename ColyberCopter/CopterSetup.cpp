@@ -216,6 +216,8 @@ void initializeSensors()
 {
     Wire.begin();
     delay(100);
+    
+    //Serial3.begin(Enums::BAUD_9600);
 
 
     // TODO: make a list from sensors and add enum with sensor types

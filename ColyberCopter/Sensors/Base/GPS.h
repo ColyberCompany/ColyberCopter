@@ -23,7 +23,7 @@ public:
 
     virtual double getLatitude_deg() = 0;
     virtual double getLongitude_deg() = 0;
-    virtual uint8_t getSattelitesAmt() = 0;
+    virtual uint16_t getSattelitesAmt() = 0;
     virtual float getSpeed_kmph() = 0;
 };
 
