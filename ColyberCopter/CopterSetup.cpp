@@ -148,13 +148,9 @@ namespace Instance
 class : public IExecutable
 {
     void execute() override {
-        auto aa = Instance::ahrs.getAbsoluteAcceleration();
-
-        Serial1.print(3*aa.x);
-        Serial1.print('\t');
-        Serial1.print(3*aa.y);
-        Serial1.print('\t');
-        Serial1.println(3*aa.z - 3);
+        // Serial1.print(Instance::ahrs.getPitch_deg());
+        // Serial1.print('\t');
+        // Serial1.println(Instance::ahrs.getRoll_deg());
     }
 } debugTask;
 
@@ -260,7 +256,7 @@ void addTasksToTasker()
     tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
-    tasker.addTask_Hz(&debugTask, 10);
+    tasker.addTask_Hz(&debugTask, 50);
 }
 
 
