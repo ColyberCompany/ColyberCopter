@@ -37,6 +37,7 @@ public:
     void updateRotationCalculation() override;
     Common::vector3Float getAngles_deg() override;
     Common::vector3Float getAngles_rad() override;
+    Common::Quaternion getQuaternion() override;
 
 private:
     void madgwickAHRSUpdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);

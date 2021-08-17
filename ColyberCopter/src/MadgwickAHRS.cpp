@@ -9,6 +9,7 @@
 #include "../config.h"
 
 using Common::vector3Float;
+using Common::Quaternion;
 
 const float MadgwickAHRS::DefaultBeta = 0.1f;
 
@@ -56,6 +57,12 @@ vector3Float MadgwickAHRS::getAngles_rad()
 	angles_rad.z = atan2f(q1 * q2 + q0 * q3, 0.5f - q2 * q2 - q3 * q3);		// roll (heading)
 
 	return angles_rad;
+}
+
+
+Quaternion MadgwickAHRS::getQuaternion()
+{
+	return Quaternion(q0, q1, q2, q3);
 }
 
 
