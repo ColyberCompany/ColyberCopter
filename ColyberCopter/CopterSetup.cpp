@@ -12,6 +12,7 @@
 #include <Tasker.h>
 #include "Tasks.h"
 #include "Common/Constants.h"
+#include "Common/Utils.h"
 // Failsafe:
 #include "Failsafe/FailsafeManager.h"
 #include "Failsafe/FailsafeActions/DisarmMotors.h"
@@ -24,12 +25,13 @@
 #include "VirtualPilot.h"
 // Position and rotation calculation:
 #include "PositionAndRotation/AHRS.h"
-#include "PositionAndRotation/RotationCalculation/MadgwickIMU.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
+#include "PositionAndRotation/RotationCalculation/MahonyAHRS.h"
 #include "PositionAndRotation/PositionCalculation/NoPosCalcTemp.h"
 // Motors:
 #include "Motors/Motors.h"
 #include "Motors/QuadXMotors.h"
+#include "Motors/NoMotors.h"
 // Communication:
 #include <StreamComm.h>
 #include <PacketCommunication.h>
@@ -77,12 +79,14 @@ namespace Assemble
 
     namespace Motors {
         QuadXMotors quadXMotors;
+        //NoMotors noMotors;
     }
 
     namespace PositionAndRotation {
-        MadgwickIMU madgwickIMU(Config::MainFrequency_Hz); // or MadgwickAHRS
+        MadgwickAHRS rotationCalculation;
+        //MahonyAHRS rotationCalculation;
         NoPosCalcTemp tempNoPosCalc;
-        AHRS ahrs(tempNoPosCalc, madgwickIMU);
+        AHRS ahrs(tempNoPosCalc, rotationCalculation);
     }
 
     namespace Communication {
@@ -150,9 +154,9 @@ namespace Instance
 class : public IExecutable
 {
     void execute() override {
-        // Serial1.print(Instance::ahrs.getPitch_deg());
-        // Serial1.print('\t');
-        // Serial1.println(Instance::ahrs.getRoll_deg());
+        using Common::Utils::printVector3;
+
+        printVector3(Serial, Instance::ahrs.getAngles_deg());
     }
 } debugTask;
 
@@ -260,6 +264,7 @@ void addTasksToTasker()
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
     tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
+    tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
     tasker.addTask_Hz(&debugTask, 50);
 }
 

@@ -132,18 +132,11 @@ void StabilizeFlightMode::setHeadingToHoldToCurrentReading()
 
 float StabilizeFlightMode::correctHeading(float headingToCorrect)
 {
-    if (headingToCorrect >= RoundAngle)
-    {
+    while (headingToCorrect >= RoundAngle)
         headingToCorrect -= RoundAngle;
-        while (headingToCorrect >= RoundAngle)
-            headingToCorrect -= RoundAngle;
-    }
-    else if (headingToCorrect < 0.f)
-    {
+        
+    while (headingToCorrect < 0.f)
         headingToCorrect += RoundAngle;
-        while (headingToCorrect < 0.f)
-            headingToCorrect += RoundAngle;
-    }
     
     return headingToCorrect;
 }
