@@ -31,25 +31,22 @@ class MadgwickAHRS : public Interfaces::IRotationCalculation
     float q2 = 0.0f;
     float q3 = 0.0f;
 
+    Common::vector3Float angles_rad = {};
+
 public:
     MadgwickAHRS(float beta = DefaultBeta);
 
     void updateRotationCalculation() override;
+    Common::Quaternion getQuaternion() override;
+
     Common::vector3Float getAngles_deg() override;
     Common::vector3Float getAngles_rad() override;
-    Common::Quaternion getQuaternion() override;
 
 private:
     void madgwickAHRSUpdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);
     void madgwickAHRSUpdateIMU(float gx, float gy, float gz, float ax, float ay, float az);
 
-    /**
-     * @brief Fast inverse square-root
-     * See: http://en.wikipedia.org/wiki/Fast_inverse_square_root.
-     * @param x Number which square root will be extracted.
-     * @return Square root of parameter x.
-     */
-    static float invSqrt(float x);
+    void updateAngles_rad();
 };
 
 
