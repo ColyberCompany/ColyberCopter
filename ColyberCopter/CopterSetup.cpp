@@ -12,6 +12,7 @@
 #include <Tasker.h>
 #include "Tasks.h"
 #include "Common/Constants.h"
+#include "Common/Utils.h"
 // Failsafe:
 #include "Failsafe/FailsafeManager.h"
 #include "Failsafe/FailsafeActions/DisarmMotors.h"
@@ -24,10 +25,12 @@
 // Position and rotation calculation:
 #include "PositionAndRotation/AHRS.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
+#include "PositionAndRotation/RotationCalculation/MahonyAHRS.h"
 #include "PositionAndRotation/PositionCalculation/NoPosCalcTemp.h"
 // Motors:
 #include "Motors/Motors.h"
 #include "Motors/QuadXMotors.h"
+#include "Motors/NoMotors.h"
 // Communication:
 #include <StreamComm.h>
 #include <PacketCommunication.h>
@@ -74,12 +77,14 @@ namespace Assemble
 
     namespace Motors {
         QuadXMotors quadXMotors;
+        //NoMotors noMotors;
     }
 
     namespace PositionAndRotation {
-        MadgwickAHRS madgwickAHRS;
+        MadgwickAHRS rotationCalculation;
+        //MahonyAHRS rotationCalculation;
         NoPosCalcTemp tempNoPosCalc;
-        AHRS ahrs(tempNoPosCalc, madgwickAHRS);
+        AHRS ahrs(tempNoPosCalc, rotationCalculation);
     }
 
     namespace Communication {
@@ -147,9 +152,9 @@ namespace Instance
 class : public IExecutable
 {
     void execute() override {
-        // Serial1.print(Instance::ahrs.getPitch_deg());
-        // Serial1.print('\t');
-        // Serial1.println(Instance::ahrs.getRoll_deg());
+        using Common::Utils::printVector3;
+
+        printVector3(Serial, Instance::ahrs.getAngles_deg());
     }
 } debugTask;
 
@@ -255,6 +260,7 @@ void addTasksToTasker()
     tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
+    tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
     tasker.addTask_Hz(&debugTask, 50);
 }
 
