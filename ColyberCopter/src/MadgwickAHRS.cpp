@@ -7,9 +7,11 @@
 #include "../PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
 #include "../Instances/SensorInstances.h"
 #include "../config.h"
+#include "../Common/Utils.h"
 
 using Common::vector3Float;
 using Common::Quaternion;
+using Common::Utils::invSqrt;
 
 const float MadgwickAHRS::DefaultBeta = 0.1f;
 
@@ -34,35 +36,35 @@ void MadgwickAHRS::updateRotationCalculation()
 		acc.x, acc.y, acc.z,
 		mag.x, mag.y, mag.z
 	);
-}
 
-
-vector3Float MadgwickAHRS::getAngles_deg()
-{
-	vector3Float angles_deg;
-	auto angles_rad = getAngles_rad();
-	angles_deg.x = angles_rad.x * 57.29578f;
-    angles_deg.y = angles_rad.y * 57.29578f;
-    angles_deg.z = angles_rad.z * 57.29578f;
-
-	return angles_deg;
-}
-
-
-vector3Float MadgwickAHRS::getAngles_rad()
-{
-	vector3Float angles_rad;
-	angles_rad.y = atan2f(q0 * q1 + q2 * q3, 0.5f - q1 * q1 - q2 * q2);		// roll
-	angles_rad.x = asinf(-2.0f * (q1 * q3 - q0 * q2));						// pitch
-	angles_rad.z = atan2f(q1 * q2 + q0 * q3, 0.5f - q2 * q2 - q3 * q3);		// roll (heading)
-
-	return angles_rad;
+	// madgwickAHRSUpdateIMU(
+	// 	gyro.x * 0.0174533f, // in rad_per_sec
+	// 	gyro.y * 0.0174533f, // in rad_per_sec
+	// 	gyro.z * 0.0174533f, // in rad_per_sec
+	// 	acc.x, acc.y, acc.z
+	// );
 }
 
 
 Quaternion MadgwickAHRS::getQuaternion()
 {
 	return Quaternion(q0, q1, q2, q3);
+}
+
+
+vector3Float MadgwickAHRS::getAngles_deg()
+{
+	return {
+		angles_rad.x * 57.29578f,
+		angles_rad.y * 57.29578f,
+		angles_rad.z * 57.29578f
+	};
+}
+
+
+vector3Float MadgwickAHRS::getAngles_rad()
+{
+	return angles_rad;
 }
 
 
@@ -93,7 +95,7 @@ void MadgwickAHRS::madgwickAHRSUpdate(float gx, float gy, float gz, float ax, fl
 		recipNorm = invSqrt(ax * ax + ay * ay + az * az);
 		ax *= recipNorm;
 		ay *= recipNorm;
-		az *= recipNorm;   
+		az *= recipNorm;
 
 		// Normalise magnetometer measurement
 		recipNorm = invSqrt(mx * mx + my * my + mz * mz);
@@ -161,6 +163,9 @@ void MadgwickAHRS::madgwickAHRSUpdate(float gx, float gy, float gz, float ax, fl
 	q1 *= recipNorm;
 	q2 *= recipNorm;
 	q3 *= recipNorm;
+
+
+	updateAngles_rad();
 }
 
 
@@ -184,7 +189,7 @@ void MadgwickAHRS::madgwickAHRSUpdateIMU(float gx, float gy, float gz, float ax,
 		recipNorm = invSqrt(ax * ax + ay * ay + az * az);
 		ax *= recipNorm;
 		ay *= recipNorm;
-		az *= recipNorm;   
+		az *= recipNorm;
 
 		// Auxiliary variables to avoid repeated arithmetic
 		_2q0 = 2.0f * q0;
@@ -231,16 +236,15 @@ void MadgwickAHRS::madgwickAHRSUpdateIMU(float gx, float gy, float gz, float ax,
 	q1 *= recipNorm;
 	q2 *= recipNorm;
 	q3 *= recipNorm;
+
+
+	updateAngles_rad();
 }
 
 
-float MadgwickAHRS::invSqrt(float x)
+void MadgwickAHRS::updateAngles_rad()
 {
-	float halfx = 0.5f * x;
-	float y = x;
-	long i = *(long*)&y;
-	i = 0x5f3759df - (i>>1);
-	y = *(float*)&i;
-	y = y * (1.5f - (halfx * y * y));
-	return y;
+	angles_rad.y = atan2f(q0 * q1 + q2 * q3, 0.5f - q1 * q1 - q2 * q2);		// roll
+	angles_rad.x = asinf(-2.0f * (q1 * q3 - q0 * q2));						// pitch
+	angles_rad.z = atan2f(q1 * q2 + q0 * q3, 0.5f - q2 * q2 - q3 * q3);		// roll (heading)
 }
