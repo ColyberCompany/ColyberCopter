@@ -8,7 +8,7 @@ namespace Common
     namespace Utils
     {
         template <typename T>
-        void showVector3(Stream& serialNumber,const vector3<T>& toShow, const char* separator = "    ")
+        void printVector3(Stream& serialNumber,const vector3<T>& toShow, const char* separator)
         {
             serialNumber.print(toShow.x);
             serialNumber.print(separator);
@@ -18,7 +18,7 @@ namespace Common
         }
 
         template <typename T>
-        void showVector3(Stream& serialNumber,const vector3<T>& toShow, char separator = '  ')
+        void printVector3(Stream& serialNumber,const vector3<T>& toShow, char separator = '\t')
         {
             serialNumber.print(toShow.x);
             serialNumber.print(separator);
