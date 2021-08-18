@@ -150,9 +150,54 @@ class : public IExecutable
         // Serial1.print(Instance::ahrs.getPitch_deg());
         // Serial1.print('\t');
         // Serial1.println(Instance::ahrs.getRoll_deg());
+
+        // auto a = Instance::ahrs.getAbsoluteAcceleration();
+        // Serial1.print(a.x);
+        // Serial1.print('\t');
+        // Serial1.print(a.y);
+        // Serial1.print('\t');
+        // Serial1.print(a.z - 1);
+        // Serial1.print('\t');
+        // auto angles = Instance::ahrs.getAngles_deg();
+        // Serial1.print(angles.x);
+        // Serial1.print('\t');
+        // Serial1.print(angles.y);
+        // Serial1.print('\t');
+        // Serial1.println(angles.z);
+
+        Serial1.println(Instance::ahrs.getAltitude_m());
+
+        // Serial.println(Instance::tasker.getLoad());
     }
 } debugTask;
 
+
+class NaPaleTask : public IExecutable
+{
+    static float height_m;
+    static float velocity_mps;
+    static float acceleration_mpss;
+    void execute() override {
+        float a = (Instance::acc.get_norm().z - 1)* -9.81f;
+        float aaa = (Instance::ahrs.getAbsoluteAcceleration().z - 1)* -9.81f;
+        float v = velocity_mps + acceleration_mpss * Config::MainInterval_s;
+        float h = height_m + velocity_mps * Config::MainInterval_s + acceleration_mpss * Config::MainInterval_s * Config::MainInterval_s / 2;
+
+        height_m = h;
+        velocity_mps = v;
+        acceleration_mpss = a;
+
+        Serial1.print(h);
+        Serial1.print('\t');
+        Serial1.print(a, 3);
+        Serial1.print('\t');
+        Serial1.println(aaa, 3);
+    }
+} naPaleTask;
+
+float NaPaleTask::height_m = 0.f;
+float NaPaleTask::velocity_mps = 0.f;
+float NaPaleTask::acceleration_mpss = 0.f;
 
 
 
@@ -246,6 +291,7 @@ void addTasksToTasker()
 
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::PositionAndRotation::ahrs);
+    Assemble::TaskGroups::mainFrequency.addTask(&naPaleTask);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
     tasker.addTask_Hz(&Assemble::TaskGroups::mainFrequency, Config::MainFrequency_Hz);
 
@@ -255,7 +301,7 @@ void addTasksToTasker()
     tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
-    tasker.addTask_Hz(&debugTask, 50);
+    tasker.addTask_Hz(&debugTask, 10);
 }
 
 
