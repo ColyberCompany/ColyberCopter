@@ -9,61 +9,51 @@
 #ifndef TASKS_H
 #define TASKS_H
 
-#include <Task.h>
-#include "Instances/MainInstances.h" // Exemption: this file can include Instances, because only CopterSetup.h includes this file.
-#include "Instances/SensorInstances.h"
+#include <IExecutable.h>
+#include "Instances/MainInstances.h" // Exemption: this header file can include Instances, because only CopterSetup.h includes this file.
+#include "Communication/CommData.h"
+#include "Communication/DataPackets.h"
 
 
 namespace Tasks
 {
-    class : public Task
+    class : public IExecutable
     {
         bool lastLedState = false;
         void execute() override {
             lastLedState = !lastLedState;
             digitalWrite(LED_BUILTIN, lastLedState);
         }
-    } oneHertz;
+    } builtinDiodeBlink;
 
 
 
-    class : public Task
+    class : public IExecutable
     {
         void execute() override {
-            Instance::pilotPacketComm.receiveAndUpdatePackets();
+            Instance::pilotPacketComm.receive();
         }
     } rmtCtrlReceiving;
 
 
 
-    class CalibTask : public Task
+    class : public IExecutable
     {
-        Sensor& sensor;
-        bool isCalibrating_flag = false;
+        void execute() override
+        {
+            auto angles = Instance::ahrs.getAngles_deg();
+            commData.drone.pitchAngle_deg = angles.x;
+            commData.drone.rollAngle_deg = angles.y;
+            commData.drone.heading_deg = angles.z;
+            commData.drone.altitude_cm = Instance::ahrs.getAltitude_m();
+            commData.drone.longitude = Instance::ahrs.getLongitude_deg();
+            commData.drone.latitude = Instance::ahrs.getLatitude_deg();
+            commData.drone.connectionStability = Instance::pilotPacketComm.getConnectionStability();
 
-    public:
-        CalibTask(Sensor& _sensor) : sensor(_sensor) {}
-
-        void execute() override {
-            if (!isCalibrating_flag)
-            {
-                uint16_t time = sensor.startBackgroundCalibration(5000);
-                Instance::debMes.showMessage(time);
-                pauseExecutionFor_s(time);
-                isCalibrating_flag = true;
-            }
-            else
-            {
-                FloatAxisVector calib = sensor.getOffset();
-                Serial1.print(calib.getAxis(Enums::AxisType::AxisX));
-                Serial1.print(", ");
-                Serial1.print(calib.getAxis(Enums::AxisType::AxisY));
-                Serial1.print(", ");
-                Serial1.println(calib.getAxis(Enums::AxisType::AxisZ));
-                isCalibrating_flag = false;
-            }
+            Instance::pilotPacketComm.send(&DataPackets::droneMeasurementsAndState);
         }
-    } calibTask(Instance::gyro);
+    } rmtCtrlSendingDroneData;
+    
 
 
     // add other tasks here

@@ -10,7 +10,7 @@
 #define DATAPACKETS_H
 
 #include "CommData.h"
-#include "PacketReceivedEvents.h"
+#include "PacketReceivedCallbacks.h"
 #include <DataPacket.h>
 #include <EventPacket.h>
 
@@ -21,63 +21,65 @@
 
 namespace DataPacketClasses
 {
-    class Steering : public DataPacket
+    class Steering : public PacketComm::DataPacket
     {
-        PacketReceivedEvents::Steering recEvent;
-
     public:
-        Steering() : DataPacket(0) {
-            addByteType(commData.pilot.stick.throttle);
-            addByteType(commData.pilot.stick.yaw);
-            addByteType(commData.pilot.stick.pitch);
-            addByteType(commData.pilot.stick.roll);
+        Steering()
+            : DataPacket(0)
+        {
+            addVar(commData.pilot.stick.throttle);
+            addVar(commData.pilot.stick.yaw);
+            addVar(commData.pilot.stick.pitch);
+            addVar(commData.pilot.stick.roll);
 
-            setPacketReceivedEvent(recEvent);
+            setOnReceiveCallback(PacketReceivedCallbacks::steeringCallback);
         }
     };
 
 
-    class FlightModeChange : public DataPacket
+    class FlightModeChange : public PacketComm::DataPacket
     {
-        PacketReceivedEvents::FlightModeChange recEvent;
-
     public:
-        FlightModeChange() : DataPacket(10) {
-            addByteType(commData.flightMode);
+        FlightModeChange()
+            : DataPacket(10)
+        {
+            addVar(commData.flightMode);
 
-            setPacketReceivedEvent(recEvent);
+            setOnReceiveCallback(PacketReceivedCallbacks::flightModeChangeCallback);
         }
     };
 
 
-    class DroneMeasurementsAndState : public DataPacket
+    class DroneMeasurementsAndState : public PacketComm::DataPacket
     {
     public:
-        DroneMeasurementsAndState() : DataPacket(50) {
-            addByteType(commData.drone.pitchAngle_deg);
-            addByteType(commData.drone.rollAngle_deg);
-            addByteType(commData.drone.heading_deg);
-            addByteType(commData.drone.altitude_cm);
-            addByteType(commData.drone.longitude);
-            addByteType(commData.drone.latitude);
-            addByteType(commData.drone.connectionStability);
+        DroneMeasurementsAndState()
+            : DataPacket(50)
+        {
+            addVar(commData.drone.pitchAngle_deg);
+            addVar(commData.drone.rollAngle_deg);
+            addVar(commData.drone.heading_deg);
+            addVar(commData.drone.altitude_cm);
+            addVar(commData.drone.longitude);
+            addVar(commData.drone.latitude);
+            addVar(commData.drone.connectionStability);
         }
     };
 
 
-    class PIDTuning : public DataPacket
+    class PIDTuning : public PacketComm::DataPacket
     {
-        PacketReceivedEvents::PIDTuning recEvent;
-
     public:
-        PIDTuning() : DataPacket(51) {
-            addByteType(commData.pidTuning.tunedController_ID);
-            addByteType(commData.pidTuning.kP);
-            addByteType(commData.pidTuning.kI);
-            addByteType(commData.pidTuning.kD);
-            addByteType(commData.pidTuning.iMax);
+        PIDTuning()
+            : DataPacket(51)
+        {
+            addVar(commData.pidTuning.tunedController_ID);
+            addVar(commData.pidTuning.kP);
+            addVar(commData.pidTuning.kI);
+            addVar(commData.pidTuning.kD);
+            addVar(commData.pidTuning.iMax);
 
-            setPacketReceivedEvent(recEvent);
+            setOnReceiveCallback(PacketReceivedCallbacks::pidTuningCallback);
         }
     };
 }

@@ -24,7 +24,7 @@ public:
     const char* getName() override;
 
 protected:
-    void flightModeLoop(ControlSticks& inputOutputSticks) override;
+    void flightModeLoop(Common::ControlSticks& inputOutputSticks) override;
 };
 
 

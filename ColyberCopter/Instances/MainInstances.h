@@ -11,9 +11,8 @@
 #define MAININSTANCES_H
 
 // TODO: set the order of include files
-#include <ITasker.h>
+#include <Tasker.h>
 #include "../Interfaces/IAHRS.h"
-#include "../Interfaces/ISensorsData.h"
 #include "../Interfaces/IVirtualPilot.h"
 #include <PacketCommunication.h>
 #include "../Failsafe/FailsafeManager.h"
@@ -23,12 +22,11 @@ namespace Instance
 {
     using namespace Interfaces;
 
-    extern ITasker& tasker;
+    extern Tasker& tasker;
     extern IAHRS& ahrs;
-    extern ISensorsData& sensorsData;
     extern IVirtualPilot& virtualPilot;
     
-    extern PacketCommunication& pilotPacketComm;
+    extern PacketComm::PacketCommunication& pilotPacketComm;
 
     extern FailsafeManager& failsafeManager;
     extern DebugMessenger& debMes;

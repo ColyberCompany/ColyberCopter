@@ -10,6 +10,7 @@
 #define IAHRS_H
 
 #include "../Common/Vector3.h"
+#include "../Common/Quaternion.h"
 
 
 namespace Interfaces
@@ -25,6 +26,7 @@ namespace Interfaces
         virtual float getRoll_deg() = 0;
         virtual float getHeading_deg() = 0;
         //virtual float getYaw_deg() = 0;
+        virtual Common::Quaternion getQuaternion() = 0;
 
         virtual double getLongitude_deg() = 0;
         virtual double getLatitude_deg() = 0;
@@ -34,8 +36,9 @@ namespace Interfaces
          */
         virtual float getAltitude_m() = 0; // TODO: check if AHRS return correct value
 
-        virtual vector3Float getAngles_deg() = 0; // TODO: use this method where all 3 axes are needed
-        virtual vector3Double getPosition() = 0; // TODO: use this method where all 3 axes are needed
+        virtual Common::vector3Float getAngles_deg() = 0; // TODO: use this method where all 3 axes are needed
+        virtual Common::vector3Double getPosition() = 0; // TODO: use this method where all 3 axes are needed
+        virtual Common::vector3Float getAbsoluteAcceleration() = 0;
     };
 }
 

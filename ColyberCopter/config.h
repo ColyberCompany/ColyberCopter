@@ -25,8 +25,7 @@ namespace Config
 
     extern const Enums::BaudRateTypes RmtCtrlSerialBaudRate;
 
-    extern const size_t RmtCtrlMaxComBufferSize;
-    extern const size_t RmtCtrlMaxQueuedBuffers;
+    inline constexpr size_t RmtCtrlMaxComBufferSize = 40;
     extern const uint16_t RmtCtrlReceivingFrequency_Hz;
 
     extern const uint8_t MaxTaskerTasks;
@@ -35,6 +34,8 @@ namespace Config
 
     extern const float AccLPFCutOffFreq;
     extern const float GyroLPFCutOffFreq;
+
+    extern const uint16_t ThrottleStickCenter;
 
     extern const float LevelingPID_kP;
     extern const float LevelingPID_kI;
@@ -46,8 +47,14 @@ namespace Config
     extern const float HeadHoldPID_kD;
     extern const uint16_t HeadHoldPID_IMax;
 
-    extern const vector3Int16 AccOffset;
-    extern const vector3Int16 GyroOffset;
+    extern const float AltHoldPID_kP;
+    extern const float AltHoldPID_kI;
+    extern const float AltHoldPID_kD;
+    extern const uint16_t AltHoldPID_IMax;
+
+    extern const Common::vector3Int16 AccOffset;
+    extern const Common::vector3Int16 GyroOffset;
+    extern const Common::vector3Int16 CompassOffset;
 
     constexpr uint8_t MaxLogSize = 30;
 }

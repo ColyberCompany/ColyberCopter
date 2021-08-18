@@ -18,10 +18,10 @@
 
 class QuadXMotors : public Motors
 {
-    static const uint8_t FLMotorPin = PA6; // Front left
-    static const uint8_t FRMotorPin = PA7; // Front right
-    static const uint8_t BRMotorPin = PB0; // Back right
-    static const uint8_t BLMotorPin = PB1; // Back left
+    static const PinName FLMotorPin = PA_6; // Front left
+    static const PinName FRMotorPin = PA_7_ALT1; // Front right
+    static const PinName BRMotorPin = PB_0_ALT1; // Back right
+    static const PinName BLMotorPin = PB_1_ALT1; // Back left
 
     HardwareTimer motorsTimer;
 
@@ -31,7 +31,7 @@ public:
     QuadXMotors();
 
     bool initializeMotors() override;
-    void updatePower(const ControlSticks& stickValues) override;
+    void updatePower(const Common::ControlSticks& stickValues) override;
 };
 
 
