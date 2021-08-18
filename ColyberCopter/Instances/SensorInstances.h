@@ -15,6 +15,7 @@
 #include "Sensors/Base/Barometer.h"
 #include "Sensors/Base/GPS.h"
 #include "Sensors/Base/Rangefinder.h"
+#include "Sensors/Base/TemperatureSensor.h"
 
 
 namespace Instance
@@ -23,6 +24,7 @@ namespace Instance
     extern Gyroscope& gyro;
     extern Magnetometer& magn;
     extern Barometer& baro;
+    extern TemperatureSensor& temperature;
     // extern other sensors...
 }
 

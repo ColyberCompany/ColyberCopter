@@ -46,6 +46,7 @@
 #include "Sensors/Base/Barometer.h"
 #include "Sensors/Base/GPS.h"
 #include "Sensors/Base/Rangefinder.h"
+#include "Sensors/Base/TemperatureSensor.h"
 #include "Sensors/NoSensor.h"
 // Sensors:
 #include "Sensors/SimpleMPU6050Handler.h"
@@ -141,6 +142,7 @@ namespace Instance
     Gyroscope& gyro = Assemble::Sensors::simpleMPU6050Handler;
     Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
     Barometer& baro = Assemble::Sensors::simpleMS5611Handler;
+    TemperatureSensor& temperature = Assemble::Sensors::simpleMPU6050Handler;
 
     // Sensor& gps = noSensor;
     // Sensor& btmRangefinder = noSensor;

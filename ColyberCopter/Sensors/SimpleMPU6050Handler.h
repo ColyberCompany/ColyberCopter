@@ -10,27 +10,14 @@
 
 #include "Base/Accelerometer.h"
 #include "Base/Gyroscope.h"
+#include "Base/TemperatureSensor.h"
 #include "../Common/Vector3.h"
 #include <SimpleMPU6050.h>
 #include <LowPassFilter.h>
 #include <IExecutable.h>
 
 
-class MPU6050Acc : public Accelerometer
-{
-public:
-    const char* getName() override;
-};
-
-
-class MPU6050Gyro : public Gyroscope
-{
-public:
-    const char* getName() override;
-};
-
-
-class SimpleMPU6050Handler : public MPU6050Acc, public MPU6050Gyro, public IExecutable
+class SimpleMPU6050Handler : public Accelerometer, public Gyroscope, public TemperatureSensor, public IExecutable
 {
     SimpleMPU6050 mpu;
     Common::vector3Float accFiltered;
@@ -45,6 +32,7 @@ public:
 
 private:
     bool initSensor() override;
+    const char* getName() override;
 
     /**
      * @brief Accelerometer data.
@@ -55,6 +43,8 @@ private:
      * @brief Gyroscope data.
      */
     Common::vector3Float get_degPerSec() override;
+
+    float getTemperature_degC();
 
     /**
      * @brief Reads new data from MPU6050 and perform filtering.

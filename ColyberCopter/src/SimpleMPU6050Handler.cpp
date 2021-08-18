@@ -8,19 +8,6 @@
 #include "../config.h"
 
 
-
-const char* MPU6050Acc::getName()
-{
-    return "mpu6050 acc";
-}
-
-
-const char* MPU6050Gyro::getName()
-{
-    return "mpu6050 gyro";
-}
-
-
 SimpleMPU6050Handler::SimpleMPU6050Handler()
 {
 }
@@ -28,7 +15,7 @@ SimpleMPU6050Handler::SimpleMPU6050Handler()
 
 bool SimpleMPU6050Handler::initSensor()
 {
-    if (MPU6050Acc::isInitialized() || MPU6050Gyro::isInitialized())
+    if (Accelerometer::isInitialized() || Gyroscope::isInitialized())
         return true;
 
     using Config::AccOffset;
@@ -44,6 +31,12 @@ bool SimpleMPU6050Handler::initSensor()
 }
 
 
+const char* SimpleMPU6050Handler::getName()
+{
+    return "mpu6050";
+}
+
+
 Common::vector3Float SimpleMPU6050Handler::get_norm()
 {
     return accFiltered;
@@ -53,6 +46,12 @@ Common::vector3Float SimpleMPU6050Handler::get_norm()
 Common::vector3Float SimpleMPU6050Handler::get_degPerSec()
 {
     return gyroFiltered;
+}
+
+
+float SimpleMPU6050Handler::getTemperature_degC()
+{
+    mpu.getTemperature();
 }
 
 
