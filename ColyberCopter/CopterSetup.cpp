@@ -155,12 +155,12 @@ class : public IExecutable
 {
     void execute() override {
 
-        Serial1.println(Instance::ahrs.getAltitude_m());
+        //Serial1.println(Instance::ahrs.getAltitude_m());
 
         // Serial.println(Instance::tasker.getLoad();
         using Common::Utils::printVector3;
 
-        printVector3(Serial, Instance::ahrs.getAngles_deg());
+        //printVector3(Serial, Instance::ahrs.getAngles_deg());
     }
 } debugTask;
 
@@ -170,6 +170,9 @@ class NaPaleTask : public IExecutable
     static float height_m;
     static float velocity_mps;
     static float acceleration_mpss;
+    static int16_t cnt;
+    static float p0;
+
     void execute() override {
         float a = (Instance::acc.get_norm().z - 1)* -9.81f;
         float aaa = (Instance::ahrs.getAbsoluteAcceleration().z - 1)* -9.81f;
@@ -180,17 +183,33 @@ class NaPaleTask : public IExecutable
         velocity_mps = v;
         acceleration_mpss = a;
 
-        Serial1.print(h);
-        Serial1.print('\t');
-        Serial1.print(a, 3);
-        Serial1.print('\t');
-        Serial1.println(aaa, 3);
+        float T_C = 15;
+        float T_K = T_C + 273.15f;
+        float p = Instance::baro.getPressure_hPa();
+
+        float alt = (pow(p0 / p, 0.19f) - 1) * T_K  * 153.846f;
+        Serial1.println(alt);
+        if (cnt >= 0)
+        {
+            if (cnt == 0)
+            {
+                p0 = p;
+                Serial1.print('r');
+            }
+            cnt--;
+        }
+        // Serial1.print('\t');
+        // Serial1.print(a, 3);
+        // Serial1.print('\t');
+        // Serial1.println(aaa, 3);
     }
 } naPaleTask;
 
 float NaPaleTask::height_m = 0.f;
 float NaPaleTask::velocity_mps = 0.f;
 float NaPaleTask::acceleration_mpss = 0.f;
+int16_t NaPaleTask::cnt = 1000;
+float NaPaleTask::p0 = 982.51f;
 
 
 
