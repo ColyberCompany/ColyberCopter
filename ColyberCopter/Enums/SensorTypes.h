@@ -20,7 +20,8 @@ namespace Enums
         MAGNETOMETER,
         BAROMETER,
         GPS,
-        RANGEFINDER
+        RANGEFINDER,
+        TEMPERATURE_SENSOR
         // new types of sensors goes here...
     };
 }
