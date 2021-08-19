@@ -22,6 +22,10 @@ public:
     {
         return Common::vector3Double(0, 0, 0);
     }
+
+    void resetAltitude() override
+    {   
+    }
 };
 
 

@@ -18,3 +18,8 @@ float Common::Utils::invSqrt(float x)
 	return y;
 }
 
+
+float Common::Utils::calculateAltitude(float p0, float p, float T_C)
+{
+	return (pow(p / p0, -0.19f) - 1) * (T_C + 273.15f)  * 153.846f;
+}
