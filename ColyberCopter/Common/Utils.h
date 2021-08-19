@@ -25,6 +25,17 @@ namespace Common
          * @return Square root of parameter x.
          */
         float invSqrt(float x);
+
+
+        /**
+         * @brief Calculate altitude relative to some ground level with p0 pressure 
+         * 
+         * @param T_C temperature in degrees celsius
+         * @param p pressure in your position (p and p0 have to be in the same unit)
+         * @param p0 pressure on the ground level (p and p0 have to be in the same unit)
+         * @return calculated altitude above ground level
+         */
+        float calculateAltitude(float T_C, float p, float p0);
     }
 }
 

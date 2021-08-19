@@ -21,6 +21,7 @@ namespace Interfaces
 
         virtual void updatePositionCalculation() = 0;
         virtual Common::vector3Double getPosition() = 0;
+        virtual void resetAltitude() = 0;
     };
 }
 

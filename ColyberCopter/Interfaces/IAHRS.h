@@ -35,6 +35,7 @@ namespace Interfaces
          * @brief Height over the sea level getter.   
          */
         virtual float getAltitude_m() = 0; // TODO: check if AHRS return correct value
+        virtual void resetAltitude() = 0;
 
         virtual Common::vector3Float getAngles_deg() = 0; // TODO: use this method where all 3 axes are needed
         virtual Common::vector3Double getPosition() = 0; // TODO: use this method where all 3 axes are needed

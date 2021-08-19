@@ -27,7 +27,7 @@
 #include "PositionAndRotation/AHRS.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
 #include "PositionAndRotation/RotationCalculation/MahonyAHRS.h"
-#include "PositionAndRotation/PositionCalculation/NoPosCalcTemp.h"
+#include "PositionAndRotation/PositionCalculation/AltitudeCalculation.h"
 // Motors:
 #include "Motors/Motors.h"
 #include "Motors/QuadXMotors.h"
@@ -86,8 +86,8 @@ namespace Assemble
     namespace PositionAndRotation {
         MadgwickAHRS rotationCalculation;
         //MahonyAHRS rotationCalculation;
-        NoPosCalcTemp tempNoPosCalc;
-        AHRS ahrs(tempNoPosCalc, rotationCalculation);
+        AltitudeCalculation altitudeCalculation;
+        AHRS ahrs(altitudeCalculation, rotationCalculation);
     }
 
     namespace Communication {
@@ -161,58 +161,10 @@ class : public IExecutable
 
         // Serial.println(Instance::tasker.getLoad();
         using Common::Utils::printVector3;
-
+        
         //printVector3(Serial, Instance::ahrs.getAngles_deg());
     }
 } debugTask;
-
-
-class NaPaleTask : public IExecutable
-{
-    static float height_m;
-    static float velocity_mps;
-    static float acceleration_mpss;
-    static int16_t cnt;
-    static float p0;
-
-    void execute() override {
-        float a = (Instance::acc.get_norm().z - 1)* -9.81f;
-        float aaa = (Instance::ahrs.getAbsoluteAcceleration().z - 1)* -9.81f;
-        float v = velocity_mps + acceleration_mpss * Config::MainInterval_s;
-        float h = height_m + velocity_mps * Config::MainInterval_s + acceleration_mpss * Config::MainInterval_s * Config::MainInterval_s / 2;
-
-        height_m = h;
-        velocity_mps = v;
-        acceleration_mpss = a;
-
-        float T_C = 15;
-        float T_K = T_C + 273.15f;
-        float p = Instance::baro.getPressure_hPa();
-
-        float alt = (pow(p0 / p, 0.19f) - 1) * T_K  * 153.846f;
-        Serial1.println(alt);
-        if (cnt >= 0)
-        {
-            if (cnt == 0)
-            {
-                p0 = p;
-                Serial1.print('r');
-            }
-            cnt--;
-        }
-        // Serial1.print('\t');
-        // Serial1.print(a, 3);
-        // Serial1.print('\t');
-        // Serial1.println(aaa, 3);
-    }
-} naPaleTask;
-
-float NaPaleTask::height_m = 0.f;
-float NaPaleTask::velocity_mps = 0.f;
-float NaPaleTask::acceleration_mpss = 0.f;
-int16_t NaPaleTask::cnt = 1000;
-float NaPaleTask::p0 = 982.51f;
-
 
 
 void setupDrone()
@@ -257,7 +209,6 @@ void setupDrone()
 
     debMes.showMessage("Drone setup is complete!");
 }
-
 
 
 void setupFailsafe()
@@ -306,7 +257,6 @@ void addTasksToTasker()
 
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::PositionAndRotation::ahrs);
-    Assemble::TaskGroups::mainFrequency.addTask(&naPaleTask);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
     tasker.addTask_Hz(&Assemble::TaskGroups::mainFrequency, Config::MainFrequency_Hz);
 
