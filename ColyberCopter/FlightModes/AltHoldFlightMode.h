@@ -19,7 +19,6 @@ class AltHoldFlightMode : public FlightMode
     PID altitudeHoldPID;
 
     float altitudeToHold_cm = 0;
-    float altitudeError_cm = 0;
 
     static const uint16_t MinOutputThrottle;
     static const uint16_t MaxOutputThrottle;
@@ -43,9 +42,7 @@ public:
 private:
     void flightModeLoop(Common::ControlSticks& inputOutputSticks) override;
 
-    void updateAltitudeHolding(Common::ControlSticks& inputOutputSticks);
     void updateAltitudeToHold(uint16_t throttle);
-    void calculateAltitudeError();
     void setAltitudeToHoldToCurrentReading();
 
     static float throttleToClimbRate_cmPerSec(uint16_t throttle);

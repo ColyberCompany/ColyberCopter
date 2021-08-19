@@ -57,19 +57,9 @@ const char* AltHoldFlightMode::getName()
 
 void AltHoldFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
 {
-    if (inputOutputSticks.getThrottle() < 80) // TODO: think if this could be checked in a better way then just throttle threshold
-        return;
-    
-    updateAltitudeHolding(inputOutputSticks);
-}
-
-
-void AltHoldFlightMode::updateAltitudeHolding(ControlSticks& inputOutputSticks)
-{
     updateAltitudeToHold(inputOutputSticks.getThrottle());
-    calculateAltitudeError();
 
-    int16_t outputThrottle = altitudeHoldPID.update(altitudeError_cm);
+    int16_t outputThrottle = altitudeHoldPID.update(altitudeToHold_cm, Instance::ahrs.getAltitude_m() * 100.f);
     outputThrottle = constrain(outputThrottle, MinOutputThrottle, MaxOutputThrottle);
     inputOutputSticks.setThrottle(outputThrottle);
 }
@@ -78,12 +68,6 @@ void AltHoldFlightMode::updateAltitudeHolding(ControlSticks& inputOutputSticks)
 void AltHoldFlightMode::updateAltitudeToHold(uint16_t throttle)
 {
     altitudeToHold_cm += throttleToClimbRate_cmPerSec(throttle) * Config::MainInterval_s;
-}
-
-
-void AltHoldFlightMode::calculateAltitudeError()
-{
-    altitudeError_cm = altitudeToHold_cm - (Instance::ahrs.getAltitude_m() * 100.f);
 }
 
 
