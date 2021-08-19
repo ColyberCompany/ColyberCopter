@@ -19,7 +19,7 @@ namespace Common
 
 
         /**
-         * @brief Fast inverse square-root
+         * @brief Fast inverse square-root.
          * See: http://en.wikipedia.org/wiki/Fast_inverse_square_root.
          * @param x Number which square root will be extracted.
          * @return Square root of parameter x.
@@ -28,14 +28,13 @@ namespace Common
 
 
         /**
-         * @brief Calculate altitude relative to some ground level with p0 pressure 
-         * 
-         * @param T_C temperature in degrees celsius
-         * @param p pressure in your position (p and p0 have to be in the same unit)
-         * @param p0 pressure on the ground level (p and p0 have to be in the same unit)
-         * @return calculated altitude above ground level
+         * @brief Calculate altitude relative to some ground level with p0 pressure.
+         * @param temperature_degC temperature in degrees celsius.
+         * @param currentPressure pressure in your position (p and p0 have to be in the same unit).
+         * @param pressure0 pressure on the ground level (p and p0 have to be in the same unit).
+         * @return calculated altitude above ground level.
          */
-        float calculateAltitude(float T_C, float p, float p0);
+        float calculateAltitude(float temperature_degC, float currentPressure, float pressure0);
     }
 }
 
