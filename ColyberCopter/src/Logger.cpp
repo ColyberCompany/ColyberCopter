@@ -2,22 +2,84 @@
  * @file Logger.cpp
  * @author Aleksy Walczak (aleksyww@gmail.com)
  * @date 2021-04-10
- * 
  */
 
 #include "../Logger/Logger.h"
-#include "../Enums/LogType.h"
 #include "../Logger/Headers.h"
 
 using Enums::LogType;
+using SimpleDataStructures::GrowingArray;
+using SimpleDataStructures::ArrayIterator;
+
+
+void Logger::bind(LogType logType, LogMedium* transmitter)
+{
+    if (transmitter == nullptr)
+        return;
+
+    auto iter = ArrayIterator<Binding>(bindings);
+    bool transmitterExists = false;
+    while (iter.hasNext())
+    {
+        auto binding = iter.next();
+        if (binding.second == transmitter)
+        {
+            binding.first = (LogType)(logType | binding.first);
+            transmitterExists = true;
+        }
+    }
+
+    if (!transmitterExists)
+        bindings.add(Binding(logType, transmitter));
+}
+
+
+void Logger::unbind(LogType logType, LogMedium* transmitter)
+{
+    if (transmitter == nullptr)
+        return;
+
+    auto iter = ArrayIterator<Binding>(bindings);
+    while (iter.hasNext())
+    {
+        auto binding = iter.next();
+        if (binding.second == transmitter)
+            binding.first = (LogType)(~logType & binding.first);
+    }
+}
+
+
+GrowingArray<LogMedium*> Logger::getLogMediums(LogType logType)
+{
+    auto iter = ArrayIterator<Binding>(bindings);
+    uint8_t n = 0;
+    while (iter.hasNext())
+        if (iter.next().first == logType) n++;
+
+    auto array = GrowingArray<LogMedium*>(n);
+
+    iter = ArrayIterator<Binding>(bindings);
+    while (iter.hasNext())
+        array.add(iter.next().second);
+
+    return array;
+}
+
+
+Logger::Logger()
+{
+
+}
 
 
 void Logger::addToBuffer(const char* str)
 {
-    while(*str != '\0' && endIndex < Config::MaxLogSize + Enums::LogType::Count + 1)
+    while(*str != '\0' && endIndex < BufferSize)
     {
         buffer[endIndex++] = *(str++);
     }
+
+    buffer[BufferSize - 1] = '\0'; // TODO: for test to avoid potential errors. Check if \0 is added at the end of message
 }
 
 
@@ -27,7 +89,7 @@ void Logger::addToBuffer(int number)
     for (int i = 1; number / i; i *= 10)
         n++;
 
-    if (endIndex + n - 1 < Config::MaxLogSize + Enums::LogType::Count + 1)
+    if (endIndex + n - 1 < BufferSize)
     {
         int j = 1;
         for (int i = 0; i < n; i++)
@@ -38,11 +100,13 @@ void Logger::addToBuffer(int number)
     }
     else
     {
-        while(endIndex < Config::MaxLogSize + Enums::LogType::Count + 1)
+        while(endIndex < BufferSize)
         {
             buffer[endIndex++] = '*';
         }
     }
+
+    buffer[BufferSize - 1] = '\0'; // TODO: for test to avoid potential errors. Check if \0 is added at the end of message
 }
 
 
@@ -58,58 +122,4 @@ inline void Logger::prepareHeader(LogType logType)
 
         type = (LogType)(type*2);
     }
-}
-
-
-void Logger::bind(LogType logType, ITransmitter* transmitter)
-{
-    if (transmitter == nullptr)
-        return;
-
-    auto iter = bindings.getIterator();
-    bool transmitterExists = false;
-    while (iter->hasNext())
-    {
-        auto binding = iter->next();
-        if (binding.second == transmitter)
-        {
-            binding.first = (LogType)(logType | binding.first);
-            transmitterExists = true;
-        }
-    }
-
-    if (!transmitterExists)
-        bindings.add(Binding(logType, transmitter));
-}
-
-
-void Logger::unbind(LogType logType, ITransmitter* transmitter)
-{
-    if (transmitter == nullptr)
-        return;
-
-    auto iter = bindings.getIterator();
-    while (iter->hasNext())
-    {
-        auto binding = iter->next();
-        if (binding.second == transmitter)
-            binding.first = (LogType)(~logType & binding.first);
-    }
-}
-
-
-GrowingArray<ITransmitter*> Logger::getTransmitters(LogType logType)
-{
-    auto iter = bindings.getIterator();
-    uint8_t n = 0;
-    while (iter->hasNext())
-        if (iter->next().first == logType) n++;
-
-    auto array = GrowingArray<ITransmitter*>(n);
-
-    iter = bindings.getIterator();
-    while (iter->hasNext())
-        array.add(iter->next().second);
-
-    return array;
 }
