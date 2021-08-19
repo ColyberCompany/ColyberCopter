@@ -86,8 +86,8 @@ namespace Assemble
     namespace PositionAndRotation {
         MadgwickAHRS rotationCalculation;
         //MahonyAHRS rotationCalculation;
-        AltitudeCalculation altitudeCalculation;
-        AHRS ahrs(altitudeCalculation, rotationCalculation);
+        AltitudeCalculation positionCalculation;
+        AHRS ahrs(positionCalculation, rotationCalculation);
     }
 
     namespace Communication {
