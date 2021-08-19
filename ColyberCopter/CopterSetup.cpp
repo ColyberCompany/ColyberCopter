@@ -156,15 +156,13 @@ namespace Instance
 class : public IExecutable
 {
     void execute() override {
-
-        //Serial1.println(Instance::ahrs.getAltitude_m());
-
-        // Serial.println(Instance::tasker.getLoad();
         using Common::Utils::printVector3;
-        
-        //printVector3(Serial, Instance::ahrs.getAngles_deg());
+
+        printVector3(Serial, Instance::ahrs.getAngles_deg());
     }
 } debugTask;
+
+
 
 
 void setupDrone()
@@ -209,6 +207,7 @@ void setupDrone()
 
     debMes.showMessage("Drone setup is complete!");
 }
+
 
 
 void setupFailsafe()
@@ -268,7 +267,7 @@ void addTasksToTasker()
     tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
     tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
-    tasker.addTask_Hz(&debugTask, 10);
+    tasker.addTask_Hz(&debugTask, 50);
 }
 
 
