@@ -28,13 +28,13 @@ namespace Common
 
 
         /**
-         * @brief Calculate altitude relative to some ground level with p0 pressure.
+         * @brief Calculate altitude relative to some point with pressure0 pressure.
+         * @param pressure0 pressure on the ground level (currentPressure and pressure0 have to be in the same unit).
+         * @param currentPressure pressure in your position (currentPressure and pressure0 have to be in the same unit).
          * @param temperature_degC temperature in degrees celsius.
-         * @param currentPressure pressure in your position (p and p0 have to be in the same unit).
-         * @param pressure0 pressure on the ground level (p and p0 have to be in the same unit).
          * @return calculated altitude above ground level.
          */
-        float calculateAltitude(float temperature_degC, float currentPressure, float pressure0);
+        float calculateAltitude(float pressure0, float currentPressure, float temperature_degC);
     }
 }
 
