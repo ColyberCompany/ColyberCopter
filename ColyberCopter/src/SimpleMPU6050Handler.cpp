@@ -51,7 +51,7 @@ Common::vector3Float SimpleMPU6050Handler::get_degPerSec()
 
 float SimpleMPU6050Handler::getTemperature_degC()
 {
-    mpu.getTemperature();
+    return mpu.getTemperature();
 }
 
 
