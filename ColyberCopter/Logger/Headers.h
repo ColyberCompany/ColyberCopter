@@ -8,7 +8,7 @@
 #ifndef HEADERS_H
 #define HEADERS_H
 
-#include "../Enums/LogType.h"
+#include "LogType.h"
 
 
 const char Headers[] = {'B', 'I', 'D', 'E'}; 

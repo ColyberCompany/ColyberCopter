@@ -10,7 +10,7 @@
 #include "Headers.h"
 #include "LogMedium.h"
 #include "../Common/Pair.h"
-#include "../Enums/LogType.h"
+#include "LogType.h"
 #include "../config.h"
 #include <GrowingArray.h>
 #include <ArrayIterator.h>
@@ -53,15 +53,15 @@ private:
     void prepareHeader(Enums::LogType logType);
 
     template <class T>
-    void log(Enums::LogType logType, T item);
+    void log(int logType, T item);
 
     template <class First, class... Args>
-    void log(Enums::LogType logType, First first, Args... args);
+    void log(int logType, First first, Args... args);
 };
 
 
 template <class T>
-void Logger::log(Enums::LogType logType, T item)
+void Logger::log(int logType, T item)
 {
     using SimpleDataStructures::ArrayIterator;
 
@@ -83,7 +83,7 @@ void Logger::log(Enums::LogType logType, T item)
 
 
 template<class First, class... Args>
-void Logger::log(Enums::LogType logType, First first, Args... args)
+void Logger::log(int logType, First first, Args... args)
 {
     addToBuffer(first);
     log(logType, args...);

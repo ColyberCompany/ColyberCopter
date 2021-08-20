@@ -110,7 +110,7 @@ void Logger::addToBuffer(int number)
 }
 
 
-inline void Logger::prepareHeader(LogType logType)
+void Logger::prepareHeader(LogType logType)
 {
     startIndex = LogType::Count;
 
