@@ -190,6 +190,11 @@ void setupDrone()
     addTasksToTasker();
 
 
+    debMes.showMessage("logger");
+    setupLogger();
+    debMes.showMessage(OKText);
+
+
     debMes.showMessage("Failsafe");
     setupFailsafe();
     debMes.showMessage(OKText);
