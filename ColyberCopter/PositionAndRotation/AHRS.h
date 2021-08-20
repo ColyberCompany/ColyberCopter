@@ -42,6 +42,11 @@ public:
         return positionCalculation.getPosition().z;
     }
 
+    void resetAltitude() override
+    {
+        positionCalculation.resetAltitude();
+    }
+
     float getPitch_deg() override
     {
         return rotationCalculation.getAngles_deg().x;

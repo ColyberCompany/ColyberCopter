@@ -30,7 +30,7 @@
 #include "PositionAndRotation/AHRS.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
 #include "PositionAndRotation/RotationCalculation/MahonyAHRS.h"
-#include "PositionAndRotation/PositionCalculation/NoPosCalcTemp.h"
+#include "PositionAndRotation/PositionCalculation/AltitudeCalculation.h"
 // Motors:
 #include "Motors/Motors.h"
 #include "Motors/QuadXMotors.h"
@@ -89,14 +89,14 @@ namespace Assemble
 
     namespace Motors {
         QuadXMotors quadXMotors;
-        //NoMotors noMotors;
+        NoMotors noMotors;
     }
 
     namespace PositionAndRotation {
         MadgwickAHRS rotationCalculation;
         //MahonyAHRS rotationCalculation;
-        NoPosCalcTemp tempNoPosCalc;
-        AHRS ahrs(tempNoPosCalc, rotationCalculation);
+        AltitudeCalculation positionCalculation;
+        AHRS ahrs(positionCalculation, rotationCalculation);
     }
 
     namespace Communication {

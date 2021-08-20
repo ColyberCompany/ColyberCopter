@@ -18,14 +18,15 @@ class AltHoldFlightMode : public FlightMode
 {
     PID altitudeHoldPID;
 
-    float altitudeToHold_cm = 0;
-    float altitudeError_cm = 0;
+    float altitudeToHold_cm = 0.f;
+    uint16_t altHoldThrottle = 500;
 
     static const uint16_t MinOutputThrottle;
     static const uint16_t MaxOutputThrottle;
     static const uint16_t MaxClimbRate_cmPerSec; // also for declining
+    static const uint16_t ThrottleDeadZone;
     
-    static const float ThrottleMultiplier;
+    static const float ThrottleClimbRateMult; // helper var to calculate climb rate from throttle
 
 public:
     AltHoldFlightMode(StabilizeFlightMode& stabilizeFlightMode);
@@ -43,11 +44,18 @@ public:
 private:
     void flightModeLoop(Common::ControlSticks& inputOutputSticks) override;
 
-    void updateAltitudeHolding(Common::ControlSticks& inputOutputSticks);
+    /**
+     * @brief Integrate mapped throttle value to properly change the altitude.
+     * @param throttle Raw throttle value (in range of 0 : 1000).
+     */
     void updateAltitudeToHold(uint16_t throttle);
-    void calculateAltitudeError();
     void setAltitudeToHoldToCurrentReading();
 
+    /**
+     * @brief Calculates altitude increase in cm per second from throttle stick value.
+     * @param throttle Raw throttle value (in range of 0 : 1000).
+     * @return climb rate in cm per second.
+     */
     static float throttleToClimbRate_cmPerSec(uint16_t throttle);
 };
 

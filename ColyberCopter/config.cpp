@@ -38,12 +38,12 @@ namespace Config
     const float HeadHoldPID_kD = 0.97f;
     const uint16_t HeadHoldPID_IMax = 85;
 
-    const float AltHoldPID_kP = 0.f;
+    const float AltHoldPID_kP = 0.5f;
     const float AltHoldPID_kI = 0.f;
-    const float AltHoldPID_kD = 0.f;
+    const float AltHoldPID_kD = 0.5f;
     const uint16_t AltHoldPID_IMax = 0;
 
-    const Common::vector3Int16 AccOffset = {532, 56, -34}; // 533	57	-33
+    const Common::vector3Int16 AccOffset = {67, -5, -14};
     const Common::vector3Int16 GyroOffset = {-142, 124, 5};
-    const Common::vector3Int16 CompassOffset = {-38, -89, -151};// = {-110.50, -58.50, -337.50};
+    const Common::vector3Int16 CompassOffset = {-38, -89, -151};
 }

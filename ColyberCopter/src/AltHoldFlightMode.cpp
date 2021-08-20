@@ -16,8 +16,9 @@ using Common::ControlSticks;
 const uint16_t AltHoldFlightMode::MinOutputThrottle = 300;
 const uint16_t AltHoldFlightMode::MaxOutputThrottle = 700;
 const uint16_t AltHoldFlightMode::MaxClimbRate_cmPerSec = 100; // also for declining
+const uint16_t AltHoldFlightMode::ThrottleDeadZone = 55;
 
-const float AltHoldFlightMode::ThrottleMultiplier = MaxClimbRate_cmPerSec / 500.f;
+const float AltHoldFlightMode::ThrottleClimbRateMult = (float)MaxClimbRate_cmPerSec / (500.f - ThrottleDeadZone);
 
 
 AltHoldFlightMode::AltHoldFlightMode(StabilizeFlightMode& stabilizeFlightMode)
@@ -28,6 +29,8 @@ AltHoldFlightMode::AltHoldFlightMode(StabilizeFlightMode& stabilizeFlightMode)
                        Config::AltHoldPID_kI,
                        Config::AltHoldPID_kD,
                        Config::AltHoldPID_IMax);
+
+    altitudeHoldPID.setupDerivativeLowPassFilter(5.f);
 }
 
 
@@ -57,20 +60,12 @@ const char* AltHoldFlightMode::getName()
 
 void AltHoldFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
 {
-    if (inputOutputSticks.getThrottle() < 80) // TODO: think if this could be checked in a better way then just throttle threshold
-        return;
-    
-    updateAltitudeHolding(inputOutputSticks);
-}
-
-
-void AltHoldFlightMode::updateAltitudeHolding(ControlSticks& inputOutputSticks)
-{
     updateAltitudeToHold(inputOutputSticks.getThrottle());
-    calculateAltitudeError();
 
-    int16_t outputThrottle = altitudeHoldPID.update(altitudeError_cm);
+    int16_t outputThrottle = altHoldThrottle;
+    outputThrottle =+ altitudeHoldPID.update(altitudeToHold_cm, Instance::ahrs.getAltitude_m() * 100.f) + 0.5f;
     outputThrottle = constrain(outputThrottle, MinOutputThrottle, MaxOutputThrottle);
+
     inputOutputSticks.setThrottle(outputThrottle);
 }
 
@@ -78,12 +73,6 @@ void AltHoldFlightMode::updateAltitudeHolding(ControlSticks& inputOutputSticks)
 void AltHoldFlightMode::updateAltitudeToHold(uint16_t throttle)
 {
     altitudeToHold_cm += throttleToClimbRate_cmPerSec(throttle) * Config::MainInterval_s;
-}
-
-
-void AltHoldFlightMode::calculateAltitudeError()
-{
-    altitudeError_cm = altitudeToHold_cm - (Instance::ahrs.getAltitude_m() * 100.f);
 }
 
 
@@ -96,5 +85,11 @@ void AltHoldFlightMode::setAltitudeToHoldToCurrentReading()
 float AltHoldFlightMode::throttleToClimbRate_cmPerSec(uint16_t throttle)
 {
     int16_t centeredThrottle = throttle - Config::ThrottleStickCenter;
-    return centeredThrottle * ThrottleMultiplier;
+
+    if (centeredThrottle > ThrottleDeadZone)
+        return (centeredThrottle - ThrottleDeadZone) * ThrottleClimbRateMult;
+    else if (centeredThrottle < -ThrottleDeadZone)
+        return (centeredThrottle + ThrottleDeadZone) * ThrottleClimbRateMult;
+    else
+        return 0.f;
 }

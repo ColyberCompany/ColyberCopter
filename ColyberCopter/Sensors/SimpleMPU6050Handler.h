@@ -44,7 +44,7 @@ private:
      */
     Common::vector3Float get_degPerSec() override;
 
-    float getTemperature_degC();
+    float getTemperature_degC() override;
 
     /**
      * @brief Reads new data from MPU6050 and perform filtering.
