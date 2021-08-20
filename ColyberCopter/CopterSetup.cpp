@@ -80,7 +80,7 @@ namespace Assemble
 
     namespace Motors {
         QuadXMotors quadXMotors;
-        //NoMotors noMotors;
+        NoMotors noMotors;
     }
 
     namespace PositionAndRotation {
@@ -158,7 +158,7 @@ class : public IExecutable
     void execute() override {
         using Common::Utils::printVector3;
 
-        printVector3(Serial, Instance::ahrs.getAngles_deg());
+        //printVector3(Serial, Instance::ahrs.getAngles_deg());
     }
 } debugTask;
 
