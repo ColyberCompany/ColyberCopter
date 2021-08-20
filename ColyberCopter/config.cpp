@@ -23,14 +23,14 @@ namespace Config
 
     const float TiltExceedingAngleThreshold = 67;
 
-    const float AccLPFCutOffFreq = 5.f;
-    const float GyroLPFCutOffFreq = 10.f;
+    const float AccLPFCutOffFreq = 10.f;
+    //const float GyroLPFCutOffFreq = 10.f;
 
     const uint16_t ThrottleStickCenter = 500;
 
-    const float LevelingPID_kP = 1.75f;
-    const float LevelingPID_kI = 0.1f;
-    const float LevelingPID_kD = 0.47f;
+    const float LevelingPID_kP = 2.85f;
+    const float LevelingPID_kI = 0.f;
+    const float LevelingPID_kD = 0.67f;
     const uint16_t LevelingPID_IMax = 75;
 
     const float HeadHoldPID_kP = 2.24f;
