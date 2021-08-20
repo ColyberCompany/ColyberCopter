@@ -38,9 +38,9 @@ namespace Config
     const float HeadHoldPID_kD = 0.97f;
     const uint16_t HeadHoldPID_IMax = 85;
 
-    const float AltHoldPID_kP = 0.f;
+    const float AltHoldPID_kP = 0.5f;
     const float AltHoldPID_kI = 0.f;
-    const float AltHoldPID_kD = 0.f;
+    const float AltHoldPID_kD = 0.5f;
     const uint16_t AltHoldPID_IMax = 0;
 
     const Common::vector3Int16 AccOffset = {67, -5, -14};
