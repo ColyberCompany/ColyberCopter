@@ -15,10 +15,12 @@ namespace Common
 {
     namespace Consts
     {
-        const float RoundAngle = 360.f;
-        const float StraightAngle = 180.f;
+        inline constexpr float RoundAngle = 360.f;
+        inline constexpr float StraightAngle = 180.f;
 
-        const char* const OKText = "OK";
+        inline constexpr uint16_t ThrottleStickCenter = 500;
+
+        inline const char* const OKText = "OK";
     }
 } 
 

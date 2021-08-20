@@ -2,15 +2,16 @@
  * @file AltHoldFlightMode.cpp
  * @author Jan Wielgus (jan.wielgus12@gmail.com)
  * @date 2021-02-24
- * 
  */
 
 #include "../FlightModes/AltHoldFlightMode.h"
 #include "../Instances/MainInstances.h"
 #include "../config.h"
+#include "../Common/Constants.h"
 
 using Enums::FlightModeTypes;
 using Common::ControlSticks;
+using Common::Consts::ThrottleStickCenter;
 
 
 const uint16_t AltHoldFlightMode::MinOutputThrottle = 300;
@@ -84,7 +85,7 @@ void AltHoldFlightMode::setAltitudeToHoldToCurrentReading()
 
 float AltHoldFlightMode::throttleToClimbRate_cmPerSec(uint16_t throttle)
 {
-    int16_t centeredThrottle = throttle - Config::ThrottleStickCenter;
+    int16_t centeredThrottle = throttle - ThrottleStickCenter;
 
     if (centeredThrottle > ThrottleDeadZone)
         return (centeredThrottle - ThrottleDeadZone) * ThrottleClimbRateMult;
