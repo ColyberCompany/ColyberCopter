@@ -23,12 +23,16 @@ void PacketReceivedCallbacks::flightModeChangeCallback()
 {
     uint8_t newFlightModeType = commData.flightMode;
     Instance::virtualPilot.setFlightMode((Enums::FlightModeTypes)newFlightModeType);
+    // TODO: show result of setting the flight mode in a debug message (maybe show debug message in VirtualPilot)
+
+    // TODO: log flight mode setting result (maybe log flight mode change in VirtualPilot class)
 }
 
 
 void PacketReceivedCallbacks::pidTuningCallback()
 {
     using Assemble::FlightModes::stabilizeFlightMode;
+    using Assemble::FlightModes::altHoldFlightMode;
     using Instance::debMes;
 
     debMes.showMessage("Got new PID. ID:");
@@ -59,7 +63,15 @@ void PacketReceivedCallbacks::pidTuningCallback()
                                                        commData.pidTuning.kI,
                                                        commData.pidTuning.kD,
                                                        commData.pidTuning.iMax);
-    }
+            break;
+
+        case 2: // altHold
+            altHoldFlightMode.setAltHoldPIDGains(commData.pidTuning.kP,
+                                                 commData.pidTuning.kI,
+                                                 commData.pidTuning.kD,
+                                                 commData.pidTuning.iMax);
+            break;
+}
 }
 
 

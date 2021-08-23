@@ -13,47 +13,62 @@ SimpleMPU6050Handler::SimpleMPU6050Handler()
 }
 
 
-bool SimpleMPU6050Handler::initialize()
+bool SimpleMPU6050Handler::initSensor()
 {
-    if (sensorInitialized_flag)
+    if (Accelerometer::isInitialized() || Gyroscope::isInitialized())
         return true;
 
-    if (sensorInitialized_flag = SimpleMPU6050::initialize())
-    {
-        config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
-        SimpleMPU6050::enableCompassBypass();
-    }
+    using Config::AccOffset;
+    using Config::GyroOffset;
 
-    return sensorInitialized_flag;
+    bool initResult = mpu.initialize();
+    config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
+    mpu.setAccOffset(AccOffset.x, AccOffset.y, AccOffset.z);
+    mpu.setGyroOffset(GyroOffset.x, GyroOffset.y, GyroOffset.z);
+    mpu.enableCompassBypass();
+
+    return initResult;
 }
 
 
-Common::vector3Float SimpleMPU6050Handler::getNormalizedAcceleration()
+const char* SimpleMPU6050Handler::getName()
 {
-    return accNormFiltered;
+    return "mpu6050";
 }
 
 
-Common::vector3Float SimpleMPU6050Handler::getNormalizedRotation()
+Common::vector3Float SimpleMPU6050Handler::get_norm()
 {
-    return gyroNormFiltered;
+    return accFiltered;
+}
+
+
+Common::vector3Float SimpleMPU6050Handler::get_degPerSec()
+{
+    return gyroFiltered;
+}
+
+
+float SimpleMPU6050Handler::getTemperature_degC()
+{
+    return mpu.getTemperature();
 }
 
 
 void SimpleMPU6050Handler::execute()
 {
-    SimpleMPU6050::readRawData();
+    mpu.readRawData();
 
-    auto accNorm = SimpleMPU6050::getNormalizedAcceleration();
-    // accNormFiltered = Common::vector3Float(accNorm.x, accNorm.y, accNorm.z); // version without lpf filter
-    accNormFiltered = Common::vector3Float(
+    auto accNorm = mpu.getNormalizedAcceleration();
+    // accFiltered = Common::vector3Float(accNorm.x, accNorm.y, accNorm.z); // version without lpf filter
+    accFiltered = Common::vector3Float(
         accLPF.x.update(accNorm.x),
         accLPF.y.update(accNorm.y),
         accLPF.z.update(accNorm.z)
     );
 
-    auto gyroNorm = SimpleMPU6050::getNormalizedRotation();
-    gyroNormFiltered = Common::vector3Float(gyroNorm.x, gyroNorm.y, gyroNorm.z);
+    auto gyroNorm = mpu.getNormalizedRotation();
+    gyroFiltered = Common::vector3Float(gyroNorm.x, gyroNorm.y, gyroNorm.z);
 }
 
 
@@ -62,62 +77,4 @@ void SimpleMPU6050Handler::config3AxisLPF(ThreeAxesLPF& lpf, float cutoffFreq)
     lpf.x.reconfigureFilter(cutoffFreq, Config::MainInterval_s);
     lpf.y.reconfigureFilter(cutoffFreq, Config::MainInterval_s);
     lpf.z.reconfigureFilter(cutoffFreq, Config::MainInterval_s);
-}
-
-
-MPU6050Acc::MPU6050Acc(SimpleMPU6050Handler& simpleMPU6050Handler)
-    : mpu(simpleMPU6050Handler)
-{
-}
-
-
-bool MPU6050Acc::initSensor()
-{
-    using Config::AccOffset;
-
-    bool result = mpu.initialize();
-    mpu.setAccOffset(AccOffset.x, AccOffset.y, AccOffset.z);
-
-    return result;
-}
-
-
-const char* MPU6050Acc::getName()
-{
-    return "mpu6050 acc";
-}
-
-
-Common::vector3Float MPU6050Acc::get_norm()
-{
-    return mpu.getNormalizedAcceleration();
-}
-
-
-MPU6050Gyro::MPU6050Gyro(SimpleMPU6050Handler& simpleMPU6050Handler)
-    : mpu(simpleMPU6050Handler)
-{
-}
-
-
-bool MPU6050Gyro::initSensor()
-{
-    using Config::GyroOffset;
-
-    bool result = mpu.initialize();
-    mpu.setGyroOffset(GyroOffset.x, GyroOffset.y, GyroOffset.z);
-
-    return result;
-}
-
-
-const char* MPU6050Gyro::getName()
-{
-    return "mpu6050 gyro";
-}
-
-
-Common::vector3Float MPU6050Gyro::get_degPerSec()
-{
-    return mpu.getNormalizedRotation();
 }

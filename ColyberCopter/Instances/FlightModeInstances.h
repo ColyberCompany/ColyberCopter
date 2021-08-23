@@ -10,6 +10,7 @@
 #define FLIGHTMODEINSTANCES_H
 
 #include "../FlightModes/StabilizeFlightMode.h"
+#include "../FlightModes/AltHoldFlightMode.h"
 
 
 namespace Assemble
@@ -17,6 +18,7 @@ namespace Assemble
     namespace FlightModes {
         //extern UnarmedFlightMode unarmedFlightMode;
         extern StabilizeFlightMode stabilizeFlightMode;
+        extern AltHoldFlightMode altHoldFlightMode;
     }
 }
 

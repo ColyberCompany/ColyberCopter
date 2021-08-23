@@ -11,6 +11,8 @@
 
 #include <IExecutable.h>
 #include "Instances/MainInstances.h" // Exemption: this header file can include Instances, because only CopterSetup.h includes this file.
+#include "Communication/CommData.h"
+#include "Communication/DataPackets.h"
 
 
 namespace Tasks
@@ -32,6 +34,25 @@ namespace Tasks
             Instance::pilotPacketComm.receive();
         }
     } rmtCtrlReceiving;
+
+
+
+    class : public IExecutable
+    {
+        void execute() override
+        {
+            auto angles = Instance::ahrs.getAngles_deg();
+            commData.drone.pitchAngle_deg = angles.x;
+            commData.drone.rollAngle_deg = angles.y;
+            commData.drone.heading_deg = angles.z;
+            commData.drone.altitude_cm = Instance::ahrs.getAltitude_m();
+            commData.drone.longitude = Instance::ahrs.getLongitude_deg();
+            commData.drone.latitude = Instance::ahrs.getLatitude_deg();
+            commData.drone.connectionStability = Instance::pilotPacketComm.getConnectionStability();
+
+            Instance::pilotPacketComm.send(&DataPackets::droneMeasurementsAndState);
+        }
+    } rmtCtrlSendingDroneData;
     
 
 

@@ -12,23 +12,26 @@
 #include <Tasker.h>
 #include "Tasks.h"
 #include "Common/Constants.h"
+#include "Common/Utils.h"
 // Failsafe:
 #include "Failsafe/FailsafeManager.h"
 #include "Failsafe/FailsafeActions/DisarmMotors.h"
 #include "Failsafe/FailsafeScenarios/CommunicationLost.h"
 #include "Failsafe/FailsafeScenarios/TiltExceeding.h"
 // Flight modes:
-#include "FlightModes/StabilizeFlightMode.h"
 #include "FlightModes/UnarmedFlightMode.h"
+#include "FlightModes/StabilizeFlightMode.h"
+#include "FlightModes/AltHoldFlightMode.h"
 #include "VirtualPilot.h"
 // Position and rotation calculation:
 #include "PositionAndRotation/AHRS.h"
-#include "PositionAndRotation/RotationCalculation/MadgwickIMU.h"
 #include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
-#include "PositionAndRotation/PositionCalculation/NoPosCalcTemp.h"
+#include "PositionAndRotation/RotationCalculation/MahonyAHRS.h"
+#include "PositionAndRotation/PositionCalculation/AltitudeCalculation.h"
 // Motors:
 #include "Motors/Motors.h"
 #include "Motors/QuadXMotors.h"
+#include "Motors/NoMotors.h"
 // Communication:
 #include <StreamComm.h>
 #include <PacketCommunication.h>
@@ -43,10 +46,12 @@
 #include "Sensors/Base/Barometer.h"
 #include "Sensors/Base/GPS.h"
 #include "Sensors/Base/Rangefinder.h"
+#include "Sensors/Base/TemperatureSensor.h"
 #include "Sensors/NoSensor.h"
 // Sensors:
 #include "Sensors/SimpleMPU6050Handler.h"
 #include "Sensors/SimpleHMC5883LHandler.h"
+#include "Sensors/SimpleMS5611Handler.h"
 
 using namespace Interfaces;
 
@@ -75,12 +80,14 @@ namespace Assemble
 
     namespace Motors {
         QuadXMotors quadXMotors;
+        NoMotors noMotors;
     }
 
     namespace PositionAndRotation {
-        MadgwickIMU madgwickIMU(Config::MainFrequency_Hz); // or MadgwickAHRS
-        NoPosCalcTemp tempNoPosCalc;
-        AHRS ahrs(tempNoPosCalc, madgwickIMU);
+        MadgwickAHRS rotationCalculation;
+        //MahonyAHRS rotationCalculation;
+        AltitudeCalculation positionCalculation;
+        AHRS ahrs(positionCalculation, rotationCalculation);
     }
 
     namespace Communication {
@@ -88,19 +95,18 @@ namespace Assemble
         PacketComm::PacketCommunication rmtPacketComm(&rmtCtrlCommStream); // Remote comm instance
     }
 
-
     namespace FlightModes {
         UnarmedFlightMode unarmedFlightMode;
         StabilizeFlightMode stabilizeFlightMode;
+        AltHoldFlightMode altHoldFlightMode(stabilizeFlightMode);
     }
 
     VirtualPilot virtualPilotInstance(FlightModes::unarmedFlightMode);
 
     namespace Sensors {
         SimpleMPU6050Handler simpleMPU6050Handler;
-        MPU6050Acc mpu6050Acc(simpleMPU6050Handler);
-        MPU6050Gyro mpu6050Gyro(simpleMPU6050Handler);
         SimpleHMC5883LHandler simpleHMC5883LHandler;
+        SimpleMS5611Handler simpleMS5611Handler;
         // other sensors..
         NoSensor noSensor;
     }
@@ -132,12 +138,12 @@ namespace Instance
 
 // SensorInstances:
     using Assemble::Sensors::noSensor;
-    Accelerometer& acc = Assemble::Sensors::mpu6050Acc;
-    Gyroscope& gyro = Assemble::Sensors::mpu6050Gyro;
+    Accelerometer& acc = Assemble::Sensors::simpleMPU6050Handler;
+    Gyroscope& gyro = Assemble::Sensors::simpleMPU6050Handler;
     Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
-    //Barometer& baro = noSensor; // TODO: this should not compile
+    Barometer& baro = Assemble::Sensors::simpleMS5611Handler;
+    TemperatureSensor& temperature = Assemble::Sensors::simpleMPU6050Handler;
 
-    // Sensor& baro = noSensor;
     // Sensor& gps = noSensor;
     // Sensor& btmRangefinder = noSensor;
 
@@ -150,9 +156,9 @@ namespace Instance
 class : public IExecutable
 {
     void execute() override {
-        // Serial1.print(Instance::ahrs.getPitch_deg());
-        // Serial1.print('\t');
-        // Serial1.println(Instance::ahrs.getRoll_deg());
+        using Common::Utils::printVector3;
+
+        //printVector3(Serial, Instance::ahrs.getAngles_deg());
     }
 } debugTask;
 
@@ -224,7 +230,7 @@ void initializeSensors()
     initSensor(&Instance::acc);
     initSensor(&Instance::gyro);
     initSensor(&Instance::magn);
-    //initSensor(&Instance::baro);
+    initSensor(&Instance::baro);
     //initSensor(&Instance::gps);
     //initSensor(&Instance::btmRangefinder);
     // new sensors goes here...
@@ -239,6 +245,7 @@ void setupFlightModes()
 {
     Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::unarmedFlightMode);
     Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::stabilizeFlightMode); // TODO: think whether to pass flight modes by reference
+    Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::altHoldFlightMode);
     // add other flight modes...
 
     Instance::virtualPilot.initializeFlightModes();
@@ -259,7 +266,9 @@ void addTasksToTasker()
 
     tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
+    tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
+    tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
     tasker.addTask_Hz(&debugTask, 50);
 }
 

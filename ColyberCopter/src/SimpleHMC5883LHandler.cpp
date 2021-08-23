@@ -5,6 +5,7 @@
  */
 
 #include "../Sensors/SimpleHMC5883LHandler.h"
+#include "../config.h"
 
 
 SimpleHMC5883LHandler::SimpleHMC5883LHandler()
@@ -14,7 +15,12 @@ SimpleHMC5883LHandler::SimpleHMC5883LHandler()
 
 bool SimpleHMC5883LHandler::initSensor()
 {
-    return compass.initialize();
+    using Config::CompassOffset;
+
+    bool initResult = compass.initialize();
+    compass.setCompassOffset(CompassOffset.x, CompassOffset.y, CompassOffset.z);
+
+    return initResult;
 }
 
 

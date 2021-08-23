@@ -19,23 +19,29 @@ namespace Config
 
     const uint16_t RmtCtrlReceivingFrequency_Hz = 220;
 
-    const uint8_t MaxTaskerTasks = 15;
+    const uint8_t MaxTaskerTasks = 25;
 
     const float TiltExceedingAngleThreshold = 67;
 
-    const float AccLPFCutOffFreq = 5.f;
-    const float GyroLPFCutOffFreq = 10.f;
+    const float AccLPFCutOffFreq = 10.f;
+    //const float GyroLPFCutOffFreq = 10.f;
 
-    const float LevelingPID_kP = 1.75f;
-    const float LevelingPID_kI = 0.1f;
-    const float LevelingPID_kD = 0.47f;
-    const uint16_t LevelingPID_IMax = 75;
+    const float LevelingPID_kP = 2.85f;
+    const float LevelingPID_kI = 1.4f;
+    const float LevelingPID_kD = 0.67f;
+    const uint16_t LevelingPID_IMax = 90;
 
     const float HeadHoldPID_kP = 2.24f;
     const float HeadHoldPID_kI = 1.11f;
     const float HeadHoldPID_kD = 0.97f;
     const uint16_t HeadHoldPID_IMax = 85;
 
-    const Common::vector3Int16 AccOffset = {411, 16, -38};
-    const Common::vector3Int16 GyroOffset = {-137, 127, -5};
+    const float AltHoldPID_kP = 0.4f;
+    const float AltHoldPID_kI = 0.2f;
+    const float AltHoldPID_kD = 0.5f;
+    const uint16_t AltHoldPID_IMax = 100;
+
+    const Common::vector3Int16 AccOffset = {67, -5, -14};
+    const Common::vector3Int16 GyroOffset = {-142, 124, 5};
+    const Common::vector3Int16 CompassOffset = {-38, -89, -151};
 }

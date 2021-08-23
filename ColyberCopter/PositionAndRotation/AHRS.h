@@ -24,17 +24,8 @@ private:
     Interfaces::IRotationCalculation& rotationCalculation;
 
 public:
-    AHRS(Interfaces::IPositionCalculation& _positionCalculation, Interfaces::IRotationCalculation& _rotationCalculation)
-        : positionCalculation(_positionCalculation), rotationCalculation(_rotationCalculation)
-    {
-    }
-
-    void execute() override
-    {
-        // update rotation calculation first, because position calculation could use rotation
-        rotationCalculation.updateRotationCalculation();
-        positionCalculation.updatePositionCalculation();
-    }
+    AHRS(Interfaces::IPositionCalculation& _positionCalculation, Interfaces::IRotationCalculation& _rotationCalculation);
+    void execute() override;
 
     double getLongitude_deg() override
     {
@@ -49,6 +40,11 @@ public:
     float getAltitude_m() override
     {
         return positionCalculation.getPosition().z;
+    }
+
+    void resetAltitude() override
+    {
+        positionCalculation.resetAltitude();
     }
 
     float getPitch_deg() override
@@ -66,6 +62,11 @@ public:
         return rotationCalculation.getAngles_deg().z;
     }
 
+    Common::Quaternion getQuaternion() override
+    {
+        return rotationCalculation.getQuaternion();
+    }
+
     Common::vector3Float getAngles_deg() override
     {
         return rotationCalculation.getAngles_deg();
@@ -75,6 +76,8 @@ public:
     {
         return positionCalculation.getPosition();
     }
+
+    Common::vector3Float getAbsoluteAcceleration() override;
 };
 
 
