@@ -21,7 +21,7 @@ class TinyGPSAdapter: public GPS, public IExecutable
     Stream& gpsSerial;
 
 public:
-    TinyGPSAdapter(Stream& gpsSerial);
+    TinyGPSAdapter(Stream* gpsSerial);
 
     bool initSensor() override;
     bool isOperating() const override;

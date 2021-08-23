@@ -107,7 +107,7 @@ namespace Assemble
         SimpleMPU6050Handler simpleMPU6050Handler;
         SimpleHMC5883LHandler simpleHMC5883LHandler;
         SimpleMS5611Handler simpleMS5611Handler;
-        TinyGPSAdapter tinyGPSAdapter(Serial3);
+        TinyGPSAdapter tinyGPSAdapter(&Serial3);
         // other sensors..
         NoSensor noSensor;
     }

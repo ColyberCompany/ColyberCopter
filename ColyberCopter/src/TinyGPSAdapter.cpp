@@ -8,8 +8,8 @@
 #include "../Enums/BaudRateTypes.h"
 
 
-TinyGPSAdapter::TinyGPSAdapter(Stream& _gpsSerial)
-    : gpsSerial(_gpsSerial)
+TinyGPSAdapter::TinyGPSAdapter(Stream* _gpsSerial)
+    : gpsSerial(*_gpsSerial)
 {
 }
 
