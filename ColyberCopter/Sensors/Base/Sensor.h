@@ -11,6 +11,10 @@
 
 #include "../../Enums/SensorTypes.h"
 
+#ifdef ARDUINO
+    #include <Arduino.h>
+#endif
+
 
 class Sensor
 {
