@@ -53,6 +53,8 @@
 #include "Sensors/SimpleHMC5883LHandler.h"
 #include "Sensors/SimpleMS5611Handler.h"
 
+#include "KalmanFilter.h"
+
 using namespace Interfaces;
 
 
@@ -155,10 +157,21 @@ namespace Instance
 
 class : public IExecutable
 {
+    uint16_t cnt = 1000;        // po 5s reset p0
+    KalmanFilter kalman = KalmanFilter(0.1f, // błąd pomiaru wysokości - +- 10cm
+                        0.2f,  // błąd pomiaru przyspieszenie bezwzględnego - +- 20 cm/s^2
+                        0.1f, 0.1f, 0.1f, // trzy parametry na pałe
+                        0.005);  //deltaT = 5ms, bo debugTask ma f= 200Hz
     void execute() override {
-        using Common::Utils::printVector3;
+        float altitude = kalman.update(Instance::ahrs.getAltitude_m(), /* tu może być minus */ Instance::ahrs.getAbsoluteAcceleration().z);
+        Serial1.println(altitude);
 
-        printVector3(Serial, Instance::ahrs.getAngles_deg());
+        if (cnt >= 0)
+        {
+            if (cnt == 0)
+                Instance::ahrs.resetAltitude();
+            cnt--;
+        }
     }
 } debugTask;
 
@@ -267,7 +280,7 @@ void addTasksToTasker()
     tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
     tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
-    tasker.addTask_Hz(&debugTask, 50);
+    tasker.addTask_Hz(&debugTask, 200);
 }
 
 

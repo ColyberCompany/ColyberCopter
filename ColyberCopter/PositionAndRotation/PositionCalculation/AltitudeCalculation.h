@@ -16,14 +16,15 @@
 class AltitudeCalculation : public Interfaces::IPositionCalculation
 {
     float altitude_m;
-    float p0_hPa = 1023;
+    float p0_hPa = 983.11f;
     float p_hPa;
-    float T_C = 15.f;
+    float T_C = 22.7f;
 public:
     void updatePositionCalculation() override
     {
         p_hPa = Instance::baro.getPressure_hPa();
-        altitude_m = Common::Utils::calculateAltitude(T_C, p_hPa, p0_hPa);
+        T_C = Instance::temperature.getTemperature_degC();
+        altitude_m = Common::Utils::calculateAltitude(p0_hPa, p_hPa, T_C);
     }
 
     Common::vector3Double getPosition() override
