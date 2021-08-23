@@ -52,9 +52,9 @@
 #include "Sensors/SimpleMPU6050Handler.h"
 #include "Sensors/SimpleHMC5883LHandler.h"
 #include "Sensors/SimpleMS5611Handler.h"
+#include "Sensors/TinyGPSAdapter.h"
 
 using namespace Interfaces;
-
 
 // Setup functions
 void addTasksToTasker();
@@ -70,7 +70,7 @@ bool initSensor(Sensor* sensorToInit);
 // https://github.com/stm32duino/wiki/wiki/API#hardwareserial
 //HardwareSerial Serial1(PA10, PA9); // Serial1 is compiling, but I don't know on which pins
 HardwareSerial Serial2(PA3, PA2);
-//HardwareSerial Serial3(PB11, PB10);
+HardwareSerial Serial3(PB11, PB10);
 
 
 namespace Assemble
@@ -107,6 +107,7 @@ namespace Assemble
         SimpleMPU6050Handler simpleMPU6050Handler;
         SimpleHMC5883LHandler simpleHMC5883LHandler;
         SimpleMS5611Handler simpleMS5611Handler;
+        TinyGPSAdapter tinyGPSAdapter(Serial3);
         // other sensors..
         NoSensor noSensor;
     }
@@ -143,9 +144,9 @@ namespace Instance
     Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
     Barometer& baro = Assemble::Sensors::simpleMS5611Handler;
     TemperatureSensor& temperature = Assemble::Sensors::simpleMPU6050Handler;
+    GPS& gps = Assemble::Sensors::tinyGPSAdapter;
 
-    // Sensor& gps = noSensor;
-    // Sensor& btmRangefinder = noSensor;
+    //Rangefinder& btmRangefinder = noSensor;
 
 // MotorsInstance:
     Motors& motors = Assemble::Motors::quadXMotors;
@@ -223,7 +224,7 @@ void initializeSensors()
     Wire.begin();
     delay(100);
     
-    //Serial3.begin(Enums::BAUD_9600);
+    Serial3.begin(Enums::BAUD_9600);
 
 
     // TODO: make a list from sensors and add enum with sensor types
@@ -231,7 +232,7 @@ void initializeSensors()
     initSensor(&Instance::gyro);
     initSensor(&Instance::magn);
     initSensor(&Instance::baro);
-    //initSensor(&Instance::gps);
+    initSensor(&Instance::gps);
     //initSensor(&Instance::btmRangefinder);
     // new sensors goes here...
     

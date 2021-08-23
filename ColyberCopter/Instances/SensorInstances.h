@@ -25,6 +25,7 @@ namespace Instance
     extern Magnetometer& magn;
     extern Barometer& baro;
     extern TemperatureSensor& temperature;
+    extern GPS& gps;
     // extern other sensors...
 }
 

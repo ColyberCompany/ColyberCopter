@@ -2,9 +2,7 @@
  * @file TinyGPSAdapter.h
  * @author Antoni Wielgus
  * @date 2021-07-05
- * 
  */
-
 
 #include "../Sensors/TinyGPSAdapter.h"
 #include "../Enums/BaudRateTypes.h"
@@ -15,10 +13,12 @@ TinyGPSAdapter::TinyGPSAdapter(Stream& _gpsSerial)
 {
 }
 
+
 bool TinyGPSAdapter::initSensor()
 {
     return true;
 }
+
 
 bool TinyGPSAdapter::isOperating() const
 {
@@ -30,30 +30,36 @@ bool TinyGPSAdapter::isOperating() const
     return false;
 }
 
+
 const char* TinyGPSAdapter::getName()
 {
     return "GPS";
 }
+
 
 double TinyGPSAdapter::getLatitude_deg()
 {
     return gps.location.lat();
 }
 
+
 double TinyGPSAdapter::getLongitude_deg()
 {
     return gps.location.lng();
 }
+
 
 uint16_t TinyGPSAdapter::getSattelitesAmt()
 {
     return gps.satellites.value();
 }
 
+
 float TinyGPSAdapter::getSpeed_kmph()
 {
     return gps.speed.kmph();
 }
+
 
 void TinyGPSAdapter::execute()
 {
