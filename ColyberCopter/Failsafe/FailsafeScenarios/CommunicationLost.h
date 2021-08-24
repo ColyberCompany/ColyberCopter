@@ -11,10 +11,7 @@
 #define COMMUNICATIONLOST_H
 
 #include "FailsafeScenario.h"
-
-#ifdef ARDUINO
-    #include <Arduino.h>
-#endif
+#include <cstdint>
 
 
 namespace FailsafeScenarios
