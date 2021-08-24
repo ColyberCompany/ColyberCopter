@@ -82,7 +82,7 @@ namespace Assemble
 
     namespace Motors {
         QuadXMotors quadXMotors;
-        //NoMotors noMotors;
+        NoMotors noMotors;
     }
 
     namespace PositionAndRotation {
