@@ -10,7 +10,9 @@
 SimpleMS5611Handler::SimpleMS5611Handler()
     : pressureFilter(PressurePerTemperatureRequests + 1)
 {
-
+    // Initialize average filter with initial averate of 1000 mbar
+    for (uint8_t i = 0; i < PressurePerTemperatureRequests + 1; ++i)
+        pressureFilter.update(1000.f);
 }
 
 
@@ -66,6 +68,10 @@ void SimpleMS5611Handler::execute()
 
 void SimpleMS5611Handler::updateSmoothPressure()
 {
+    // At the beginning pressure is negative for a moment
+    if (pressure_mbar < 0)
+        pressure_mbar = 0;
+
     float newPresure_mbar = pressureFilter.update(pressure_mbar);
 
     if (abs(smoothPressure_mbar - newPresure_mbar) > 1)
