@@ -164,7 +164,9 @@ class : public IExecutable
                         0.005);  //deltaT = 5ms, bo debugTask ma f= 200Hz
     void execute() override {
         float altitude = kalman.update(Instance::ahrs.getAltitude_m(), /* tu może być minus */ Instance::ahrs.getAbsoluteAcceleration().z);
-        Serial1.println(altitude);
+        Serial1.print(Instance::ahrs.getAltitude_m() * 100);
+        Serial1.print('\t');
+        Serial1.println(altitude*100);
 
         if (cnt >= 0)
         {

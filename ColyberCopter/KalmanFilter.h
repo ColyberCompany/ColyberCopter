@@ -80,6 +80,9 @@ public:
 
     float update(float measuredAltitude_m, float measuredAcceleration_mps2)
     {
+        altitudeMeasured = measuredAltitude_m;
+        accelerationMeasured = measuredAcceleration_mps2;
+
         altitudeEstimated = altitudePredicted + altitudeKalmanGain * (altitudeMeasured - altitudePredicted);
         velocityEstimated = velocityPredicted;
         accelerationEstimated = accelerationPredicted + accelerationKalmanGain * (accelerationMeasured - accelerationPredicted);
