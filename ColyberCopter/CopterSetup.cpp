@@ -154,19 +154,19 @@ namespace Instance
 }
 
 
-
 class : public IExecutable
 {
     uint16_t cnt = 1000;        // po 5s reset p0
     KalmanFilter kalman = KalmanFilter(0.1f, // błąd pomiaru wysokości - +- 10cm
                         0.2f,  // błąd pomiaru przyspieszenie bezwzględnego - +- 20 cm/s^2
                         0.1f, 0.1f, 0.1f, // trzy parametry na pałe
-                        0.005);  //deltaT = 5ms, bo debugTask ma f= 200Hz
+                        Config::MainInterval_s);
+
     void execute() override {
-        float altitude = kalman.update(Instance::ahrs.getAltitude_m(), /* tu może być minus */ Instance::ahrs.getAbsoluteAcceleration().z);
-        Serial1.print(Instance::ahrs.getAltitude_m() * 100);
+        float altitude = kalman.update(Instance::ahrs.getAltitude_m(), /* tu może być minus */ (Instance::ahrs.getAbsoluteAcceleration().z * 9.81f - 9.81f));
+        Serial1.print(Instance::ahrs.getAltitude_m());
         Serial1.print('\t');
-        Serial1.println(altitude*100);
+        Serial1.println(altitude);
 
         if (cnt >= 0)
         {
@@ -175,6 +175,19 @@ class : public IExecutable
             cnt--;
         }
     }
+} kalmanTestTask;
+
+
+
+class : public IExecutable
+{
+    
+    void execute() override {
+        using Common::Utils::printVector3;
+
+        //printVector3(Serial1, Instance::ahrs.getAngles_deg());
+    }
+
 } debugTask;
 
 
@@ -271,6 +284,7 @@ void addTasksToTasker()
 
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::PositionAndRotation::ahrs);
+    /* kalman test */ Assemble::TaskGroups::mainFrequency.addTask(&kalmanTestTask);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
     tasker.addTask_Hz(&Assemble::TaskGroups::mainFrequency, Config::MainFrequency_Hz);
 
@@ -282,7 +296,7 @@ void addTasksToTasker()
     tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
     tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
-    tasker.addTask_Hz(&debugTask, 200);
+    tasker.addTask_Hz(&debugTask, 50);
 }
 
 
