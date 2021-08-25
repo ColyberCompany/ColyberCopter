@@ -13,6 +13,9 @@
 #include "Tasks.h"
 #include "Common/Constants.h"
 #include "Common/Utils.h"
+// Logging:
+#include "Logger/Logger.h"
+#include "Logger/StreamMedium.h"
 // Failsafe:
 #include "Failsafe/FailsafeManager.h"
 #include "Failsafe/FailsafeActions/DisarmMotors.h"
@@ -58,6 +61,7 @@ using namespace Interfaces;
 
 // Setup functions
 void addTasksToTasker();
+void setupLogger();
 void setupFailsafe();
 void initializeSensors();
 void setupFlightModes();
@@ -77,6 +81,11 @@ namespace Assemble
 {
     Tasker tasker(Config::MaxTaskerTasks);
     SerialDebugMessenger serialDebugMessenger(Serial1);
+
+    namespace Logging {
+        Logger logger;
+        StreamMedium streamMedium(&Serial1);
+    }
 
     namespace Motors {
         QuadXMotors quadXMotors;
@@ -134,6 +143,7 @@ namespace Instance
     PacketComm::PacketCommunication& pilotPacketComm = Assemble::Communication::rmtPacketComm;
     FailsafeManager& failsafeManager = Assemble::Failsafe::failsafeManager;
     DebugMessenger& debMes = Assemble::serialDebugMessenger;
+    Logger& logger = Assemble::Logging::logger;
 
 
 // SensorInstances:
@@ -159,6 +169,8 @@ class : public IExecutable
         using Common::Utils::printVector3;
 
         //printVector3(Serial, Instance::ahrs.getAngles_deg());
+
+        Instance::logger.info("Test");
     }
 } debugTask;
 
@@ -176,6 +188,11 @@ void setupDrone()
 
 
     addTasksToTasker();
+
+
+    debMes.showMessage("logger");
+    setupLogger();
+    debMes.showMessage(OKText);
 
 
     debMes.showMessage("Failsafe");
@@ -269,6 +286,16 @@ void addTasksToTasker()
     tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
     tasker.addTask_Hz(&debugTask, 50);
 }
+
+
+void setupLogger()
+{
+    using Instance::logger;
+    using Enums::LogType;
+
+    logger.bind(LogType::Base, &Assemble::Logging::streamMedium);
+}
+
 
 
 void setupCommunication()

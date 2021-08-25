@@ -10,13 +10,13 @@
 #ifndef MAININSTANCES_H
 #define MAININSTANCES_H
 
-// TODO: set the order of include files
-#include <Tasker.h>
 #include "../Interfaces/IAHRS.h"
 #include "../Interfaces/IVirtualPilot.h"
-#include <PacketCommunication.h>
 #include "../Failsafe/FailsafeManager.h"
 #include "../Debug/DebugMessenger.h"
+#include "../Logger/Logger.h"
+#include <Tasker.h>
+#include <PacketCommunication.h>
 
 namespace Instance
 {
@@ -30,6 +30,7 @@ namespace Instance
 
     extern FailsafeManager& failsafeManager;
     extern DebugMessenger& debMes;
+    extern Logger& logger;
 }
 
 
