@@ -34,16 +34,19 @@ private:
     bool initSensor() override;
     const char* getName() override;
 
-    /**
-     * @brief Accelerometer data.
-     */
+    // Accelerometer interface
     Common::vector3Float get_norm() override;
+    float getX_norm() override;
+    float getY_norm() override;
+    float getZ_norm() override;
 
-    /**
-     * @brief Gyroscope data.
-     */
+    // Gyroscope interface
     Common::vector3Float get_degPerSec() override;
+    float getX_degPerSec() override;
+    float getY_degPerSec() override;
+    float getZ_degPerSec() override;
 
+    // Temperature sensor interface
     float getTemperature_degC() override;
 
     /**
@@ -56,7 +59,7 @@ private:
      * @param lpf Vector of filters to setup.
      * @param cutoffFreq It's cutoff frequency.
      */
-    void config3AxisLPF(ThreeAxesLPF& lpf, float cutoffFreq);
+    static void config3AxisLPF(ThreeAxesLPF& lpf, float cutoffFreq);
 };
 
 
