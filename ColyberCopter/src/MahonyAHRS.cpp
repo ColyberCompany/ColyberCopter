@@ -23,18 +23,25 @@ MahonyAHRS::MahonyAHRS()
 void MahonyAHRS::updateRotationCalculation()
 {
     auto acc = Instance::acc.get_norm();
-	auto gyro = Instance::gyro.get_degPerSec();
-	auto mag = Instance::magn.get_norm();
+	auto gyro = Instance::gyro.get_radPerSec();
 
-	mahonyAHRSUpdate(
-		gyro.x * 0.0174533f, // in rad_per_sec
-		gyro.y * 0.0174533f, // in rad_per_sec
-		gyro.z * 0.0174533f, // in rad_per_sec
-		acc.x * 9.81f,
-        acc.y * 9.81f,
-        acc.z * 9.81f,
-		mag.x, mag.y, mag.z
-	);
+	if (Instance::magn.isOperating())
+	{
+		auto mag = Instance::magn.get_norm();
+
+		mahonyAHRSUpdate(
+			gyro.x, gyro.y, gyro.z, // in rad_per_sec
+			acc.x, acc.y, acc.z,
+			mag.x, mag.y, mag.z
+		);
+	}
+	else
+	{
+		mahonyAHRSUpdateIMU(
+			gyro.x, gyro.y, gyro.z, // in rad_per_sec
+			acc.x, acc.y, acc.z
+		);
+	}
 }
 
 
