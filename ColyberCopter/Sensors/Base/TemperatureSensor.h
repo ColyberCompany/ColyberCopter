@@ -22,6 +22,10 @@ public:
     virtual ~TemperatureSensor() {}
 
     virtual float getTemperature_degC() = 0;
+
+    float getTemperature_K() {
+        return getTemperature_degC() * 273.15f;
+    }
 };
 
 

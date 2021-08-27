@@ -8,9 +8,7 @@
 #ifndef VECTOR3_H
 #define VECTOR3_H
 
-#ifdef ARDUINO
-    #include <Arduino.h>
-#endif
+#include <cstdint>
 
 
 namespace Common

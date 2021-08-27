@@ -70,7 +70,7 @@ void SimpleMS5611Handler::updateSmoothPressure()
 {
     // At the beginning pressure is negative for a moment
     if (pressure_mbar < 0)
-        pressure_mbar = 0;
+        return;
 
     float newPresure_mbar = pressureFilter.update(pressure_mbar);
 

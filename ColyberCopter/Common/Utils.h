@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include "Vector3.h"
+#include <Arduino.h>
 
 namespace Common
 {

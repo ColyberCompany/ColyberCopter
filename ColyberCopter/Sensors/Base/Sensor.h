@@ -56,8 +56,8 @@ public:
     }
 
     /**
-     * @brief Check if sensor is currently updating new measurements in sensorsMediator.
-     * @return true if sensor is running.
+     * @brief Check if sensor is can give good measurements at the moment.
+     * @return true if sensor measurements are correct.
      */
     virtual bool isOperating() const
     {

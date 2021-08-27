@@ -5,13 +5,11 @@
  * 
  */
 
-
 #ifndef QUATERNION_H
 #define QUATERNION_H
 
-#ifdef ARDUINO
-    #include <Arduino.h>
-#endif
+#include "Vector3.h"
+#include <cmath>
 
 
 namespace Common

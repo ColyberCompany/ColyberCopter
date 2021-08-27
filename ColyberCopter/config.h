@@ -9,12 +9,10 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#ifdef ARDUINO
-    #include <Arduino.h>
-#endif
-
 #include "Enums/BaudRateTypes.h"
 #include "Common/Vector3.h"
+#include <cstdint>
+#include <cstddef>
 
 
 namespace Config

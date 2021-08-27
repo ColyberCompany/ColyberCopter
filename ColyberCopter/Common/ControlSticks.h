@@ -11,9 +11,7 @@
 #ifndef CONTROLSTICKS_H
 #define CONTROLSTICKS_H
 
-#ifdef ARDUINO
-    #include <Arduino.h>
-#endif
+#include <Arduino.h>
 
 
 namespace Common
