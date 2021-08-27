@@ -26,8 +26,8 @@ bool TiltExceeding::hasFailOccurred()
 {
     using Config::TiltExceedingAngleThreshold;
 
-    return (abs(Instance::ahrs.getPitch_deg()) > TiltExceedingAngleThreshold ||
-            abs(Instance::ahrs.getRoll_deg()) > TiltExceedingAngleThreshold);
+    return (abs(Instance::ins.getPitch_deg()) > TiltExceedingAngleThreshold ||
+            abs(Instance::ins.getRoll_deg()) > TiltExceedingAngleThreshold);
 }
 
 

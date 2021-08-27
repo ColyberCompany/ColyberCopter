@@ -5,6 +5,7 @@
  */
 
 #include "../Libraries/MahonyAHRS.h"
+#include <math.h>
 
 
 static inline float invSqrt(float x)
@@ -43,8 +44,7 @@ MahonyAHRS::Quaternion MahonyAHRS::mahonyAHRSUpdate(float gx, float gy, float gz
 
 	// Use IMU algorithm if magnetometer measurement invalid (avoids NaN in magnetometer normalisation)
 	if((mx == 0.0f) && (my == 0.0f) && (mz == 0.0f)) {
-		mahonyAHRSUpdateIMU(gx, gy, gz, ax, ay, az);
-		return;
+		return mahonyAHRSUpdateIMU(gx, gy, gz, ax, ay, az);
 	}
 
 	// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)

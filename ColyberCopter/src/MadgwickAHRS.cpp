@@ -5,6 +5,7 @@
  */
 
 #include "../Libraries/MadgwickAHRS.h"
+#include <math.h>
 
 
 static inline float invSqrt(float x)
@@ -44,8 +45,7 @@ MadgwickAHRS::Quaternion MadgwickAHRS::madgwickAHRSUpdate(float gx, float gy, fl
 
 	// Use IMU algorithm if magnetometer measurement invalid (avoids NaN in magnetometer normalisation)
 	if((mx == 0.0f) && (my == 0.0f) && (mz == 0.0f)) {
-		madgwickAHRSUpdateIMU(gx, gy, gz, ax, ay, az);
-		return;
+		return madgwickAHRSUpdateIMU(gx, gy, gz, ax, ay, az);
 	}
 
 	// Rate of change of quaternion from gyroscope
