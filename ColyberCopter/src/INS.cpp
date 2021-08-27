@@ -4,7 +4,7 @@
  * @date 2021-08-26
  */
 
-#include "../PositionAndRotation/INS.h"
+#include "../NavigationSystem/INS.h"
 #include "../Instances/SensorInstances.h"
 #include "../Common/Utils.h"
 #include "../config.h"
