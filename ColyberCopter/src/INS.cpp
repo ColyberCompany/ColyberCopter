@@ -47,20 +47,33 @@ void INS::updateQuaternionAndAngles()
         auto magn = Instance::magn.get_norm();
 
         q = ahrs.madgwickAHRSUpdate(
-            acc.x, acc.y, acc.z,
             gyro.x, gyro.y, gyro.z,
+            acc.x, acc.y, acc.z,
             magn.x, magn.y, magn.z
         );
     }
     else
     {
         q = ahrs.madgwickAHRSUpdateIMU(
-            acc.x, acc.y, acc.z,
-            gyro.x, gyro.y, gyro.z
+            gyro.x, gyro.y, gyro.z,
+            acc.x, acc.y, acc.z
         );
     }
 
     quaternion = {q.r, q.i, q.j, q.k};
+
+
+#define q0 quaternion.r
+#define q1 quaternion.i
+#define q2 quaternion.j
+#define q3 quaternion.k
+    angles_rad.y = atan2f(q0 * q1 + q2 * q3, 0.5f - q1 * q1 - q2 * q2);		// roll
+	angles_rad.x = asinf(-2.0f * (q1 * q3 - q0 * q2));						// pitch
+	angles_rad.z = atan2f(q1 * q2 + q0 * q3, 0.5f - q2 * q2 - q3 * q3);		// roll (heading)
+#undef q0
+#undef q1
+#undef q2
+#undef q3
 }
 
 
