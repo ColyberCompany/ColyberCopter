@@ -19,7 +19,8 @@ INS::INS()
 void INS::execute()
 {
     // order is important
-    updateQuaternionAndAngles();
+    updateQuaternion();
+    updateAngles();
     updateEarthAcceleration();
     udpateAltitude();
     updateLatLong();
@@ -36,7 +37,7 @@ bool INS::resetAltitude()
 }
 
 
-void INS::updateQuaternionAndAngles()
+void INS::updateQuaternion()
 {
     MadgwickAHRS::Quaternion q;
     auto acc = Instance::acc.get_norm();
@@ -61,8 +62,11 @@ void INS::updateQuaternionAndAngles()
     }
 
     quaternion = {q.r, q.i, q.j, q.k};
+}
 
 
+void INS::updateAngles()
+{
 #define q0 quaternion.r
 #define q1 quaternion.i
 #define q2 quaternion.j
@@ -96,20 +100,20 @@ void INS::udpateAltitude()
     float curPressure = Instance::baro.getPressure_hPa();
     float curTemperature = Instance::temperature.getTemperature_degC();
 
-    //altitude_m = Common::Utils::calculateAltitude(refPressure, curPressure, curTemperature);
+    altitude_m = Common::Utils::calculateAltitude(refPressure, curPressure, curTemperature);
 
 
-// temp altitude calculation: (instead of Kalman)
-    float baroAlt = Common::Utils::calculateAltitude(refPressure, curPressure, curTemperature);
-    float baroVel = (baroAlt - lastBaroAlt) / Config::MainInterval_s; // derivative
-    lastBaroAlt = baroAlt;
+// // temp altitude calculation: (instead of Kalman)
+//     float baroAlt = Common::Utils::calculateAltitude(refPressure, curPressure, curTemperature);
+//     float baroVel = (baroAlt - lastBaroAlt) / Config::MainInterval_s; // derivative
+//     lastBaroAlt = baroAlt;
 
-    verticalVelocity_mps += earthAcceleration_mps2.z * Config::MainInterval_s;
-    altitude_m += verticalVelocity_mps * Config::MainInterval_s;
+//     verticalVelocity_mps += earthAcceleration_mps2.z * Config::MainInterval_s;
+//     altitude_m += verticalVelocity_mps * Config::MainInterval_s;
 
-    float oneMinusBeta = 1.f - complementaryBeta;
-    verticalVelocity_mps = verticalVelocity_mps * complementaryBeta + baroVel * oneMinusBeta;
-    altitude_m = altitude_m * complementaryBeta + baroAlt * oneMinusBeta;
+//     float oneMinusBeta = 1.f - complementaryBeta;
+//     verticalVelocity_mps = verticalVelocity_mps * complementaryBeta + baroVel * oneMinusBeta;
+//     altitude_m = altitude_m * complementaryBeta + baroAlt * oneMinusBeta;
 }
 
 

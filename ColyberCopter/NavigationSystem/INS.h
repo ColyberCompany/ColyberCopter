@@ -119,7 +119,8 @@ private:
 
 
 // Values update:
-    void updateQuaternionAndAngles();
+    void updateQuaternion();
+    void updateAngles();
     void updateEarthAcceleration();
     void udpateAltitude();
     void updateLatLong();
