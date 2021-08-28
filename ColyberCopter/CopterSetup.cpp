@@ -108,7 +108,7 @@ namespace Assemble
     namespace Failsafe { // TODO: try to improve names of objects inside
         FailsafeManager failsafeManager;
         FailsafeActions::DisarmMotors failsafeActionDisarmMotors;
-        //FailsafeScenarios::CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
+        FailsafeScenarios::CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
         FailsafeScenarios::TiltExceeding failsafeTiltExceeding(&failsafeActionDisarmMotors);
     }
 
@@ -207,7 +207,7 @@ void setupDrone()
 void setupFailsafe()
 {
     Instance::failsafeManager.initializeFailsafe();
-    //Instance::failsafeManager.addFailsafeScenario(&Assemble::Failsafe::failsafeScenarioCommLost);
+    Instance::failsafeManager.addFailsafeScenario(&Assemble::Failsafe::failsafeScenarioCommLost);
     Instance::failsafeManager.addFailsafeScenario(&Assemble::Failsafe::failsafeTiltExceeding);
 }
 
@@ -251,7 +251,7 @@ void addTasksToTasker()
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::NavigationSystem::ins);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
-    tasker.addTask_Hz(&Assemble::TaskGroups::mainFrequency, Config::MainFrequency_Hz);
+    tasker.addTask_us(&Assemble::TaskGroups::mainFrequency, Config::MainInterval_us);
 
     Assemble::TaskGroups::oneHertz.addTask(&Tasks::builtinDiodeBlink);
     tasker.addTask_Hz(&Assemble::TaskGroups::oneHertz, 1.f);

@@ -11,9 +11,9 @@
 
 namespace Config
 {
-    const uint16_t MainFrequency_Hz = 250;
-    const uint16_t MainInterval_us = 1000000 / MainFrequency_Hz;
-    const float MainInterval_s = 1.f / MainFrequency_Hz; // delta time between next main loop executions
+    const float MainFrequency_Hz = 250.f;
+    const uint32_t MainInterval_us = 4000; // = 1000000 / MainFrequency_Hz;
+    const float MainInterval_s = 0.004f; // = 1.f / MainFrequency_Hz; // delta time between next main loop executions
 
     const Enums::BaudRateTypes RmtCtrlSerialBaudRate = Enums::BaudRateTypes::BAUD_115200;
 
