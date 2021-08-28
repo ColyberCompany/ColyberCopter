@@ -12,7 +12,7 @@
 
 // TODO: set the order of include files
 #include <Tasker.h>
-#include "../Interfaces/IAHRS.h"
+#include "../NavigationSystem/INS.h"
 #include "../Interfaces/IVirtualPilot.h"
 #include <PacketCommunication.h>
 #include "../Failsafe/FailsafeManager.h"
@@ -23,7 +23,7 @@ namespace Instance
     using namespace Interfaces;
 
     extern Tasker& tasker;
-    extern IAHRS& ahrs;
+    extern INS& ins;
     extern IVirtualPilot& virtualPilot;
     
     extern PacketComm::PacketCommunication& pilotPacketComm;

@@ -4,55 +4,37 @@
  * @date 2021-08-18
  */
 
-#include "../PositionAndRotation/RotationCalculation/MahonyAHRS.h"
-#include "../Instances/SensorInstances.h"
-#include "../config.h"
-#include "../Common/Utils.h"
-
-using Common::vector3Float;
-using Common::Quaternion;
-using Common::Utils::invSqrt;
+#include "../Libraries/MahonyAHRS.h"
+#include <math.h>
 
 
-MahonyAHRS::MahonyAHRS()
-    : invSampleFreq(1.f / Config::MainFrequency_Hz)
+static inline float invSqrt(float x)
 {
+    float halfx = 0.5f * x;
+	float y = x;
+	long i = *(long*)&y;
+	i = 0x5f3759df - (i>>1);
+	y = *(float*)&i;
+	y = y * (1.5f - (halfx * y * y));
+	return y;
 }
 
 
-void MahonyAHRS::updateRotationCalculation()
+MahonyAHRS::MahonyAHRS(float interval, float Kp, float Ki)
+    : invSampleFreq(interval)
 {
-    auto acc = Instance::acc.get_norm();
-	auto gyro = Instance::gyro.get_radPerSec();
-
-	if (Instance::magn.isOperating())
-	{
-		auto mag = Instance::magn.get_norm();
-
-		mahonyAHRSUpdate(
-			gyro.x, gyro.y, gyro.z, // in rad_per_sec
-			acc.x, acc.y, acc.z,
-			mag.x, mag.y, mag.z
-		);
-	}
-	else
-	{
-		mahonyAHRSUpdateIMU(
-			gyro.x, gyro.y, gyro.z, // in rad_per_sec
-			acc.x, acc.y, acc.z
-		);
-	}
+	twoKp = 2.f * Kp;
+	twoKi = 2.f * Ki;
 }
 
 
-Common::Quaternion MahonyAHRS::getQuaternion()
+MahonyAHRS::Quaternion MahonyAHRS::mahonyAHRSUpdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz)
 {
-    return Quaternion(q0, q1, q2, q3);
-}
+#define q0 quaternion.r
+#define q1 quaternion.i
+#define q2 quaternion.j
+#define q3 quaternion.k
 
-
-void MahonyAHRS::mahonyAHRSUpdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz)
-{
     float recipNorm;
     float q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3, q2q2, q2q3, q3q3;  
 	float hx, hy, bx, bz;
@@ -62,8 +44,7 @@ void MahonyAHRS::mahonyAHRSUpdate(float gx, float gy, float gz, float ax, float 
 
 	// Use IMU algorithm if magnetometer measurement invalid (avoids NaN in magnetometer normalisation)
 	if((mx == 0.0f) && (my == 0.0f) && (mz == 0.0f)) {
-		mahonyAHRSUpdateIMU(gx, gy, gz, ax, ay, az);
-		return;
+		return mahonyAHRSUpdateIMU(gx, gy, gz, ax, ay, az);
 	}
 
 	// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)
@@ -151,11 +132,23 @@ void MahonyAHRS::mahonyAHRSUpdate(float gx, float gy, float gz, float ax, float 
 	q1 *= recipNorm;
 	q2 *= recipNorm;
 	q3 *= recipNorm;
+
+	return quaternion;
+
+#undef q0
+#undef q1
+#undef q2
+#undef q3
 }
 
 
-void MahonyAHRS::mahonyAHRSUpdateIMU(float gx, float gy, float gz, float ax, float ay, float az)
+MahonyAHRS::Quaternion MahonyAHRS::mahonyAHRSUpdateIMU(float gx, float gy, float gz, float ax, float ay, float az)
 {
+#define q0 quaternion.r
+#define q1 quaternion.i
+#define q2 quaternion.j
+#define q3 quaternion.k
+
     float recipNorm;
 	float halfvx, halfvy, halfvz;
 	float halfex, halfey, halfez;
@@ -219,4 +212,11 @@ void MahonyAHRS::mahonyAHRSUpdateIMU(float gx, float gy, float gz, float ax, flo
 	q1 *= recipNorm;
 	q2 *= recipNorm;
 	q3 *= recipNorm;
+
+	return quaternion;
+
+#undef q0
+#undef q1
+#undef q2
+#undef q3
 }

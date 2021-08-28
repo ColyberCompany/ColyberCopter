@@ -23,11 +23,8 @@
 #include "FlightModes/StabilizeFlightMode.h"
 #include "FlightModes/AltHoldFlightMode.h"
 #include "VirtualPilot.h"
-// Position and rotation calculation:
-#include "PositionAndRotation/AHRS.h"
-#include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
-#include "PositionAndRotation/RotationCalculation/MahonyAHRS.h"
-#include "PositionAndRotation/PositionCalculation/AltitudeCalculation.h"
+// Navigation system:
+#include "NavigationSystem/INS.h"
 // Motors:
 #include "Motors/Motors.h"
 #include "Motors/QuadXMotors.h"
@@ -83,11 +80,8 @@ namespace Assemble
         NoMotors noMotors;
     }
 
-    namespace PositionAndRotation {
-        MadgwickAHRS rotationCalculation;
-        //MahonyAHRS rotationCalculation;
-        AltitudeCalculation positionCalculation;
-        AHRS ahrs(positionCalculation, rotationCalculation);
+    namespace NavigationSystem {
+        INS ins;
     }
 
     namespace Communication {
@@ -129,7 +123,7 @@ namespace Instance
 {
 // MainInstances:
     Tasker& tasker = Assemble::tasker;
-    IAHRS& ahrs = Assemble::PositionAndRotation::ahrs;
+    INS& ins = Assemble::NavigationSystem::ins;
     IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
     PacketComm::PacketCommunication& pilotPacketComm = Assemble::Communication::rmtPacketComm;
     FailsafeManager& failsafeManager = Assemble::Failsafe::failsafeManager;
@@ -158,7 +152,7 @@ class : public IExecutable
     void execute() override {
         using Common::Utils::printVector3;
 
-        //printVector3(Serial, Instance::ahrs.getAngles_deg());
+        //printVector3(Serial, Instance::ins.getAngles_deg());
     }
 } debugTask;
 
@@ -255,7 +249,7 @@ void addTasksToTasker()
     using Instance::tasker;
 
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
-    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::PositionAndRotation::ahrs);
+    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::NavigationSystem::ins);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
     tasker.addTask_us(&Assemble::TaskGroups::mainFrequency, Config::MainInterval_us);
 
