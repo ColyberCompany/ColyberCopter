@@ -43,9 +43,45 @@ Common::vector3Float SimpleMPU6050Handler::get_norm()
 }
 
 
+float SimpleMPU6050Handler::getX_norm()
+{
+    return accFiltered.x;
+}
+
+
+float SimpleMPU6050Handler::getY_norm()
+{
+    return accFiltered.y;
+}
+
+
+float SimpleMPU6050Handler::getZ_norm()
+{
+    return accFiltered.z;
+}
+
+
 Common::vector3Float SimpleMPU6050Handler::get_degPerSec()
 {
     return gyroFiltered;
+}
+
+
+float SimpleMPU6050Handler::getX_degPerSec()
+{
+    return gyroFiltered.x;
+}
+
+
+float SimpleMPU6050Handler::getY_degPerSec()
+{
+    return gyroFiltered.y;
+}
+
+
+float SimpleMPU6050Handler::getZ_degPerSec()
+{
+    return gyroFiltered.z;
 }
 
 

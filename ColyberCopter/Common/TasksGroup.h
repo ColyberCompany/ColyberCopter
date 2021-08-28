@@ -9,10 +9,7 @@
 #define TASKSGROUP_H
 
 #include <IExecutable.h>
-
-#ifdef ARDUINO
-    #include <Arduino.h>
-#endif
+#include <cstdint>
 
 
 namespace Common

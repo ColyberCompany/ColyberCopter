@@ -11,10 +11,7 @@
 #define COMMUNICATIONLOST_H
 
 #include "FailsafeScenario.h"
-
-#ifdef ARDUINO
-    #include <Arduino.h>
-#endif
+#include <cstdint>
 
 
 namespace FailsafeScenarios
@@ -22,7 +19,7 @@ namespace FailsafeScenarios
     class CommunicationLost : public FailsafeScenario
     {
     private:
-        const uint8_t ConnectionStabilityThreshold = 50;
+        const uint8_t ConnectionStabilityThreshold = 5;
 
     public:
         CommunicationLost(IExecutable* failsafeAction) : FailsafeScenario(failsafeAction) {}

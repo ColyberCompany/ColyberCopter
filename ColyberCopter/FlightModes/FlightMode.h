@@ -12,10 +12,6 @@
 #include "../Enums/FlightModeTypes.h"
 #include "../Common/ControlSticks.h"
 
-#ifdef ARDUINO
-    #include <Arduino.h>
-#endif
-
 
 class FlightMode
 {

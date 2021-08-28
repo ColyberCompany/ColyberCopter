@@ -26,23 +26,25 @@ MadgwickAHRS::MadgwickAHRS(float _beta)
 void MadgwickAHRS::updateRotationCalculation()
 {
 	auto acc = Instance::acc.get_norm();
-	auto gyro = Instance::gyro.get_degPerSec();
-	auto mag = Instance::magn.get_norm();
+	auto gyro = Instance::gyro.get_radPerSec();
 
-	madgwickAHRSUpdate(
-		gyro.x * 0.0174533f, // in rad_per_sec
-		gyro.y * 0.0174533f, // in rad_per_sec
-		gyro.z * 0.0174533f, // in rad_per_sec
-		acc.x, acc.y, acc.z,
-		mag.x, mag.y, mag.z
-	);
+	if (Instance::magn.isOperating()) 
+	{
+		auto mag = Instance::magn.get_norm();
 
-	// madgwickAHRSUpdateIMU(
-	// 	gyro.x * 0.0174533f, // in rad_per_sec
-	// 	gyro.y * 0.0174533f, // in rad_per_sec
-	// 	gyro.z * 0.0174533f, // in rad_per_sec
-	// 	acc.x, acc.y, acc.z
-	// );
+		madgwickAHRSUpdate(
+			gyro.x, gyro.y, gyro.z, // in rad_per_sec
+			acc.x, acc.y, acc.z,
+			mag.x, mag.y, mag.z
+		);
+	}
+	else
+	{
+		madgwickAHRSUpdateIMU(
+			gyro.x, gyro.y, gyro.z, // in rad_per_sec
+			acc.x, acc.y, acc.z
+		);
+	}
 }
 
 

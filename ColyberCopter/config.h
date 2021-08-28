@@ -9,18 +9,16 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#ifdef ARDUINO
-    #include <Arduino.h>
-#endif
-
 #include "Enums/BaudRateTypes.h"
 #include "Common/Vector3.h"
+#include <cstdint>
+#include <cstddef>
 
 
 namespace Config
 {
-    extern const uint16_t MainFrequency_Hz;
-    extern const uint16_t MainInterval_us;
+    extern const float MainFrequency_Hz;
+    extern const uint32_t MainInterval_us;
     extern const float MainInterval_s; // delta time between next main loop executions
 
     extern const Enums::BaudRateTypes RmtCtrlSerialBaudRate;
