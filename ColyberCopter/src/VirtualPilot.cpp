@@ -5,7 +5,7 @@
  * 
  */
 
-#include "../VirtualPilot.h"
+#include "../NavigationSystem/VirtualPilot.h"
 #include "../Instances/MainInstances.h"
 #include "../Instances/MotorsInstance.h"
 #include "../Communication/CommData.h"
