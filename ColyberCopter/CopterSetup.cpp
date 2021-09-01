@@ -136,7 +136,7 @@ namespace Instance
     Gyroscope& gyro = Assemble::Sensors::simpleMPU6050Handler;
     Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
     Barometer& baro = Assemble::Sensors::simpleMS5611Handler;
-    TemperatureSensor& temperature = Assemble::Sensors::simpleMPU6050Handler;
+    TemperatureSensor& temperature = Assemble::Sensors::simpleMS5611Handler;
 
     // Sensor& gps = noSensor;
     // Sensor& btmRangefinder = noSensor;

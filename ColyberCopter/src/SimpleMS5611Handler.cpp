@@ -28,6 +28,12 @@ float SimpleMS5611Handler::getPressure_hPa()
 }
 
 
+float SimpleMS5611Handler::getTemperature_degC()
+{
+    return SimpleMS5611::getTempereture();
+}
+
+
 const char* SimpleMS5611Handler::getName()
 {
     return "ms5611 baro";

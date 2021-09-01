@@ -9,12 +9,13 @@
 #define SIMPLEMS5611CONTINUOUS_H
 
 #include "Base/Barometer.h"
+#include "Base/TemperatureSensor.h"
 #include <SimpleMS5611.h>
 #include <IExecutable.h>
 #include <AverageFilter.h>
 
 
-class SimpleMS5611Handler : private SimpleMS5611, public Barometer, public IExecutable
+class SimpleMS5611Handler : private SimpleMS5611, public Barometer, public TemperatureSensor, public IExecutable
 {
     AverageFilter<float> pressureFilter;
     float smoothPressure_mbar = 1000.f;
@@ -28,6 +29,7 @@ public:
 
     bool initSensor() override;
     float getPressure_hPa() override;
+    float getTemperature_degC() override;
     const char* getName() override;
 
     using SimpleMS5611::RequestWaitTime_us;
