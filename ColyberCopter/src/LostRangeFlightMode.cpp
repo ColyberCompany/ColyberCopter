@@ -9,7 +9,7 @@
 #include "../Instances/MotorsInstance.h"
 
 
-LostRangeFlightMode::LostRangeFlightMode(int _whenTurnOffMotorsInMiliseconds = 3)
+LostRangeFlightMode::LostRangeFlightMode(int _whenTurnOffMotorsInMiliseconds = 3000)
 {
     whenTurnOffMotorsInMiliseconds = _whenTurnOffMotorsInMiliseconds;
 }
