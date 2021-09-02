@@ -193,7 +193,7 @@ void setupDrone()
 
 
     debMes.showMessage("Motors");
-    Instance::motors.initializeMotors();
+    Instance::motors.initializeMotors(); // TODO: initialize in separate func and check return value
     debMes.showMessage(OKText);
     
 
@@ -251,6 +251,7 @@ void addTasksToTasker()
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::NavigationSystem::ins);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
+    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Motors::quadXMotors);
     tasker.addTask_us(&Assemble::TaskGroups::mainFrequency, Config::MainInterval_us);
 
     Assemble::TaskGroups::oneHertz.addTask(&Tasks::builtinDiodeBlink);

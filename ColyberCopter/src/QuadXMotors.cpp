@@ -2,8 +2,9 @@
  * @file QuadXMotors.cpp
  * @author Jan Wielgus
  * @date 2020-11-05
- * 
  */
+
+// https://github.com/stm32duino/wiki/wiki/HardwareTimer-library
 
 #include "../Motors/QuadXMotors.h"
 #include "../config.h"
@@ -13,31 +14,25 @@ using Common::ControlSticks;
 
 
 QuadXMotors::QuadXMotors()
-    : motorsTimer(TIM3)
+    : timer(TIM3)
 {
 }
 
 
 bool QuadXMotors::initializeMotors()
 {
-    // https://github.com/stm32duino/wiki/wiki/HardwareTimer-library
+    if (Config::MainInterval_us < 2500)
+        return false;
 
+    timer.setMode(1, TIMER_OUTPUT_COMPARE_PWM1, FLMotorPin);
+    timer.setMode(2, TIMER_OUTPUT_COMPARE_PWM1, FRMotorPin);
+    timer.setMode(3, TIMER_OUTPUT_COMPARE_PWM1, BRMotorPin);
+    timer.setMode(4, TIMER_OUTPUT_COMPARE_PWM1, BLMotorPin);
 
-    motorsTimer.setMode(1, TIMER_OUTPUT_COMPARE_PWM1, FLMotorPin);
-    motorsTimer.setMode(2, TIMER_OUTPUT_COMPARE_PWM1, FRMotorPin);
-    motorsTimer.setMode(3, TIMER_OUTPUT_COMPARE_PWM1, BRMotorPin);
-    motorsTimer.setMode(4, TIMER_OUTPUT_COMPARE_PWM1, BLMotorPin);
+    timer.setPrescaleFactor(72);
+    timer.setOverflow(Config::MainInterval_us, TICK_FORMAT);
 
-    motorsTimer.setPrescaleFactor(71);
-    motorsTimer.setOverflow(Config::MainInterval_us, TICK_FORMAT);
-
-    motorsTimer.setCaptureCompare(1, MinPower); // TICK_FORMAT
-    motorsTimer.setCaptureCompare(2, MinPower);
-    motorsTimer.setCaptureCompare(3, MinPower);
-    motorsTimer.setCaptureCompare(4, MinPower);
-
-    motorsTimer.resume();
-
+    timer.resume();
 
     setState(StateType::Disabled);
 
@@ -45,30 +40,35 @@ bool QuadXMotors::initializeMotors()
 }
 
 
-void QuadXMotors::updatePower(const ControlSticks& stickValues)
+void QuadXMotors::setPower(const ControlSticks& stickValues)
 {
     if (getState() == StateType::Enabled)
     {
-        int16_t flPower = stickValues.getThrottle() - stickValues.getPitch() + stickValues.getRoll() + stickValues.getYaw();
-        int16_t frPower = stickValues.getThrottle() - stickValues.getPitch() - stickValues.getRoll() - stickValues.getYaw();
-        int16_t brPower = stickValues.getThrottle() + stickValues.getPitch() - stickValues.getRoll() + stickValues.getYaw();
-        int16_t blPower = stickValues.getThrottle() + stickValues.getPitch() + stickValues.getRoll() - stickValues.getYaw();
+        flPower = stickValues.getThrottle() - stickValues.getPitch() + stickValues.getRoll() + stickValues.getYaw();
+        frPower = stickValues.getThrottle() - stickValues.getPitch() - stickValues.getRoll() - stickValues.getYaw();
+        brPower = stickValues.getThrottle() + stickValues.getPitch() - stickValues.getRoll() + stickValues.getYaw();
+        blPower = stickValues.getThrottle() + stickValues.getPitch() + stickValues.getRoll() - stickValues.getYaw();
 
         flPower = constrain(flPower, 0, 1000);
         frPower = constrain(frPower, 0, 1000);
         brPower = constrain(brPower, 0, 1000);
         blPower = constrain(blPower, 0, 1000);
-
-        motorsTimer.setCaptureCompare(1, MinPower + flPower); // TICK_FORMAT
-        motorsTimer.setCaptureCompare(2, MinPower + frPower);
-        motorsTimer.setCaptureCompare(3, MinPower + brPower);
-        motorsTimer.setCaptureCompare(4, MinPower + blPower);
     }
     else // motors are disabled
     {
-        motorsTimer.setCaptureCompare(1, MinPower); // TICK_FORMAT
-        motorsTimer.setCaptureCompare(2, MinPower);
-        motorsTimer.setCaptureCompare(3, MinPower);
-        motorsTimer.setCaptureCompare(4, MinPower);
+        flPower = 0;
+        frPower = 0;
+        brPower = 0;
+        blPower = 0;
     }
+}
+
+
+void QuadXMotors::execute()
+{
+    const int16_t ZeroPulse = 1000;
+    timer.setCaptureCompare(1, ZeroPulse + flPower, TICK_COMPARE_FORMAT);
+    timer.setCaptureCompare(2, ZeroPulse + frPower, TICK_COMPARE_FORMAT);
+    timer.setCaptureCompare(3, ZeroPulse + brPower, TICK_COMPARE_FORMAT);
+    timer.setCaptureCompare(4, ZeroPulse + blPower, TICK_COMPARE_FORMAT);
 }

@@ -72,7 +72,7 @@ void VirtualPilot::runVirtualPilot()
                                 commData.pilot.stick.roll);
 
     currentFlightMode->executeFlightModeLoop(virtualSticks);
-    Instance::motors.updatePower(virtualSticks);
+    Instance::motors.setPower(virtualSticks);
 }
 
 
