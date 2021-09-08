@@ -150,37 +150,6 @@ namespace Instance
 
 class : public IExecutable
 {
-    uint16_t cnt = 1000;        // po 5s reset p0
-    float dt = Config::MainInterval_s;
-    KalmanFilter kalman = KalmanFilter(0.003f, // błąd pomiaru wysokości - +- 10cm
-                        0.03f,  // błąd pomiaru przyspieszenie bezwzględnego 
-                        0.0167 * dt * dt * dt, 0.05 * dt * dt, 0.1 * dt, // trzy parametry na pałe
-                        dt);
-
-    void execute() override {
-        float a = Instance::ins.getEarthAcceleration_mps2().z;
-        float altitude = kalman.update(Instance::ins.getAltitude_m(), ((int16_t)(((a - 1) * 9.81f) * 10)) / 10);
-        
-        Serial1.print(5 * Instance::ins.getAltitude_m());
-        Serial1.print('\t');
-        Serial1.println(5 * altitude);
-
-        if (cnt >= 1)
-        {
-            if (cnt == 1)
-            {
-                Instance::ins. resetAltitude();
-                kalman.reset();
-            }
-            cnt--;
-        }
-    }
-} kalmanTestTask;
-
-
-
-class : public IExecutable
-{
     
     void execute() override {
         using Common::Utils::printVector3;
@@ -284,7 +253,6 @@ void addTasksToTasker()
 
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::NavigationSystem::ins);
-    /* kalman test */ Assemble::TaskGroups::mainFrequency.addTask(&kalmanTestTask);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Motors::quadXMotors);
     tasker.addTask_us(&Assemble::TaskGroups::mainFrequency, Config::MainInterval_us);

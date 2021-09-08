@@ -42,6 +42,6 @@ namespace Config
     const uint16_t AltHoldPID_IMax = 100;
 
     const Common::vector3Int16 AccOffset = {67, -5, -14};
-    const Common::vector3Int16 GyroOffset = {-142, 124, 5};
+    const Common::vector3Int16 GyroOffset = {-130, 132, -2};
     const Common::vector3Int16 CompassOffset = {-38, -89, -151};
 }
