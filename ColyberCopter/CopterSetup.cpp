@@ -166,10 +166,7 @@ void setupDrone()
 
     debMes.enableAndInitialize(); // Comment this line to disable all debug messages
     debMes.showMessage("Beginning drone setup");
-    delay(100);
-
-
-    addTasksToTasker();
+    delay(200);
 
 
     debMes.showMessage("Failsafe");
@@ -195,6 +192,9 @@ void setupDrone()
     debMes.showMessage("Motors");
     Instance::motors.initializeMotors(); // TODO: initialize in separate func and check return value
     debMes.showMessage(OKText);
+
+
+    addTasksToTasker();
     
 
     pinMode(LED_BUILTIN, OUTPUT); // TODO: this is temporary, figure something out
@@ -288,6 +288,7 @@ bool initSensor(Sensor* sensorToInit)
     Instance::debMes.showMessage(sensorToInit->getName());
 
     bool sensorInitResult = sensorToInit->initialize();
+    delay(20);
 
     if (sensorInitResult == false)
     {
