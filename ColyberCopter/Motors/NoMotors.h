@@ -15,10 +15,10 @@ class NoMotors : public Motors
 public:
     bool initializeMotors() override
     {
-        return true;
+        return true; // TODO: true?
     }
 
-    void updatePower(const Common::ControlSticks& stickValues) override
+    void setPower(const Common::ControlSticks& stickValues) override
     {
     }
 };

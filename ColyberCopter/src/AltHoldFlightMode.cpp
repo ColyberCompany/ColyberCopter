@@ -64,7 +64,7 @@ void AltHoldFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
     updateAltitudeToHold(inputOutputSticks.getThrottle());
 
     int16_t outputThrottle = altHoldThrottle;
-    outputThrottle += altitudeHoldPID.update(altitudeToHold_cm, Instance::ahrs.getAltitude_m() * 100.f) + 0.5f;
+    outputThrottle += altitudeHoldPID.update(altitudeToHold_cm, Instance::ins.getAltitude_m() * 100.f) + 0.5f;
     outputThrottle = constrain(outputThrottle, MinOutputThrottle, MaxOutputThrottle);
 
     inputOutputSticks.setThrottle(outputThrottle);
@@ -79,7 +79,7 @@ void AltHoldFlightMode::updateAltitudeToHold(uint16_t throttle)
 
 void AltHoldFlightMode::setAltitudeToHoldToCurrentReading()
 {
-    altitudeToHold_cm = Instance::ahrs.getAltitude_m() * 100.f;
+    altitudeToHold_cm = Instance::ins.getAltitude_m() * 100.f;
 }
 
 

@@ -23,11 +23,8 @@
 #include "FlightModes/StabilizeFlightMode.h"
 #include "FlightModes/AltHoldFlightMode.h"
 #include "VirtualPilot.h"
-// Position and rotation calculation:
-#include "PositionAndRotation/AHRS.h"
-#include "PositionAndRotation/RotationCalculation/MadgwickAHRS.h"
-#include "PositionAndRotation/RotationCalculation/MahonyAHRS.h"
-#include "PositionAndRotation/PositionCalculation/AltitudeCalculation.h"
+// Navigation system:
+#include "NavigationSystem/INS.h"
 // Motors:
 #include "Motors/Motors.h"
 #include "Motors/QuadXMotors.h"
@@ -85,11 +82,8 @@ namespace Assemble
         NoMotors noMotors;
     }
 
-    namespace PositionAndRotation {
-        MadgwickAHRS rotationCalculation;
-        //MahonyAHRS rotationCalculation;
-        AltitudeCalculation positionCalculation;
-        AHRS ahrs(positionCalculation, rotationCalculation);
+    namespace NavigationSystem {
+        INS ins;
     }
 
     namespace Communication {
@@ -116,7 +110,7 @@ namespace Assemble
     namespace Failsafe { // TODO: try to improve names of objects inside
         FailsafeManager failsafeManager;
         FailsafeActions::DisarmMotors failsafeActionDisarmMotors;
-        //FailsafeScenarios::CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
+        FailsafeScenarios::CommunicationLost failsafeScenarioCommLost(&failsafeActionDisarmMotors);
         FailsafeScenarios::TiltExceeding failsafeTiltExceeding(&failsafeActionDisarmMotors);
     }
 
@@ -131,7 +125,7 @@ namespace Instance
 {
 // MainInstances:
     Tasker& tasker = Assemble::tasker;
-    IAHRS& ahrs = Assemble::PositionAndRotation::ahrs;
+    INS& ins = Assemble::NavigationSystem::ins;
     IVirtualPilot& virtualPilot = Assemble::virtualPilotInstance;
     PacketComm::PacketCommunication& pilotPacketComm = Assemble::Communication::rmtPacketComm;
     FailsafeManager& failsafeManager = Assemble::Failsafe::failsafeManager;
@@ -144,7 +138,7 @@ namespace Instance
     Gyroscope& gyro = Assemble::Sensors::simpleMPU6050Handler;
     Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
     Barometer& baro = Assemble::Sensors::simpleMS5611Handler;
-    TemperatureSensor& temperature = Assemble::Sensors::simpleMPU6050Handler;
+    TemperatureSensor& temperature = Assemble::Sensors::simpleMS5611Handler;
 
     // Sensor& gps = noSensor;
     // Sensor& btmRangefinder = noSensor;
@@ -164,10 +158,10 @@ class : public IExecutable
                         dt);
 
     void execute() override {
-        float a = Instance::ahrs.getAbsoluteAcceleration().z;
-        float altitude = kalman.update(Instance::ahrs.getAltitude_m(), ((int16_t)(((a - 1) * 9.81f) * 10)) / 10);
+        float a = Instance::ins.getEarthAcceleration_mps2().z;
+        float altitude = kalman.update(Instance::ins.getAltitude_m(), ((int16_t)(((a - 1) * 9.81f) * 10)) / 10);
         
-        Serial1.print(5 * Instance::ahrs.getAltitude_m());
+        Serial1.print(5 * Instance::ins.getAltitude_m());
         Serial1.print('\t');
         Serial1.println(5 * altitude);
 
@@ -175,7 +169,7 @@ class : public IExecutable
         {
             if (cnt == 1)
             {
-                Instance::ahrs.resetAltitude();
+                Instance::ins. resetAltitude();
                 kalman.reset();
             }
             cnt--;
@@ -191,7 +185,7 @@ class : public IExecutable
     void execute() override {
         using Common::Utils::printVector3;
 
-        //printVector3(Serial1, Instance::ahrs.getAngles_deg());
+        //printVector3(Serial, Instance::ins.getAngles_deg());
     }
 
 } debugTask;
@@ -233,7 +227,7 @@ void setupDrone()
 
 
     debMes.showMessage("Motors");
-    Instance::motors.initializeMotors();
+    Instance::motors.initializeMotors(); // TODO: initialize in separate func and check return value
     debMes.showMessage(OKText);
     
 
@@ -247,7 +241,7 @@ void setupDrone()
 void setupFailsafe()
 {
     Instance::failsafeManager.initializeFailsafe();
-    //Instance::failsafeManager.addFailsafeScenario(&Assemble::Failsafe::failsafeScenarioCommLost);
+    Instance::failsafeManager.addFailsafeScenario(&Assemble::Failsafe::failsafeScenarioCommLost);
     Instance::failsafeManager.addFailsafeScenario(&Assemble::Failsafe::failsafeTiltExceeding);
 }
 
@@ -289,10 +283,11 @@ void addTasksToTasker()
     using Instance::tasker;
 
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
-    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::PositionAndRotation::ahrs);
+    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::NavigationSystem::ins);
     /* kalman test */ Assemble::TaskGroups::mainFrequency.addTask(&kalmanTestTask);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
-    tasker.addTask_Hz(&Assemble::TaskGroups::mainFrequency, Config::MainFrequency_Hz);
+    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Motors::quadXMotors);
+    tasker.addTask_us(&Assemble::TaskGroups::mainFrequency, Config::MainInterval_us);
 
     Assemble::TaskGroups::oneHertz.addTask(&Tasks::builtinDiodeBlink);
     tasker.addTask_Hz(&Assemble::TaskGroups::oneHertz, 1.f);
