@@ -93,7 +93,7 @@ public:
 
         altitudePredicted = altitudeEstimated + deltaT * velocityEstimated + deltaT2Half * accelerationEstimated;
         velocityPredicted = velocityEstimated + deltaT * accelerationEstimated;
-        accelerationEstimated = accelerationPredicted;
+        accelerationPredicted = accelerationEstimated;
 
         altitudeVariancePredicted = altitudeVarianceEstimated + deltaT2 * velocityVarianceEstimated + deltaT4Forth * accelerationVarianceEstimated + altitudeFilteringVariance;
         velocityVariancePredicted = velocityVarianceEstimated + deltaT2 * accelerationVarianceEstimated + velocityFilteringVariance;
@@ -107,6 +107,20 @@ public:
     
     void reset()
     {
+        altitudeEstimated = 0;                
+        velocityEstimated = 0;                
+        accelerationEstimated = 0;                                             
+        altitudeVarianceEstimated = 0;
+        velocityVarianceEstimated = 0;
+        accelerationVarianceEstimated = 0; 
+        altitudePredicted = 0;                
+        velocityPredicted = 0;                
+        accelerationPredicted = 0;                                             
+        altitudeVariancePredicted = altitudeFilteringVariance;
+        velocityVariancePredicted = velocityFilteringVariance;
+        accelerationVariancePredicted = accelerationFilteringVariance; 
+        altitudeKalmanGain = 0;
+        accelerationKalmanGain = 0;
     }
 };
 

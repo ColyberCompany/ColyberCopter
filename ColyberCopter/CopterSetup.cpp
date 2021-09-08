@@ -157,21 +157,27 @@ namespace Instance
 class : public IExecutable
 {
     uint16_t cnt = 1000;        // po 5s reset p0
-    KalmanFilter kalman = KalmanFilter(0.1f, // błąd pomiaru wysokości - +- 10cm
-                        0.2f,  // błąd pomiaru przyspieszenie bezwzględnego - +- 20 cm/s^2
-                        0.1f, 0.1f, 0.1f, // trzy parametry na pałe
-                        Config::MainInterval_s);
+    float dt = Config::MainInterval_s;
+    KalmanFilter kalman = KalmanFilter(0.003f, // błąd pomiaru wysokości - +- 10cm
+                        0.03f,  // błąd pomiaru przyspieszenie bezwzględnego 
+                        0.0167 * dt * dt * dt, 0.05 * dt * dt, 0.1 * dt, // trzy parametry na pałe
+                        dt);
 
     void execute() override {
-        float altitude = kalman.update(Instance::ahrs.getAltitude_m(), /* tu może być minus */ (Instance::ahrs.getAbsoluteAcceleration().z * 9.81f - 9.81f));
-        Serial1.print(Instance::ahrs.getAltitude_m());
+        float a = Instance::ahrs.getAbsoluteAcceleration().z;
+        float altitude = kalman.update(Instance::ahrs.getAltitude_m(), ((int16_t)(((a - 1) * 9.81f) * 10)) / 10);
+        
+        Serial1.print(5 * Instance::ahrs.getAltitude_m());
         Serial1.print('\t');
-        Serial1.println(altitude);
+        Serial1.println(5 * altitude);
 
-        if (cnt >= 0)
+        if (cnt >= 1)
         {
-            if (cnt == 0)
+            if (cnt == 1)
+            {
                 Instance::ahrs.resetAltitude();
+                kalman.reset();
+            }
             cnt--;
         }
     }
