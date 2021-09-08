@@ -22,6 +22,8 @@ public:
     virtual ~Barometer() {}
 
     virtual float getPressure_hPa() = 0;
+
+    // TODO: consider adding smoothed pressure getter or even next layer betweeen sensors and INS for filtered sensors values
 };
 
 

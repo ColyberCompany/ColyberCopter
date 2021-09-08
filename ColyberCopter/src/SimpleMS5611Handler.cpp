@@ -80,8 +80,9 @@ void SimpleMS5611Handler::updateSmoothPressure()
 
     float newPresure_mbar = pressureFilter.update(pressure_mbar);
 
-    if (abs(smoothPressure_mbar - newPresure_mbar) > 1)
-		smoothPressure_mbar = smoothPressure_mbar*0.72f + newPresure_mbar*0.28f;
-	else
-		smoothPressure_mbar = smoothPressure_mbar*0.96f + newPresure_mbar*0.04f;
+    smoothPressure_mbar = newPresure_mbar;
+    // if (abs(smoothPressure_mbar - newPresure_mbar) > 1)
+	// 	smoothPressure_mbar = smoothPressure_mbar*0.72f + newPresure_mbar*0.28f;
+	// else
+	// 	smoothPressure_mbar = smoothPressure_mbar*0.96f + newPresure_mbar*0.04f;
 }
