@@ -50,6 +50,21 @@ namespace Tasks
             commData.drone.latitude = Instance::ins.getLatitude_deg();
             commData.drone.connectionStability = Instance::pilotPacketComm.getConnectionStability();
 
+            auto acc = Instance::acc.get_mps2();
+            auto gyro = Instance::gyro.get_degPerSec();
+            auto magn = Instance::magn.get_norm();
+            commData.drone.pitch = angles.x * 100;
+            commData.drone.roll = angles.y * 100;
+            commData.drone.accX = acc.x * 100;
+            commData.drone.accY = acc.y * 100;
+            commData.drone.accZ = acc.z * 100;
+            commData.drone.gyroX = gyro.x * 100;
+            commData.drone.gyroY = gyro.y * 100;
+            commData.drone.gyroZ = gyro.z * 100;
+            commData.drone.magnX = magn.x * 100;
+            commData.drone.magnY = magn.y * 100;
+            commData.drone.magnZ = magn.z * 100;
+
             Instance::pilotPacketComm.send(&DataPackets::droneMeasurementsAndState);
         }
     } rmtCtrlSendingDroneData;

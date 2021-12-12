@@ -21,6 +21,21 @@ struct CommData
         int32Byte longitude; // TODO: add unit (same in drone code)
         int32Byte latitude; // TODO: add unit (same in drone code)
         uint8Byte connectionStability;
+
+        int16Byte pitch;
+        int16Byte roll;
+
+        int16Byte accX;
+        int16Byte accY;
+        int16Byte accZ;
+
+        int16Byte gyroX;
+        int16Byte gyroY;
+        int16Byte gyroZ;
+
+        int16Byte magnX;
+        int16Byte magnY;
+        int16Byte magnZ;
     } drone;
 
     struct {

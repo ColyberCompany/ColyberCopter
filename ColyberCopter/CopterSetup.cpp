@@ -261,7 +261,7 @@ void addTasksToTasker()
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
     tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
-    tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
+    tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 5);
     tasker.addTask_Hz(&debugTask, 50);
 }
 

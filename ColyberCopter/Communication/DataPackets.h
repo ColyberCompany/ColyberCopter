@@ -63,6 +63,18 @@ namespace DataPacketClasses
             addVar(commData.drone.longitude);
             addVar(commData.drone.latitude);
             addVar(commData.drone.connectionStability);
+
+            addVar(commData.drone.pitch);
+            addVar(commData.drone.roll);
+            addVar(commData.drone.accX);
+            addVar(commData.drone.accY);
+            addVar(commData.drone.accZ);
+            addVar(commData.drone.gyroX);
+            addVar(commData.drone.gyroY);
+            addVar(commData.drone.gyroZ);
+            addVar(commData.drone.magnX);
+            addVar(commData.drone.magnY);
+            addVar(commData.drone.magnZ);
         }
     };
 
