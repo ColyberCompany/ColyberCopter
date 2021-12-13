@@ -14,6 +14,8 @@
 #include "Communication/CommData.h"
 #include "Communication/DataPackets.h"
 
+#include "Instances/SensorInstances.h"
+
 
 namespace Tasks
 {
