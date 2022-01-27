@@ -5,10 +5,10 @@
  * 
  */
 
-#include "../Communication/PacketReceivedCallbacks.h"
-#include "../Communication/CommData.h"
-#include "../Instances/MainInstances.h"
-#include "../Instances/FlightModeInstances.h"
+#include "Communication/PacketReceivedCallbacks.h"
+#include "Communication/CommData.h"
+#include "Instances/MainInstances.h"
+#include "Instances/FlightModeInstances.h"
 
 
 void PacketReceivedCallbacks::steeringCallback()

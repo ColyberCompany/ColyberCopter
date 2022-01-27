@@ -5,8 +5,8 @@
  * 
  */
 
-#include "../FlightModes/UnarmedFlightMode.h"
-#include "../Instances/MotorsInstance.h"
+#include "FlightModes/UnarmedFlightMode.h"
+#include "Instances/MotorsInstance.h"
 
 using Common::ControlSticks;
 

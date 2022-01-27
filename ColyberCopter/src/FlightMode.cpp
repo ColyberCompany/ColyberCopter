@@ -5,8 +5,8 @@
  * 
  */
 
-#include "../FlightModes/FlightMode.h"
-#include "../config.h"
+#include "FlightModes/FlightMode.h"
+#include "config.h"
 
 using Enums::FlightModeTypes;
 using Common::ControlSticks;

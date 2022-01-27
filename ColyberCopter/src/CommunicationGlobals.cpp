@@ -6,8 +6,8 @@
  * 
  */
 
-#include "../Communication/CommData.h"
-#include "../Communication/DataPackets.h"
+#include "Communication/CommData.h"
+#include "Communication/DataPackets.h"
 
 
 CommData commData;

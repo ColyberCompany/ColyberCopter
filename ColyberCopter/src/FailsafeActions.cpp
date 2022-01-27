@@ -6,10 +6,10 @@
  * 
  */
 
-#include "../Failsafe/FailsafeActions/DisarmMotors.h"
+#include "Failsafe/FailsafeActions/DisarmMotors.h"
 // other failsafe actions...
-#include "../Instances/MainInstances.h"
-#include "../Instances/MotorsInstance.h"
+#include "Instances/MainInstances.h"
+#include "Instances/MotorsInstance.h"
 
 using namespace FailsafeActions;
 

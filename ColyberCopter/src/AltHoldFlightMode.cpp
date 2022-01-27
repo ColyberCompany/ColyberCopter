@@ -4,10 +4,10 @@
  * @date 2021-02-24
  */
 
-#include "../FlightModes/AltHoldFlightMode.h"
-#include "../Instances/MainInstances.h"
-#include "../config.h"
-#include "../Common/Constants.h"
+#include "FlightModes/AltHoldFlightMode.h"
+#include "Instances/MainInstances.h"
+#include "config.h"
+#include "Common/Constants.h"
 
 using Enums::FlightModeTypes;
 using Common::ControlSticks;

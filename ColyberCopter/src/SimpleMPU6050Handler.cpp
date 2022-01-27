@@ -4,8 +4,8 @@
  * @date 2021-08-12
  */
 
-#include "../Sensors/SimpleMPU6050Handler.h"
-#include "../config.h"
+#include "Sensors/SimpleMPU6050Handler.h"
+#include "config.h"
 
 
 SimpleMPU6050Handler::SimpleMPU6050Handler()

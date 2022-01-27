@@ -4,10 +4,10 @@
  * @date 2021-08-26
  */
 
-#include "../NavigationSystem/INS.h"
-#include "../Instances/SensorInstances.h"
-#include "../Common/Utils.h"
-#include "../config.h"
+#include "NavigationSystem/INS.h"
+#include "Instances/SensorInstances.h"
+#include "Common/Utils.h"
+#include "config.h"
 
 
 INS::INS()

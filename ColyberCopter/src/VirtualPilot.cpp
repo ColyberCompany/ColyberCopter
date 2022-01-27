@@ -5,10 +5,10 @@
  * 
  */
 
-#include "../VirtualPilot.h"
-#include "../Instances/MainInstances.h"
-#include "../Instances/MotorsInstance.h"
-#include "../Communication/CommData.h"
+#include "VirtualPilot.h"
+#include "Instances/MainInstances.h"
+#include "Instances/MotorsInstance.h"
+#include "Communication/CommData.h"
 #include <ArrayIterator.h>
 
 using Enums::FlightModeTypes;
@@ -61,6 +61,8 @@ bool VirtualPilot::setFlightMode(FlightModeTypes flightModeType)
 
     Instance::debMes.showMessage("Flight mode has been changed to:");
     Instance::debMes.showMessage(currentFlightMode->getName());
+
+    return true;
 }
 
 

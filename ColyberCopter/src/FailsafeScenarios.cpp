@@ -6,11 +6,11 @@
  * 
  */
 
-#include "../Failsafe/FailsafeScenarios/CommunicationLost.h"
-#include "../Failsafe/FailsafeScenarios/TiltExceeding.h"
+#include "Failsafe/FailsafeScenarios/CommunicationLost.h"
+#include "Failsafe/FailsafeScenarios/TiltExceeding.h"
 // other failsafe scenarios...
-#include "../Instances/MainInstances.h"
-#include "../config.h"
+#include "Instances/MainInstances.h"
+#include "config.h"
 
 using namespace FailsafeScenarios;
 

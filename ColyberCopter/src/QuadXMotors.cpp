@@ -6,8 +6,8 @@
 
 // https://github.com/stm32duino/wiki/wiki/HardwareTimer-library
 
-#include "../Motors/QuadXMotors.h"
-#include "../config.h"
+#include "Motors/QuadXMotors.h"
+#include "config.h"
 
 using Enums::StateType;
 using Common::ControlSticks;

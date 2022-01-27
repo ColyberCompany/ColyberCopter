@@ -5,10 +5,10 @@
  * 
  */
 
-#include "../FlightModes/StabilizeFlightMode.h"
-#include "../Common/Constants.h"
-#include "../Instances/MainInstances.h"
-#include "../config.h"
+#include "FlightModes/StabilizeFlightMode.h"
+#include "Common/Constants.h"
+#include "Instances/MainInstances.h"
+#include "config.h"
 
 using Enums::FlightModeTypes;
 using Common::Consts::RoundAngle;
