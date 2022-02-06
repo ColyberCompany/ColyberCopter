@@ -22,7 +22,7 @@
 #include "FlightModes/UnarmedFlightMode.h"
 #include "FlightModes/StabilizeFlightMode.h"
 #include "FlightModes/AltHoldFlightMode.h"
-#include "VirtualPilot.h"
+#include "NavigationSystem/VirtualPilot.h"
 // Navigation system:
 #include "NavigationSystem/INS.h"
 // Motors:
