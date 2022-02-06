@@ -31,7 +31,7 @@ AltHoldFlightMode::AltHoldFlightMode(StabilizeFlightMode& stabilizeFlightMode)
                        Config::AltHoldPID_kD,
                        Config::AltHoldPID_IMax);
 
-    altitudeHoldPID.setupDerivativeLowPassFilter(5.f);
+    altitudeHoldPID.setupDerivativeLowPassFilter(5.f); // TODO: make this a named constant somewhere
 }
 
 

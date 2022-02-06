@@ -240,7 +240,7 @@ void setupFlightModes()
     Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::altHoldFlightMode);
     // add other flight modes...
 
-    Instance::virtualPilot.initializeFlightModes();
+    Instance::virtualPilot.initializeFlightModes(); // TODO: this method returns false if not all flight modes were initialized. This should be checked!
 }
 
 
