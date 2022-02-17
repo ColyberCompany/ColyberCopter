@@ -10,8 +10,5 @@ void setup()
 
 void loop()
 {
-	Instance::tasker.loop();
-	
+	Instance::tasker.loop();	
 }
-
-
