@@ -22,11 +22,36 @@ namespace Common
 
 
     public:
-        TasksGroup(uint8_t maxTasksAmount);
-        ~TasksGroup();
+        TasksGroup(uint8_t maxTasksAmount)
+            : MaxTasksAmount(maxTasksAmount)
+        {
+            if (MaxTasksAmount > 0)
+                tasksArray = new IExecutable* [maxTasksAmount];
+        }
 
-        bool addTask(IExecutable* task);
-        void execute() override;
+        ~TasksGroup()
+        {
+            if (MaxTasksAmount > 0)
+                delete[] tasksArray;
+        }
+
+
+        bool addTask(IExecutable* task)
+        {
+            if (tasksAmount >= MaxTasksAmount)
+                return false;
+
+            tasksArray[tasksAmount] = task;
+            tasksAmount++;
+
+            return true;
+        }
+
+        void execute() override
+        {
+            for (uint8_t i = 0; i < tasksAmount; ++i)
+                tasksArray[i]->execute();
+        }
     };
 }
 
