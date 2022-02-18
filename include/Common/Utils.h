@@ -9,7 +9,7 @@ namespace Common
     namespace Utils
     {
         template <typename T>
-        void printVector3(Stream& serialNumber,const vector3<T>& toShow, const char* separator = "\t")
+        inline void printVector3(Stream& serialNumber,const vector3<T>& toShow, const char* separator = "\t")
         {
             serialNumber.print(toShow.x);
             serialNumber.print(separator);
@@ -25,7 +25,16 @@ namespace Common
          * @param x Number which square root will be extracted.
          * @return Square root of parameter x.
          */
-        float invSqrt(float x);
+        inline float invSqrt(float x) // TODO: make inline
+        {
+            float halfx = 0.5f * x;
+            float y = x;
+            long i = *(long*)&y;
+            i = 0x5f3759df - (i>>1);
+            y = *(float*)&i;
+            y = y * (1.5f - (halfx * y * y));
+            return y;
+        }
 
 
         /**
@@ -35,7 +44,10 @@ namespace Common
          * @param temperature_degC temperature in degrees celsius.
          * @return calculated altitude above ground level.
          */
-        float calculateAltitude(float pressure0, float currentPressure, float temperature_degC);
+        inline float calculateAltitude(float pressure0, float currentPressure, float temperature_degC)
+        {
+            return (pow(currentPressure / pressure0, -0.19f) - 1) * (temperature_degC + 273.15f)  * 153.846f;
+        }
     }
 }
 
