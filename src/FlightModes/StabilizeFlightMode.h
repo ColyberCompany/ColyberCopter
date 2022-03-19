@@ -40,6 +40,7 @@ public:
 private:
     void flightModeLoop(Common::ControlSticks& inputOutputSticks) override;
 
+    void throttleTiltCompensation(Common::ControlSticks& inputOutputSticks);
     void updateLeveling(Common::ControlSticks& inputOutputSticks);
     void updateHeadingHolding(Common::ControlSticks& inputOutputSticks);
     void updateHeadingToHold(int16_t yawStick);

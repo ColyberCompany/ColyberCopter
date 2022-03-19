@@ -50,6 +50,8 @@ namespace Config
     inline constexpr Common::vector3Int16 AccOffset = {67, -5, -14};
     inline constexpr Common::vector3Int16 GyroOffset = {-142, 124, 5};
     inline constexpr Common::vector3Int16 CompassOffset = {-38, -89, -151};
+
+    inline constexpr float MaxTiltCompThrMult = 1.5f;
 }
 
 

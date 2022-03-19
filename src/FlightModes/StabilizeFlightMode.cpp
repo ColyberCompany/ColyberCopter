@@ -9,6 +9,7 @@
 #include "Common/Constants.h"
 #include "Instances/MainInstances.h"
 #include "config.h"
+#include <cmath>
 
 using Enums::FlightModeTypes;
 using Common::Consts::RoundAngle;
@@ -83,8 +84,21 @@ void StabilizeFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
     if (inputOutputSticks.getThrottle() < 100) // TODO: think if this could be checked in a better way then just throttle threshold
         return;
 
+    throttleTiltCompensation(inputOutputSticks);
     updateLeveling(inputOutputSticks);
     updateHeadingHolding(inputOutputSticks);
+}
+
+
+void StabilizeFlightMode::throttleTiltCompensation(Common::ControlSticks& inputOutputSticks)
+{
+    vector3Float angles_rad = Instance::ins.getAngles_rad();
+    float tiltCompThrMult = 1.f / ( cos(angles_rad.x) * cos(angles_rad.y) ); // tilt compensation throttle multiplier
+    if (tiltCompThrMult > Config::MaxTiltCompThrMult)
+        tiltCompThrMult = Config::MaxTiltCompThrMult;
+
+    float throttle = (float)inputOutputSticks.getThrottle();
+    inputOutputSticks.setThrottle(throttle * tiltCompThrMult);
 }
 
 
