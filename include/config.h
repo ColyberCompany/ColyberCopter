@@ -17,42 +17,39 @@
 
 namespace Config
 {
-    extern const float MainFrequency_Hz;
-    extern const uint32_t MainInterval_us;
-    extern const float MainInterval_s; // delta time between next main loop executions
+    inline constexpr float MainFrequency_Hz = 250.f;
+    inline constexpr uint32_t MainInterval_us = 4000; // = 1000000 / MainFrequency_Hz;
+    inline constexpr float MainInterval_s = 0.004f; // = 1.f / MainFrequency_Hz; // delta time between next main loop executions
 
-    extern const Enums::BaudRateTypes RmtCtrlSerialBaudRate;
-
+    inline constexpr Enums::BaudRateTypes RmtCtrlSerialBaudRate = Enums::BaudRateTypes::BAUD_115200;
     inline constexpr size_t RmtCtrlMaxComBufferSize = 40;
-    extern const uint16_t RmtCtrlReceivingFrequency_Hz;
+    inline constexpr uint16_t RmtCtrlReceivingFrequency_Hz = 220;
 
-    extern const uint8_t MaxTaskerTasks;
+    inline constexpr uint8_t MaxTaskerTasks = 25;
 
-    extern const float TiltExceedingAngleThreshold;
+    inline constexpr float TiltExceedingAngleThreshold = 67;
 
-    extern const float AccLPFCutOffFreq;
-    extern const float GyroLPFCutOffFreq;
+    inline constexpr float AccLPFCutOffFreq = 10.f;
+    // inline constexpr float GyroLPFCutOffFreq = 10.f;
 
-    extern const uint16_t ThrottleStickCenter;
+    inline constexpr float LevelingPID_kP = 2.85f;
+    inline constexpr float LevelingPID_kI = 1.4f;
+    inline constexpr float LevelingPID_kD = 0.67f;
+    inline constexpr uint16_t LevelingPID_IMax = 90;
 
-    extern const float LevelingPID_kP;
-    extern const float LevelingPID_kI;
-    extern const float LevelingPID_kD;
-    extern const uint16_t LevelingPID_IMax;
+    inline constexpr float HeadHoldPID_kP = 2.24f;
+    inline constexpr float HeadHoldPID_kI = 1.11f;
+    inline constexpr float HeadHoldPID_kD = 0.97f;
+    inline constexpr uint16_t HeadHoldPID_IMax = 85;
 
-    extern const float HeadHoldPID_kP;
-    extern const float HeadHoldPID_kI;
-    extern const float HeadHoldPID_kD;
-    extern const uint16_t HeadHoldPID_IMax;
+    inline constexpr float AltHoldPID_kP = 0.4f;
+    inline constexpr float AltHoldPID_kI = 0.2f;
+    inline constexpr float AltHoldPID_kD = 0.5f;
+    inline constexpr uint16_t AltHoldPID_IMax = 100;
 
-    extern const float AltHoldPID_kP;
-    extern const float AltHoldPID_kI;
-    extern const float AltHoldPID_kD;
-    extern const uint16_t AltHoldPID_IMax;
-
-    extern const Common::vector3Int16 AccOffset;
-    extern const Common::vector3Int16 GyroOffset;
-    extern const Common::vector3Int16 CompassOffset;
+    inline constexpr Common::vector3Int16 AccOffset = {67, -5, -14};
+    inline constexpr Common::vector3Int16 GyroOffset = {-142, 124, 5};
+    inline constexpr Common::vector3Int16 CompassOffset = {-38, -89, -151};
 }
 
 
