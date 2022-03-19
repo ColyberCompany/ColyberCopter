@@ -16,18 +16,18 @@ namespace Common
     template <class T>
     struct vector3
     {
-        T x;
-        T y;
-        T z;
+        T x = {};
+        T y = {};
+        T z = {};
 
-        vector3() {}
+        constexpr vector3()
+        {}
 
-        vector3(T x, T y, T z)
-        {
-            this->x = x;
-            this->y = y;
-            this->z = z;
-        }
+        constexpr vector3(T x, T y, T z):
+            x(x),
+            y(y),
+            z(z)
+        {}
     };
 
     typedef vector3<float> vector3Float;
