@@ -8,7 +8,6 @@
 #include "FlightMode.h"
 #include "config.h"
 
-using FlightMode::FlightModeTypes;
 using Common::ControlSticks;
 
 

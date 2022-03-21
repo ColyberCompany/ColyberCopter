@@ -9,7 +9,6 @@
 #include "config.h"
 #include "Common/Constants.h"
 
-using FlightMode::FlightModeTypes;
 using Common::ControlSticks;
 using Common::Consts::ThrottleStickCenter;
 

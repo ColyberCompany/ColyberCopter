@@ -14,13 +14,8 @@
 
 class FlightMode
 {
-private:
-    const FlightMode::FlightModeTypes type;
-    FlightMode* const baseFlightMode;
-
-
 public:
-    enum FlightModeTypes
+    enum class FlightModeTypes
     {
         UNARMED,
         STABILIZE,
@@ -101,6 +96,10 @@ protected:
      * @brief Set all stick values to 0.
      */
     void resetSticks(Common::ControlSticks& sticks);
+
+private:
+    const FlightMode::FlightModeTypes type;
+    FlightMode* const baseFlightMode;
 };
 
 

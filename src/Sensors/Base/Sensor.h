@@ -12,12 +12,8 @@
 
 class Sensor
 {
-    bool initResult_flag = false;
-    const Sensor::SensorTypes type;
-
-
 public:
-    enum SensorTypes
+    enum class SensorTypes
     {
         NO_SENSOR,
         ACCELEROMETER,
@@ -87,6 +83,8 @@ private:
      * @return whether initialization was successful or not.
      */
     virtual bool initSensor() = 0;
+    bool initResult_flag = false;
+    const Sensor::SensorTypes type;
 };
 
 
