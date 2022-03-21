@@ -9,17 +9,28 @@
 #ifndef SENSOR_H
 #define SENSOR_H
 
-#include "Enums/SensorTypes.h"
-
 
 class Sensor
 {
     bool initResult_flag = false;
-    const Enums::SensorTypes type;
+    const Sensor::SensorTypes type;
 
 
 public:
-    Sensor(Enums::SensorTypes _type)
+    enum SensorTypes
+    {
+        NO_SENSOR,
+        ACCELEROMETER,
+        GYROSCOPE,
+        MAGNETOMETER,
+        BAROMETER,
+        GPS,
+        RANGEFINDER,
+        TEMPERATURE_SENSOR
+        // new types of sensors goes here...
+    };
+    
+    Sensor(Sensor::SensorTypes _type)
         : type(_type)
     {
     }
@@ -50,7 +61,7 @@ public:
     /**
      * @brief Get type of the current sensor.
      */
-    Enums::SensorTypes getType()
+    Sensor::SensorTypes getType()
     {
         return type;
     }

@@ -17,7 +17,7 @@ class Gyroscope : public Sensor
 {
 public:
     Gyroscope()
-        : Sensor(Enums::SensorTypes::GYROSCOPE)
+        : Sensor(Sensor::SensorTypes::GYROSCOPE)
     {
     }
 

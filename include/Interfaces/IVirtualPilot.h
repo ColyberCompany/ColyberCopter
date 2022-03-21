@@ -10,7 +10,6 @@
 #define IVIRTUALPILOT_H
 
 #include "FlightModes/FlightMode.h"
-#include "Enums/FlightModeTypes.h"
 
 
 // TODO: remove this note if issue is done
@@ -50,7 +49,7 @@ namespace Interfaces
          * @return false if instance of choosen flight mode was not found
          * (wasn't added using addFlightMode() method).
          */
-        virtual bool setFlightMode(Enums::FlightModeTypes flightModeToSetType) = 0;
+        virtual bool setFlightMode(FlightMode::FlightModeTypes flightModeToSetType) = 0;
 
         /**
          * @brief Executes the virtual pilot once.
@@ -62,7 +61,7 @@ namespace Interfaces
         /**
          * @brief Get type of the current flight mode.
          */
-        virtual Enums::FlightModeTypes getCurrentFlightModeType() = 0;
+        virtual FlightMode::FlightModeTypes getCurrentFlightModeType() = 0;
     };
 }
 

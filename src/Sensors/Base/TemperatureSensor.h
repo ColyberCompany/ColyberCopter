@@ -15,7 +15,7 @@ class TemperatureSensor : public Sensor
 {
 public:
     TemperatureSensor()
-        : Sensor(Enums::SensorTypes::TEMPERATURE_SENSOR)
+        : Sensor(Sensor::SensorTypes::TEMPERATURE_SENSOR)
     {
     }
 

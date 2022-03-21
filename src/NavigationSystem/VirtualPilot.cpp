@@ -11,7 +11,7 @@
 #include "Communication/CommData.h"
 #include <ArrayIterator.h>
 
-using Enums::FlightModeTypes;
+using FlightMode::FlightModeTypes;
 using SimpleDataStructures::ArrayIterator;
 using Common::ControlSticks;
 

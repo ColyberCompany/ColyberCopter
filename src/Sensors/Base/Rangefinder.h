@@ -15,7 +15,7 @@ class Rangefinder : public Sensor
 {
 public:
     Rangefinder()
-        : Sensor(Enums::SensorTypes::RANGEFINDER)
+        : Sensor(Sensor::SensorTypes::RANGEFINDER)
     {
     }
 

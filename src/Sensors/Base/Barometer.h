@@ -15,7 +15,7 @@ class Barometer : public Sensor
 {
 public:
     Barometer()
-        : Sensor(Enums::SensorTypes::BAROMETER)
+        : Sensor(Sensor::SensorTypes::BAROMETER)
     {
     }
 
