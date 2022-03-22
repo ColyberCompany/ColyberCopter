@@ -17,7 +17,7 @@ using namespace FailsafeActions;
 void DisarmMotors::execute()
 {
     Instance::motors.setState(Enums::StateType::Disabled);
-    Instance::virtualPilot.setFlightMode(Enums::FlightModeTypes::UNARMED);
+    Instance::virtualPilot.setFlightMode(FlightMode::FlightModeTypes::UNARMED);
 }
 
 

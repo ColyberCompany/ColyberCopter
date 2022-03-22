@@ -27,9 +27,9 @@ public:
 
     bool addFlightMode(FlightMode* flightMode) override;
     bool initializeFlightModes() override;
-    bool setFlightMode(Enums::FlightModeTypes flightModeToSetType) override;
+    bool setFlightMode(FlightMode::FlightModeTypes flightModeToSetType) override;
     void runVirtualPilot() override;
-    Enums::FlightModeTypes getCurrentFlightModeType() override;
+    FlightMode::FlightModeTypes getCurrentFlightModeType() override;
 
     void execute() override;
 
@@ -41,7 +41,7 @@ private:
      * @return Pointer to the flight mode (previously added by addFlightMode() method)
      * or nullptr if flight mode of that type was not found.
      */
-    FlightMode* getFlightModePtrByType(Enums::FlightModeTypes flightModeType);
+    FlightMode* getFlightModePtrByType(FlightMode::FlightModeTypes flightModeType);
 
     /**
      * @brief Execute prepare() method for flight modes on the list that wasn't used and now will be

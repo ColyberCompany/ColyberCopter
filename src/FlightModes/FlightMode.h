@@ -9,25 +9,27 @@
 #ifndef FLIGHTMODE_H
 #define FLIGHTMODE_H
 
-#include "Enums/FlightModeTypes.h"
 #include "Common/ControlSticks.h"
 
 
 class FlightMode
 {
-private:
-    const Enums::FlightModeTypes type;
-    FlightMode* const baseFlightMode;
-
-
 public:
+    enum class FlightModeTypes
+    {
+        UNARMED,
+        STABILIZE,
+        ALT_HOLD,
+        POS_HOLD
+    };
+    
     /**
      * @brief Construct a new Flight Mode object.
      * @param flightModeType Enum type of created flight mode (if new, update enum file).
      * @param baseFlightMode Pointer to flight mode that class extends.
      * (nullptr if don't extend any current flight mode).
      */
-    FlightMode(Enums::FlightModeTypes flightModeType, FlightMode* baseFlightMode);
+    FlightMode(FlightMode::FlightModeTypes flightModeType, FlightMode* baseFlightMode);
 
     // Disable copying instances of this class
     FlightMode(const FlightMode&) = delete;
@@ -46,7 +48,7 @@ public:
     /**
      * @return Type of this flight mode
      */
-    Enums::FlightModeTypes getType();
+    FlightMode::FlightModeTypes getType();
 
     /**
      * @brief Can be overriden by concrete flight modes classes.
@@ -94,6 +96,10 @@ protected:
      * @brief Set all stick values to 0.
      */
     void resetSticks(Common::ControlSticks& sticks);
+
+private:
+    const FlightMode::FlightModeTypes type;
+    FlightMode* const baseFlightMode;
 };
 
 

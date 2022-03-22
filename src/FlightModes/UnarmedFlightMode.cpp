@@ -12,7 +12,7 @@ using Common::ControlSticks;
 
 
 UnarmedFlightMode::UnarmedFlightMode()
-    : FlightMode(Enums::FlightModeTypes::UNARMED, nullptr)
+    : FlightMode(FlightMode::FlightModeTypes::UNARMED, nullptr)
 {
 }
 

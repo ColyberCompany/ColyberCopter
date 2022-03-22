@@ -17,7 +17,7 @@ class NoSensor : public Sensor
 {
 public:
     NoSensor()
-        : Sensor(Enums::SensorTypes::NO_SENSOR)
+        : Sensor(Sensor::SensorTypes::NO_SENSOR)
     {}
 
     bool initSensor() override

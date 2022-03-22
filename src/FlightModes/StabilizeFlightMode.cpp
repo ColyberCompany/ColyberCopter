@@ -11,7 +11,6 @@
 #include "config.h"
 #include <cmath>
 
-using Enums::FlightModeTypes;
 using Common::Consts::RoundAngle;
 using Common::Consts::StraightAngle;
 using Common::ControlSticks;

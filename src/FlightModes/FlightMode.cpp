@@ -8,7 +8,6 @@
 #include "FlightMode.h"
 #include "config.h"
 
-using Enums::FlightModeTypes;
 using Common::ControlSticks;
 
 
@@ -31,7 +30,7 @@ bool FlightMode::checkIfSuperiorOrEqualOf(const FlightMode* flightModeToCheck) c
 }
 
 
-Enums::FlightModeTypes FlightMode::getType()
+FlightMode::FlightModeTypes FlightMode::getType()
 {
     return type;
 }

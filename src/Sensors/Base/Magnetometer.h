@@ -16,7 +16,7 @@ class Magnetometer : public Sensor
 {
 public:
     Magnetometer()
-        : Sensor(Enums::SensorTypes::MAGNETOMETER)
+        : Sensor(Sensor::SensorTypes::MAGNETOMETER)
     {
     }
 

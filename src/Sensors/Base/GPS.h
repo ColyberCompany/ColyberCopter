@@ -15,7 +15,7 @@ class GPS : public Sensor
 {
 public:
     GPS()
-        : Sensor(Enums::SensorTypes::GPS)
+        : Sensor(Sensor::SensorTypes::GPS)
     {
     }
 

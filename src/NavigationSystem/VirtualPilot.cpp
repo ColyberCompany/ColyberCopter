@@ -11,7 +11,6 @@
 #include "Communication/CommData.h"
 #include <ArrayIterator.h>
 
-using Enums::FlightModeTypes;
 using SimpleDataStructures::ArrayIterator;
 using Common::ControlSticks;
 
@@ -45,7 +44,7 @@ bool VirtualPilot::initializeFlightModes()
 }
 
 
-bool VirtualPilot::setFlightMode(FlightModeTypes flightModeType)
+bool VirtualPilot::setFlightMode(FlightMode::FlightModeTypes flightModeType)
 {
     FlightMode* flightModeToSet = getFlightModePtrByType(flightModeType);
 
@@ -78,7 +77,7 @@ void VirtualPilot::runVirtualPilot()
 }
 
 
-FlightModeTypes VirtualPilot::getCurrentFlightModeType()
+FlightMode::FlightModeTypes VirtualPilot::getCurrentFlightModeType()
 {
     return currentFlightMode->getType();
 }
@@ -91,7 +90,7 @@ void VirtualPilot::execute()
 
 
 
-FlightMode* VirtualPilot::getFlightModePtrByType(FlightModeTypes flightModeType)
+FlightMode* VirtualPilot::getFlightModePtrByType(FlightMode::FlightModeTypes flightModeType)
 {
     ArrayIterator<FlightMode*> iter(flightModesArray);
     while (iter.hasNext())
