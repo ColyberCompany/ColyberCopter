@@ -25,7 +25,7 @@ namespace Common
          * @param x Number which square root will be extracted.
          * @return Square root of parameter x.
          */
-        inline float invSqrt(float x) // TODO: make inline
+        inline float invSqrt(float x)
         {
             float halfx = 0.5f * x;
             float y = x;
