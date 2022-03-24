@@ -10,6 +10,8 @@
 #include "Common/Constants.h"
 #include "config.h"
 
+static FusionVector3 vector3FloatToFusion(const Common::vector3Float& vector3Float);
+
 
 INS::INS()
 {
@@ -41,19 +43,17 @@ bool INS::resetAltitude()
 
 void INS::updateAHRS()
 {
-    auto droneAcc = Instance::acc.get_norm();
-    auto droneGyro = Instance::gyro.get_degPerSec();
-    FusionVector3 acc = { droneAcc.x, droneAcc.y, droneAcc.z };
-    FusionVector3 gyro = { droneGyro.x, droneGyro.y, droneGyro.z };
+    FusionVector3 acc = vector3FloatToFusion(Instance::acc.get_norm());
+    FusionVector3 gyro = vector3FloatToFusion(Instance::gyro.get_degPerSec());
 
     // Update gyroscope bias correction algorithm
     gyro = FusionBiasUpdate(&fusionBias, gyro);
 
     // Update AHRS algorithm
-    if (false /* Instance::magn.isOperating() */)
+    if (Instance::magn.isOperating())
     {
-        // TODO: implement this
-        // FusionAhrsUpdate(&fusionAhrs, gyro, acc)
+        FusionVector3 magn = vector3FloatToFusion(Instance::magn.get_norm());
+        FusionAhrsUpdate(&fusionAhrs, gyro, acc, magn, Config::MainInterval_s);
     }
     else
     {
@@ -106,4 +106,16 @@ void INS::udpateAltitude()
 void INS::updateLatLong()
 {
     // TODO: update latitude and longitude
+}
+
+
+
+
+inline FusionVector3 vector3FloatToFusion(const Common::vector3Float& vector3Float)
+{
+    return {
+        vector3Float.x,
+        vector3Float.y,
+        vector3Float.z
+    };
 }
