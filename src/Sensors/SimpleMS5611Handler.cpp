@@ -80,7 +80,11 @@ void SimpleMS5611Handler::updateSmoothPressure()
 
     float newPresure_mbar = pressureFilter.update(pressure_mbar);
 
+#ifdef PRESSURE_KALMAN_FILTER
+    smoothPressure_mbar = pressureKalmanFilter.updateEstimate(newPresure_mbar);
+#else
     smoothPressure_mbar = newPresure_mbar;
+#endif
     // if (abs(smoothPressure_mbar - newPresure_mbar) > 1)
 	// 	smoothPressure_mbar = smoothPressure_mbar*0.72f + newPresure_mbar*0.28f;
 	// else
