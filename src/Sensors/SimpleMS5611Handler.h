@@ -8,7 +8,7 @@
 #ifndef SIMPLEMS5611CONTINUOUS_H
 #define SIMPLEMS5611CONTINUOUS_H
 
-//#define PRESSURE_KALMAN_FILTER  // uncomment if you want to enable pressure Kalman filter
+#define PRESSURE_KALMAN_FILTER  // uncomment if you want to enable pressure Kalman filter
 
 #include "Base/Barometer.h"
 #include "Base/TemperatureSensor.h"
