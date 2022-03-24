@@ -29,11 +29,13 @@ void INS::execute()
 
 bool INS::resetAltitude()
 {
-    bool isBaroOperating = Instance::baro.isOperating();
-    if (isBaroOperating)
+    if (Instance::baro.isOperating())
+    {
         refPressure = Instance::baro.getPressure_hPa();
+        return true;
+    }
 
-    return isBaroOperating;
+    return false;
 }
 
 
