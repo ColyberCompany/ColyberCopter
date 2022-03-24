@@ -7,21 +7,21 @@
 #include "INS.h"
 #include "Instances/SensorInstances.h"
 #include "Common/Utils.h"
+#include "Common/Constants.h"
 #include "config.h"
 
 
 INS::INS()
-    : ahrs(Config::MainInterval_s)
 {
+    FusionBiasInitialise(&fusionBias, 0.5f, Config::MainInterval_s);
+    FusionAhrsInitialise(&fusionAhrs, 0.5f); // TODO: test different settings
 }
 
 
 void INS::execute()
 {
     // order is important
-    updateQuaternion();
-    updateAngles();
-    updateEarthAcceleration();
+    updateAHRS();
     udpateAltitude();
     updateLatLong();
 }
@@ -37,61 +37,45 @@ bool INS::resetAltitude()
 }
 
 
-void INS::updateQuaternion()
+void INS::updateAHRS()
 {
-    MadgwickAHRS::Quaternion q;
-    auto acc = Instance::acc.get_norm();
-    auto gyro = Instance::gyro.get_radPerSec();
+    auto droneAcc = Instance::acc.get_norm();
+    auto droneGyro = Instance::gyro.get_degPerSec();
+    FusionVector3 acc = { droneAcc.x, droneAcc.y, droneAcc.z };
+    FusionVector3 gyro = { droneGyro.x, droneGyro.y, droneGyro.z };
 
-    if (Instance::magn.isOperating())
+    // Update gyroscope bias correction algorithm
+    gyro = FusionBiasUpdate(&fusionBias, gyro);
+
+    // Update AHRS algorithm
+    if (false /* Instance::magn.isOperating() */)
     {
-        auto magn = Instance::magn.get_norm();
-
-        q = ahrs.madgwickAHRSUpdate(
-            gyro.x, gyro.y, gyro.z,
-            acc.x, acc.y, acc.z,
-            magn.x, magn.y, magn.z
-        );
+        // TODO: implement this
+        // FusionAhrsUpdate(&fusionAhrs, gyro, acc)
     }
     else
     {
-        q = ahrs.madgwickAHRSUpdateIMU(
-            gyro.x, gyro.y, gyro.z,
-            acc.x, acc.y, acc.z
-        );
+        FusionAhrsUpdateWithoutMagnetometer(&fusionAhrs, gyro, acc, Config::MainInterval_s);
     }
 
-    quaternion = {q.r, q.i, q.j, q.k};
-}
+    // Update quaternions
+    FusionQuaternion fusionQuaternion = FusionAhrsGetQuaternion(&fusionAhrs);
+    quaternion.r = fusionQuaternion.element.w;
+    quaternion.i = fusionQuaternion.element.x;
+    quaternion.j = fusionQuaternion.element.y;
+    quaternion.k = fusionQuaternion.element.z;
 
+    // Update Euler angles
+    FusionEulerAngles eulerAngles = FusionQuaternionToEulerAngles(fusionQuaternion);
+    angles_deg.x = eulerAngles.angle.pitch;
+    angles_deg.y = eulerAngles.angle.roll;
+    angles_deg.z = eulerAngles.angle.yaw;
 
-void INS::updateAngles()
-{
-#define q0 quaternion.r
-#define q1 quaternion.i
-#define q2 quaternion.j
-#define q3 quaternion.k
-    angles_rad.y = atan2f(q0 * q1 + q2 * q3, 0.5f - q1 * q1 - q2 * q2);		// roll
-    angles_rad.x = asinf(-2.0f * (q1 * q3 - q0 * q2));						// pitch
-    angles_rad.z = atan2f(q1 * q2 + q0 * q3, 0.5f - q2 * q2 - q3 * q3);		// roll (heading)
-#undef q0
-#undef q1
-#undef q2
-#undef q3
-}
-
-
-void INS::updateEarthAcceleration()
-{
-    using Common::Consts::GravitationalAcceleration;
-
-    auto acc = Instance::acc.get_norm();
-    earthAcceleration_mps2 = quaternion.rotate3DVector(acc);
-    earthAcceleration_mps2 = {
-        earthAcceleration_mps2.x * GravitationalAcceleration,
-        earthAcceleration_mps2.y * GravitationalAcceleration,
-        (earthAcceleration_mps2.z - 1.f) * GravitationalAcceleration
-    };
+    // Update Earth acceleration
+    FusionVector3 fusionEarthAcc = FusionAhrsGetEarthAcceleration(&fusionAhrs);
+    earthAcceleration_mps2.x = fusionEarthAcc.axis.x * Common::Consts::GravitationalAcceleration;
+    earthAcceleration_mps2.y = fusionEarthAcc.axis.y * Common::Consts::GravitationalAcceleration;
+    earthAcceleration_mps2.z = fusionEarthAcc.axis.z * Common::Consts::GravitationalAcceleration;
 }
 
 

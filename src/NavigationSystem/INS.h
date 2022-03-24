@@ -10,7 +10,7 @@
 
 #include "Common/Quaternion.h"
 #include "Common/Constants.h"
-#include <MadgwickAHRS.h>
+#include <Fusion.h>
 #include <IExecutable.h>
 
 
@@ -20,12 +20,12 @@
  */
 class INS : public IExecutable
 {
-// instances:
-    MadgwickAHRS ahrs;
+    FusionBias fusionBias;
+    FusionAhrs fusionAhrs;
 
 // measurements:
     Common::Quaternion quaternion = {};
-    Common::vector3Float angles_rad = {};
+    Common::vector3Float angles_deg = {};
     double latitude_deg = 0.f;
     double longitude_deg = 0.f;
     float altitude_m = 0.f;
@@ -49,27 +49,28 @@ public:
     }
 
     Common::vector3Float getAngles_rad() {
-        return angles_rad;
-    }
-
-    Common::vector3Float getAngles_deg() {
+        using Common::Consts::DegToRad;
         return {
-            angles_rad.x * Common::Consts::RadToDeg,
-            angles_rad.y * Common::Consts::RadToDeg,
-            angles_rad.z * Common::Consts::RadToDeg
+            angles_deg.x * DegToRad,
+            angles_deg.y * DegToRad,
+            angles_deg.z * DegToRad
         };
     }
 
+    Common::vector3Float getAngles_deg() {
+        return angles_deg;
+    }
+
     float getPitch_deg() {
-        return angles_rad.x * Common::Consts::RadToDeg;
+        return angles_deg.x;
     }
 
     float getRoll_deg() {
-        return angles_rad.y * Common::Consts::RadToDeg;
+        return angles_deg.y;
     }
 
     float getHeading_deg() { // also yaw
-        return angles_rad.z * Common::Consts::RadToDeg;
+        return angles_deg.z;
     }
 
 // Position:
@@ -95,7 +96,7 @@ public:
         return altitude_m;
     }
 
-// Calculated:
+// Other:
 
     /**
      * @brief Earth acceleration acceleration relative to earth in m/s^2
@@ -119,9 +120,7 @@ private:
 
 
 // Values update:
-    void updateQuaternion();
-    void updateAngles();
-    void updateEarthAcceleration();
+    void updateAHRS();
     void udpateAltitude();
     void updateLatLong();
 };
