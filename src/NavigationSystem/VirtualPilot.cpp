@@ -9,13 +9,20 @@
 #include "Instances/MainInstances.h"
 #include "Instances/MotorsInstance.h"
 #include "Communication/CommData.h"
+#include "config.h"
 #include <ArrayIterator.h>
 
 using SimpleDataStructures::ArrayIterator;
 using Common::ControlSticks;
 
+static constexpr uint8_t StickSamplesToAverage =
+    Config::MainFrequency_Hz / Config::RmtCtrlReceivingFrequency_Hz + 0.5f; // <main freq> / <stick value receiving freq> : 250/30
 
-VirtualPilot::VirtualPilot(FlightMode& initialFlightMode)
+VirtualPilot::VirtualPilot(FlightMode& initialFlightMode) :
+    throttleStickAverage(StickSamplesToAverage),
+    yawStickAverage(StickSamplesToAverage),
+    pitchStickAverage(StickSamplesToAverage),
+    rollStickAverage(StickSamplesToAverage)
 {
     this->currentFlightMode = &initialFlightMode;
 }
@@ -67,11 +74,11 @@ bool VirtualPilot::setFlightMode(FlightMode::FlightModeTypes flightModeType)
 
 void VirtualPilot::runVirtualPilot()
 {
-    ControlSticks virtualSticks(commData.pilot.stick.throttle,
-                                commData.pilot.stick.yaw,
-                                commData.pilot.stick.pitch,
-                                commData.pilot.stick.roll);
-
+    ControlSticks virtualSticks(throttleStickAverage.update(commData.pilot.stick.throttle),
+                                yawStickAverage.update(commData.pilot.stick.yaw),
+                                pitchStickAverage.update(commData.pilot.stick.pitch),
+                                rollStickAverage.update(commData.pilot.stick.roll) );
+    
     currentFlightMode->executeFlightModeLoop(virtualSticks);
     Instance::motors.setPower(virtualSticks);
 }
