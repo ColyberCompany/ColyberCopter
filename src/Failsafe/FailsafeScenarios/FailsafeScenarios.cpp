@@ -6,14 +6,9 @@
  * 
  */
 
-#include "Failsafe/FailsafeScenarios/CommunicationLost.h"
-#include "Failsafe/FailsafeScenarios/TiltExceeding.h"
-// other failsafe scenarios...
-#include "Instances/MainInstances.h"
-#include "config.h"
+#include "Failsafe/FailsafeScenarios/FailsafeScenarios.h"
 
 using namespace FailsafeScenarios;
-
 
 bool CommunicationLost::hasFailOccurred()
 {
