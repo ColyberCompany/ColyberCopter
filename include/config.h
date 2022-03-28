@@ -23,7 +23,7 @@ namespace Config
 
     inline constexpr Enums::BaudRateTypes RmtCtrlSerialBaudRate = Enums::BaudRateTypes::BAUD_115200;
     inline constexpr size_t RmtCtrlMaxComBufferSize = 40;
-    inline constexpr uint16_t RmtCtrlReceivingFrequency_Hz = 220;
+    inline constexpr uint16_t RmtCtrlReceivingFrequency_Hz = 20;
 
     inline constexpr uint8_t MaxTaskerTasks = 25;
 
