@@ -8,15 +8,23 @@
 #ifndef SIMPLEMS5611CONTINUOUS_H
 #define SIMPLEMS5611CONTINUOUS_H
 
+#define PRESSURE_KALMAN_FILTER  // uncomment if you want to enable pressure Kalman filter
+
 #include "Base/Barometer.h"
 #include "Base/TemperatureSensor.h"
 #include <SimpleMS5611.h>
 #include <IExecutable.h>
 #include <AverageFilter.h>
+#ifdef PRESSURE_KALMAN_FILTER
+#include <SimpleKalmanFilter.h>
+#endif
 
 
 class SimpleMS5611Handler : private SimpleMS5611, public Barometer, public TemperatureSensor, public IExecutable
 {
+#ifdef PRESSURE_KALMAN_FILTER
+    SimpleKalmanFilter pressureKalmanFilter = SimpleKalmanFilter(0.1, 0.1, 1); // parameters can be better tuned
+#endif
     AverageFilter<float> pressureFilter;
     float smoothPressure_mbar = 1000.f;
     uint8_t pressureReadingsCounter = 0; // used to get temperature every 20th measurement, from 1 to PressurePerTemperatureRequests, 0 indicates first pressure request
