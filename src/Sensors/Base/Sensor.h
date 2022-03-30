@@ -29,6 +29,7 @@ public:
     Sensor(Sensor::SensorTypes _type)
         : type(_type)
     {
+        // TODO: maybe add there a sensor instance to the global sensor array (think if such array will be useful eg. for auto initialization)
     }
 
     Sensor(const Sensor&) = delete; // TODO: make macro to delete copy ctor and copy assignment operator

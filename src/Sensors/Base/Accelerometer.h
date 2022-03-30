@@ -14,19 +14,8 @@
 
 class Accelerometer : public Sensor
 {
-public:
-    struct Calibration {
-        Common::vector3Float offset;
-        Common::vector3Float scale;
-
-        Calibration() {}
-        Calibration(float ox, float oy, float oz, float sx, float sy, float sz) :
-            offset(ox, oy, oz), scale(sx, sy, sz)
-        {}
-    };
-
-private:
-    Calibration calibration;
+    Common::vector3Float offset;
+    Common::vector3Float scale;
 
 public:
     Accelerometer()
@@ -36,40 +25,45 @@ public:
     
     virtual ~Accelerometer() {}
 
-    Calibration getCalibration() {
-        return calibration;
+    Common::vector3Float getAccOffset() {
+        return offset;
     }
 
-    void setCalibration(const Calibration& calibration) {
-        this->calibration = calibration;
+    Common::vector3Float getAccScale() {
+        return scale;
+    }
+
+    void setAccCalibration(const Common::vector3Float& offset, const Common::vector3Float& scale) {
+        this->offset = offset;
+        this->scale = scale;
     }
 
     /**
      * @brief Get normalized accelerometer data (1 for 1g).  
      */
     Common::vector3Float getAcc_norm() {
-        return (getAcc_norm_priv() - calibration.offset) * calibration.scale;
+        return (getAcc_norm_priv() - offset) * scale;
     }
 
     /**
      * @brief Get normalized accelerometer X axis (1 for 1g).
      */
     float getAccX_norm() {
-        return (getAcc_norm_priv().x - calibration.offset.x) * calibration.scale.x;
+        return (getAcc_norm_priv().x - offset.x) * scale.x;
     }
 
     /**
      * @brief Get normalized accelerometer Y axis (1 for 1g).
      */
     float getAccY_norm() {
-        return (getAcc_norm_priv().y - calibration.offset.y) * calibration.scale.y;
+        return (getAcc_norm_priv().y - offset.y) * scale.y;
     }
 
     /**
      * @brief Get normalized accelerometer Z axis (1 for 1g).
      */
     float getAccZ_norm() {
-        return (getAcc_norm_priv().z - calibration.offset.z) * calibration.scale.z;
+        return (getAcc_norm_priv().z - offset.z) * scale.z;
     }
 
 

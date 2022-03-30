@@ -15,6 +15,8 @@
 
 class Gyroscope : public Sensor
 {
+    Common::vector3Float offset;
+
 public:
     Gyroscope()
         : Sensor(Sensor::SensorTypes::GYROSCOPE)
@@ -23,32 +25,40 @@ public:
 
     virtual ~Gyroscope() {}
 
+    Common::vector3Float getGyroOffset() {
+        return offset;
+    }
+
+    void setGyroOffset(const Common::vector3Float& offset) {
+        this->offset = offset;
+    }
+
     /**
      * @brief Get angular rotation in deg/sec.
      */
     Common::vector3Float getGyro_dps() {
-        return getGyro_dps_priv();
+        return getGyro_dps_priv() - offset;
     }
 
     /**
      * @brief Get angular rotation on X axis in deg/sec.
      */
     float getGyroX_dps() {
-        return getGyro_dps_priv().x;
+        return getGyro_dps_priv().x - offset.x;
     }
 
     /**
      * @brief Get angular rotation on X axis in deg/sec.
      */
     float getGyroY_dps() {
-        return getGyro_dps_priv().y;
+        return getGyro_dps_priv().y - offset.y;
     }
 
     /**
      * @brief Get angular rotation on X axis in deg/sec.
      */
     float getGyroZ_dps() {
-        return getGyro_dps_priv().z;
+        return getGyro_dps_priv().z - offset.z;
     }
 
 
