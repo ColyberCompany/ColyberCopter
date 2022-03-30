@@ -43,8 +43,8 @@ bool INS::resetAltitude()
 
 void INS::updateAHRS()
 {
-    FusionVector3 acc = vector3FloatToFusion(Instance::acc.get_norm());
-    FusionVector3 gyro = vector3FloatToFusion(Instance::gyro.get_degPerSec());
+    FusionVector3 acc = vector3FloatToFusion(Instance::acc.getAcc_norm());
+    FusionVector3 gyro = vector3FloatToFusion(Instance::gyro.getGyro_dps());
 
     // Update gyroscope bias correction algorithm
     gyro = FusionBiasUpdate(&fusionBias, gyro);
@@ -52,7 +52,7 @@ void INS::updateAHRS()
     // Update AHRS algorithm
     if (Instance::magn.isOperating())
     {
-        FusionVector3 magn = vector3FloatToFusion(Instance::magn.get_norm());
+        FusionVector3 magn = vector3FloatToFusion(Instance::magn.getMagn_norm());
         FusionAhrsUpdate(&fusionAhrs, gyro, acc, magn, Config::MainInterval_s);
     }
     else

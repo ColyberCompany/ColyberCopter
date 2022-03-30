@@ -29,10 +29,14 @@ public:
     Sensor(Sensor::SensorTypes _type)
         : type(_type)
     {
+        // TODO: maybe add there a sensor instance to the global sensor array (think if such array will be useful eg. for auto initialization)
     }
 
-    Sensor(const Sensor&) = delete;
+    Sensor(const Sensor&) = delete; // TODO: make macro to delete copy ctor and copy assignment operator
     Sensor& operator=(const Sensor&) = delete;
+    Sensor(Sensor&&) = delete; // TODO: make macro to delete move ctor and move assignment operator
+    Sensor& operator=(Sensor&&) = delete;
+    
     virtual ~Sensor() {}
 
     /**
@@ -41,7 +45,7 @@ public:
      */
     bool initialize()
     {
-        initResult_flag = initSensor();
+        initResult_flag = init_priv();
         return initResult_flag;
     }
 
@@ -78,13 +82,14 @@ public:
 
 
 private:
+    bool initResult_flag = false;
+    const Sensor::SensorTypes type;
+
     /**
      * @brief Communicate with the sensor and initialze it.
      * @return whether initialization was successful or not.
      */
-    virtual bool initSensor() = 0;
-    bool initResult_flag = false;
-    const Sensor::SensorTypes type;
+    virtual bool init_priv() = 0;
 };
 
 

@@ -16,27 +16,9 @@ SimpleMS5611Handler::SimpleMS5611Handler()
 }
 
 
-bool SimpleMS5611Handler::initSensor()
+bool SimpleMS5611Handler::init_priv()
 {
     return SimpleMS5611::initialize();
-}
-
-
-float SimpleMS5611Handler::getPressure_hPa()
-{
-    return smoothPressure_mbar;
-}
-
-
-float SimpleMS5611Handler::getTemperature_degC()
-{
-    return SimpleMS5611::getTempereture();
-}
-
-
-const char* SimpleMS5611Handler::getName()
-{
-    return "ms5611 baro";
 }
 
 

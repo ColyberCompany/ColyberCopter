@@ -14,6 +14,9 @@
 
 class Magnetometer : public Sensor
 {
+    Common::vector3Float offset;
+    Common::vector3Float scale;
+
 public:
     Magnetometer()
         : Sensor(Sensor::SensorTypes::MAGNETOMETER)
@@ -22,22 +25,37 @@ public:
 
     virtual ~Magnetometer() {}
 
-    virtual Common::vector3Float get_norm() = 0;
-
-    virtual float getX_norm()
-    {
-        return get_norm().x;
+    Common::vector3Float getMagnOffset() {
+        return offset;
     }
 
-    virtual float getY_norm()
-    {
-        return get_norm().y;
+    Common::vector3Float getMagnScale() {
+        return scale;
     }
 
-    virtual float getZ_norm()
-    {
-        return get_norm().z;
+    void setMagnCalibration(const Common::vector3Float& offset, const Common::vector3Float& scale) {
+        this->offset = offset;
+        this->scale = scale;
     }
+
+    Common::vector3Float getMagn_norm() {
+        return (getMagn_norm_priv() - offset) * scale;
+    }
+
+    float getX_norm() {
+        return (getMagn_norm_priv().x - offset.x) * scale.x;
+    }
+
+    float getY_norm() {
+        return (getMagn_norm_priv().y - offset.y) * scale.y;
+    }
+
+    float getZ_norm() {
+        return (getMagn_norm_priv().z - offset.z) * scale.z;
+    }
+
+private:
+    virtual Common::vector3Float getMagn_norm_priv() = 0;
 };
 
 

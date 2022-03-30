@@ -12,9 +12,11 @@
 #include "Common/Vector3.h"
 #include "Common/Constants.h"
 
-
 class Accelerometer : public Sensor
 {
+    Common::vector3Float offset;
+    Common::vector3Float scale;
+
 public:
     Accelerometer()
         : Sensor(Sensor::SensorTypes::ACCELEROMETER)
@@ -23,60 +25,81 @@ public:
     
     virtual ~Accelerometer() {}
 
+    Common::vector3Float getAccOffset() {
+        return offset;
+    }
+
+    Common::vector3Float getAccScale() {
+        return scale;
+    }
+
+    void setAccCalibration(const Common::vector3Float& offset, const Common::vector3Float& scale) {
+        this->offset = offset;
+        this->scale = scale;
+    }
+
     /**
      * @brief Get normalized accelerometer data (1 for 1g).  
      */
-    virtual Common::vector3Float get_norm() = 0;
+    Common::vector3Float getAcc_norm() {
+        return (getAcc_norm_priv() - offset) * scale;
+    }
 
     /**
      * @brief Get normalized accelerometer X axis (1 for 1g).
      */
-    virtual float getX_norm() = 0;
+    float getAccX_norm() {
+        return (getAcc_norm_priv().x - offset.x) * scale.x;
+    }
 
     /**
      * @brief Get normalized accelerometer Y axis (1 for 1g).
      */
-    virtual float getY_norm() = 0;
+    float getAccY_norm() {
+        return (getAcc_norm_priv().y - offset.y) * scale.y;
+    }
 
     /**
      * @brief Get normalized accelerometer Z axis (1 for 1g).
      */
-    virtual float getZ_norm() = 0;
+    float getAccZ_norm() {
+        return (getAcc_norm_priv().z - offset.z) * scale.z;
+    }
 
 
     /**
      * @brief Get accelerometer data in m/s^2 (9.81 for 1g).
      */
-    Common::vector3Float get_mps2() {
-        Common::vector3Float acc = get_norm();
-        return {
-            acc.x * Common::Consts::GravitationalAcceleration,
-            acc.y * Common::Consts::GravitationalAcceleration,
-            acc.z * Common::Consts::GravitationalAcceleration
-        };
+    Common::vector3Float getAcc_mps2() {
+        return getAcc_norm() * Common::Consts::GravitationalAcceleration;
     }
 
     /**
      * @brief Get accelerometer X axis in m/s^2 (9.81 for 1g).
      */
-    float getX_mps2() {
-        return getX_norm() * Common::Consts::GravitationalAcceleration;
+    float getAccX_mps2() {
+        return getAccX_norm() * Common::Consts::GravitationalAcceleration;
     }
 
     /**
      * @brief Get accelerometer Y axis in m/s^2 (9.81 for 1g).
      */
-    float getY_mps2() {
-        return getY_norm() * Common::Consts::GravitationalAcceleration;
+    float getAccY_mps2() {
+        return getAccY_norm() * Common::Consts::GravitationalAcceleration;
     }
 
     /**
      * @brief Get accelerometer Z axis in m/s^2 (9.81 for 1g).
      */
-    float getZ_mps2() {
-        return getZ_norm() * Common::Consts::GravitationalAcceleration;
+    float getAccZ_mps2() {
+        return getAccZ_norm() * Common::Consts::GravitationalAcceleration;
     }
 
+private:
+    /**
+     * @brief Get normalized accelerometer data (1 for 1g).  
+     */
+    virtual Common::vector3Float getAcc_norm_priv() = 0;
 };
 
 

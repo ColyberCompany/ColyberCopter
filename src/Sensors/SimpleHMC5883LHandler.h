@@ -21,12 +21,17 @@ class SimpleHMC5883LHandler : public Magnetometer, public IExecutable
 public:
     SimpleHMC5883LHandler();
 
-    bool initSensor() override;
-    const char* getName() override;
-    Common::vector3Float get_norm() override;
+    const char* getName() override {
+        return "hmc5883l";
+    }
 
 private:
+    bool init_priv() override;
     void execute() override;
+
+    Common::vector3Float getMagn_norm_priv() override {
+        return Common::vector3Float(compass.getNormalized());
+    }
 };
 
 
