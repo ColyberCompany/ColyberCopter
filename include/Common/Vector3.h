@@ -24,12 +24,20 @@ namespace Common
         {}
 
         constexpr vector3(T x, T y, T z):
-            x(x),
-            y(y),
-            z(z)
+            x(x), y(y), z(z)
         {}
 
-// vector on vector
+        /**
+         * @brief Convert structure that has x, y and z members to vector3<T>.
+         * You can also use explicit constructor.
+         * @tparam OtherVector Type that has x, y and z members.
+         */
+        template <class OtherVector>
+        explicit constexpr vector3(const OtherVector& otherVector):
+            x(otherVector.x), y(otherVector.y), z(otherVector.z)
+        {}
+
+    // vector on vector
         constexpr vector3& operator*=(const vector3& rhs) {
             x *= rhs.x;
             y *= rhs.y;
@@ -55,7 +63,7 @@ namespace Common
             return *this;
         }
 
-// scalar on vector
+    // scalar on vector
         constexpr vector3& operator*=(T rhs) {
             x *= rhs;
             y *= rhs;
@@ -125,13 +133,14 @@ namespace Common
 
     /**
      * @brief Convert structure that has x, y and z members to vector3<T>.
+     * You can also use explicit constructor.
      * @tparam T vector3 members type.
      * @tparam OtherVector Type that has x, y and z members.
      * @param otherVector Instance of type that has x, y and z members.
      */
     template <class T, class OtherVector>
     inline constexpr vector3<T> toVector3(const OtherVector& otherVector) {
-        return {otherVector.x, otherVector.y, otherVector.z};
+        return vector3<T>(otherVector);
     }
 
     typedef vector3<float> vector3Float;
