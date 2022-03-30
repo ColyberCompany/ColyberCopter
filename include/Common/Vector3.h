@@ -83,7 +83,7 @@ namespace Common
     };
 
     template <class T>
-    constexpr bool operator==(const vector3<T>& lhs, const vector3<T>& rhs) {
+    constexpr bool operator==(const vector3<T>& lhs, const vector3<T>& rhs) { // TODO: test with inline
         return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
     }
     template <class T>
@@ -121,6 +121,17 @@ namespace Common
     template <class T>
     constexpr vector3<T> operator-(vector3<T> lhs, T rhs){
         return lhs -= rhs;
+    }
+
+    /**
+     * @brief Convert structure that has x, y and z members to vector3<T>.
+     * @tparam T vector3 members type.
+     * @tparam OtherVector Type that has x, y and z members.
+     * @param otherVector Instance of type that has x, y and z members.
+     */
+    template <class T, class OtherVector>
+    inline constexpr vector3<T> toVector3(const OtherVector& otherVector) {
+        return {otherVector.x, otherVector.y, otherVector.z};
     }
 
     typedef vector3<float> vector3Float;
