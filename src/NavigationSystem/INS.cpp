@@ -40,12 +40,12 @@ bool INS::resetAltitude()
 void INS::updateQuaternion()
 {
     MadgwickAHRS::Quaternion q;
-    auto acc = Instance::acc.get_norm();
-    auto gyro = Instance::gyro.get_radPerSec();
+    auto acc = Instance::acc.getAcc_norm();
+    auto gyro = Instance::gyro.getGyro_rps();
 
     if (Instance::magn.isOperating())
     {
-        auto magn = Instance::magn.get_norm();
+        auto magn = Instance::magn.getMagn_norm();
 
         q = ahrs.madgwickAHRSUpdate(
             gyro.x, gyro.y, gyro.z,
@@ -85,7 +85,7 @@ void INS::updateEarthAcceleration()
 {
     using Common::Consts::GravitationalAcceleration;
 
-    auto acc = Instance::acc.get_norm();
+    auto acc = Instance::acc.getAcc_norm();
     earthAcceleration_mps2 = quaternion.rotate3DVector(acc);
     earthAcceleration_mps2 = {
         earthAcceleration_mps2.x * GravitationalAcceleration,
