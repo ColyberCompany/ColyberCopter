@@ -28,7 +28,100 @@ namespace Common
             y(y),
             z(z)
         {}
+
+// vector on vector
+        constexpr vector3& operator*=(const vector3& rhs) {
+            x *= rhs.x;
+            y *= rhs.y;
+            z *= rhs.z;
+            return *this;
+        }
+        constexpr vector3& operator/=(const vector3& rhs) {
+            x /= rhs.x;
+            y /= rhs.y;
+            z /= rhs.z;
+            return *this;
+        }
+        constexpr vector3& operator+=(const vector3& rhs) {
+            x += rhs.x;
+            y += rhs.y;
+            z += rhs.z;
+            return *this;
+        }
+        constexpr vector3& operator-=(const vector3& rhs) {
+            x -= rhs.x;
+            y -= rhs.y;
+            z -= rhs.z;
+            return *this;
+        }
+
+// scalar on vector
+        constexpr vector3& operator*=(T rhs) {
+            x *= rhs;
+            y *= rhs;
+            z *= rhs;
+            return *this;
+        }
+        constexpr vector3& operator/=(T rhs) {
+            x /= rhs;
+            y /= rhs;
+            z /= rhs;
+            return *this;
+        }
+        constexpr vector3& operator+=(T rhs) {
+            x += rhs;
+            y += rhs;
+            z += rhs;
+            return *this;
+        }
+        constexpr vector3& operator-=(T rhs) {
+            x -= rhs;
+            y -= rhs;
+            z -= rhs;
+            return *this;
+        }
     };
+
+    template <class T>
+    constexpr bool operator==(const vector3<T>& lhs, const vector3<T>& rhs) {
+        return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
+    }
+    template <class T>
+    constexpr bool operator!=(const vector3<T>& lhs, const vector3<T>& rhs) {
+        return !(lhs == rhs);
+    }
+    template <class T>
+    constexpr vector3<T> operator*(vector3<T> lhs, const vector3<T>& rhs){
+        return lhs *= rhs;
+    }
+    template <class T>
+    constexpr vector3<T> operator/(vector3<T> lhs, const vector3<T>& rhs){
+        return lhs /= rhs;
+    }
+    template <class T>
+    constexpr vector3<T> operator+(vector3<T> lhs, const vector3<T>& rhs){
+        return lhs += rhs;
+    }
+    template <class T>
+    constexpr vector3<T> operator-(vector3<T> lhs, const vector3<T>& rhs){
+        return lhs -= rhs;
+    }
+    template <class T>
+    constexpr vector3<T> operator*(vector3<T> lhs, T rhs){
+        return lhs *= rhs;
+    }
+    template <class T>
+    constexpr vector3<T> operator/(vector3<T> lhs, T rhs){
+        return lhs /= rhs;
+    }
+    template <class T>
+    constexpr vector3<T> operator+(vector3<T> lhs, T rhs){
+        return lhs += rhs;
+    }
+    template <class T>
+    constexpr vector3<T> operator-(vector3<T> lhs, T rhs){
+        return lhs -= rhs;
+    }
 
     typedef vector3<float> vector3Float;
     typedef vector3<double> vector3Double;
