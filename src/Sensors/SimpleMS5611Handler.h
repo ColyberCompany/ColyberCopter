@@ -27,14 +27,21 @@ class SimpleMS5611Handler : private SimpleMS5611, public Barometer, public Tempe
 public:
     SimpleMS5611Handler();
 
-    bool initSensor() override;
-    float getPressure_hPa() override;
-    float getTemperature_degC() override;
-    const char* getName() override;
+    float getPressure_hPa() override {
+        return smoothPressure_mbar;
+    }
+    float getTemperature_degC() override {
+        return SimpleMS5611::getTempereture();
+    }
+    const char* getName() override {
+        return "ms5611";
+    }
 
     using SimpleMS5611::RequestWaitTime_us;
 
 private:
+    bool init_priv() override;
+
     /**
      * @brief Reads pressure and, every 20th, reads temperature.
      */

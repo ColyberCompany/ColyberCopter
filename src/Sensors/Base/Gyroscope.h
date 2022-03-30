@@ -15,6 +15,8 @@
 
 class Gyroscope : public Sensor
 {
+    Common::vector3Float offset;
+
 public:
     Gyroscope()
         : Sensor(Sensor::SensorTypes::GYROSCOPE)
@@ -23,59 +25,76 @@ public:
 
     virtual ~Gyroscope() {}
 
+    Common::vector3Float getGyroOffset() {
+        return offset;
+    }
+
+    void setGyroOffset(const Common::vector3Float& offset) {
+        this->offset = offset;
+    }
+
     /**
      * @brief Get angular rotation in deg/sec.
      */
-    virtual Common::vector3Float get_degPerSec() = 0;
+    Common::vector3Float getGyro_dps() {
+        return getGyro_dps_priv() - offset;
+    }
 
     /**
      * @brief Get angular rotation on X axis in deg/sec.
      */
-    virtual float getX_degPerSec() = 0;
+    float getGyroX_dps() {
+        return getGyro_dps_priv().x - offset.x;
+    }
 
     /**
      * @brief Get angular rotation on X axis in deg/sec.
      */
-    virtual float getY_degPerSec() = 0;
+    float getGyroY_dps() {
+        return getGyro_dps_priv().y - offset.y;
+    }
 
     /**
      * @brief Get angular rotation on X axis in deg/sec.
      */
-    virtual float getZ_degPerSec() = 0;
+    float getGyroZ_dps() {
+        return getGyro_dps_priv().z - offset.z;
+    }
 
 
     /**
      * @brief Get angular rotation in rad/sec.
      */
-    Common::vector3Float get_radPerSec() {
-        Common::vector3Float gyro = get_degPerSec();
-        return {
-            gyro.x * Common::Consts::DegToRad,
-            gyro.y * Common::Consts::DegToRad,
-            gyro.z * Common::Consts::DegToRad
-        };
+    Common::vector3Float getGyro_rps() {
+        return getGyro_dps() * Common::Consts::DegToRad;
     }
 
     /**
      * @brief Get angular rotation on X axis in rad/sec.
      */
-    float getX_radPerSec() {
-        return getX_degPerSec() * Common::Consts::DegToRad;
+    float getGyroX_rps() {
+        return getGyroX_dps() * Common::Consts::DegToRad;
     }
 
     /**
      * @brief Get angular rotation on Y axis in rad/sec.
      */
-    float getY_radPerSec() {
-        return getY_degPerSec() * Common::Consts::DegToRad;
+    float getGyroY_rps() {
+        return getGyroY_dps() * Common::Consts::DegToRad;
     }
 
     /**
      * @brief Get angular rotation on Z axis in rad/sec.
      */
-    float getZ_radPerSec() {
-        return getZ_degPerSec() * Common::Consts::DegToRad;
+    float getGyroZ_rps() {
+        return getGyroZ_dps() * Common::Consts::DegToRad;
     }
+
+private:
+    /**
+     * @brief Get angular rotation in deg/sec.
+     */
+    virtual Common::vector3Float getGyro_dps_priv() = 0;
 };
 
 

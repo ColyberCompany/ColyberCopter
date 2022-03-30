@@ -10,7 +10,6 @@
 #define CONFIG_H
 
 #include "Enums/BaudRateTypes.h"
-#include "Common/Vector3.h"
 #include <cstdint>
 #include <cstddef>
 
@@ -47,9 +46,10 @@ namespace Config
     inline constexpr float AltHoldPID_kD = 0.5f;
     inline constexpr uint16_t AltHoldPID_IMax = 100;
 
-    inline constexpr Common::vector3Int16 AccOffset = {67, -5, -14};
-    inline constexpr Common::vector3Int16 GyroOffset = {-142, 124, 5};
-    inline constexpr Common::vector3Int16 CompassOffset = {-38, -89, -151};
+    // inline constexpr Common::vector3Int16 AccOffset = {67, -5, -14};
+    // inline constexpr Common::vector3Int16 GyroOffset = {-142, 124, 5};
+    // inline constexpr Common::vector3Int16 CompassOffset = {-38, -89, -151};
+    
 
     inline constexpr float MaxTiltCompThrMult = 1.5f;
 }

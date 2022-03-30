@@ -30,24 +30,22 @@ class SimpleMPU6050Handler : public Accelerometer, public Gyroscope, public Temp
 public:
     SimpleMPU6050Handler();
 
+    const char* getName() override {
+        return "mpu6050";
+    }
+
 private:
-    bool initSensor() override;
-    const char* getName() override;
+    bool init_priv() override;
 
-    // Accelerometer interface
-    Common::vector3Float get_norm() override;
-    float getX_norm() override;
-    float getY_norm() override;
-    float getZ_norm() override;
-
-    // Gyroscope interface
-    Common::vector3Float get_degPerSec() override;
-    float getX_degPerSec() override;
-    float getY_degPerSec() override;
-    float getZ_degPerSec() override;
-
-    // Temperature sensor interface
-    float getTemperature_degC() override;
+    Common::vector3Float getAcc_norm_priv() override {
+        return accFiltered;
+    }
+    Common::vector3Float getGyro_dps_priv() override {
+        return gyroFiltered;
+    }
+    float getTemperature_degC() override {
+        return mpu.getTemperature();
+    }
 
     /**
      * @brief Reads new data from MPU6050 and perform filtering.

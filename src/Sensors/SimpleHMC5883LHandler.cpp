@@ -5,39 +5,22 @@
  */
 
 #include "SimpleHMC5883LHandler.h"
-#include "config.h"
+#include "calibration.h"
 
 
 SimpleHMC5883LHandler::SimpleHMC5883LHandler()
 {
+    setMagnCalibration(Calibration::MagnOffset, Calibration::MagnScale);
 }
 
 
-bool SimpleHMC5883LHandler::initSensor()
+bool SimpleHMC5883LHandler::init_priv()
 {
-    using Config::CompassOffset;
-
-    bool initResult = compass.initialize();
-    compass.setCompassOffset(CompassOffset.x, CompassOffset.y, CompassOffset.z);
-
-    return initResult;
-}
-
-
-const char* SimpleHMC5883LHandler::getName()
-{
-    return "hmc5883l compass";
-}
-
-
-Common::vector3Float SimpleHMC5883LHandler::get_norm()
-{
-    auto norm = compass.getNormalized();
-    return Common::vector3Float(norm.x, norm.y, norm.z);
+    return compass.initialize();
 }
 
 
 void SimpleHMC5883LHandler::execute()
 {
-    compass.readRaw();   
+    compass.readRaw();
 }
