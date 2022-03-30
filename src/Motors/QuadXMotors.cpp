@@ -21,6 +21,7 @@ QuadXMotors::QuadXMotors()
 
 bool QuadXMotors::initializeMotors()
 {
+    static_assert(Config::MainInterval_us >= 2500, "Too high update rate for motors. Adjust settings!");
     if (Config::MainInterval_us < 2500)
         return false;
 
