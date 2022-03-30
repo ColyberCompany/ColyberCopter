@@ -20,14 +20,15 @@ public:
         : Sensor(Sensor::SensorTypes::NO_SENSOR)
     {}
 
-    bool initSensor() override
-    {
-        return false;
-    }
-
     const char* getName() override
     {
         return "no sensor";
+    }
+
+private:
+    bool init_priv() override
+    {
+        return false;
     }
 };
 

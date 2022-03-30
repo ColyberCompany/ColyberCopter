@@ -6,10 +6,13 @@
 
 #include "SimpleMPU6050Handler.h"
 #include "config.h"
+#include "calibration.h"
 
 
 SimpleMPU6050Handler::SimpleMPU6050Handler()
 {
+    setAccCalibration(Calibration::AccOffset, Calibration::AccScale);
+    setGyroOffset(Calibration::GyroOffset);
 }
 
 
@@ -18,13 +21,8 @@ bool SimpleMPU6050Handler::init_priv()
     if (Accelerometer::isInitialized() || Gyroscope::isInitialized())
         return true;
 
-    using Config::AccOffset;
-    using Config::GyroOffset;
-
     bool initResult = mpu.initialize();
     config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
-    mpu.setAccOffset(AccOffset.x, AccOffset.y, AccOffset.z);
-    mpu.setGyroOffset(GyroOffset.x, GyroOffset.y, GyroOffset.z);
     mpu.enableCompassBypass();
 
     return initResult;
@@ -43,7 +41,7 @@ void SimpleMPU6050Handler::execute()
         accLPF.z.update(accNorm.z)
     );
 
-    gyroFiltered = Common::toVector3<float>(mpu.getNormalizedRotation());
+    gyroFiltered = Common::vector3Float(mpu.getNormalizedRotation());
 }
 
 

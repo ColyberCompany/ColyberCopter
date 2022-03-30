@@ -30,12 +30,12 @@ class SimpleMPU6050Handler : public Accelerometer, public Gyroscope, public Temp
 public:
     SimpleMPU6050Handler();
 
-private:
-    bool init_priv() override;
-    
     const char* getName() override {
         return "mpu6050";
     }
+
+private:
+    bool init_priv() override;
 
     Common::vector3Float getAcc_norm_priv() override {
         return accFiltered;
