@@ -15,6 +15,20 @@
 class Magnetometer : public Sensor
 {
 public:
+    struct Calibration {
+        Common::vector3Float offset;
+        Common::vector3Float scale;
+
+        Calibration() {}
+        Calibration(float ox, float oy, float oz, float sx, float sy, float sz) :
+            offset(ox, oy, oz), scale(sx, sy, sz)
+        {}
+    };
+
+private:
+    Calibration calibration;
+
+public:
     Magnetometer()
         : Sensor(Sensor::SensorTypes::MAGNETOMETER)
     {
@@ -22,22 +36,32 @@ public:
 
     virtual ~Magnetometer() {}
 
-    virtual Common::vector3Float get_norm() = 0;
-
-    virtual float getX_norm()
-    {
-        return get_norm().x;
+    Calibration getCalibration() {
+        return calibration;
     }
 
-    virtual float getY_norm()
-    {
-        return get_norm().y;
+    void setCalibration(const Calibration& calibration) {
+        this->calibration = calibration;
     }
 
-    virtual float getZ_norm()
-    {
-        return get_norm().z;
+    Common::vector3Float getMagn_norm() {
+        return (getMagn_norm_priv() - calibration.offset) * calibration.scale;
     }
+
+    float getX_norm() {
+        return (getMagn_norm_priv().x - calibration.offset.x) * calibration.scale.x;
+    }
+
+    float getY_norm() {
+        return (getMagn_norm_priv().y - calibration.offset.y) * calibration.scale.y;
+    }
+
+    float getZ_norm() {
+        return (getMagn_norm_priv().z - calibration.offset.z) * calibration.scale.z;
+    }
+
+private:
+    virtual Common::vector3Float getMagn_norm_priv() = 0;
 };
 
 
