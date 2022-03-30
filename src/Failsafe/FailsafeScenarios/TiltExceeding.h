@@ -20,7 +20,12 @@ namespace FailsafeScenarios
     {
     public:
         TiltExceeding(IExecutable* failsafeAction) : FailsafeScenario(failsafeAction) {}
-        bool hasFailOccurred() override;
+        bool hasFailOccurred() override {
+            using Config::TiltExceedingAngleThreshold;
+
+            return (abs(Instance::ins.getPitch_deg()) > TiltExceedingAngleThreshold ||
+                    abs(Instance::ins.getRoll_deg()) > TiltExceedingAngleThreshold);
+        };
     };
 }
 

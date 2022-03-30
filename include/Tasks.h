@@ -53,7 +53,6 @@ namespace Tasks
             Instance::pilotPacketComm.send(&DataPackets::droneMeasurementsAndState);
         }
     } rmtCtrlSendingDroneData;
-    
 
 
     // add other tasks here

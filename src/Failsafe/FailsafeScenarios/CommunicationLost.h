@@ -23,7 +23,10 @@ namespace FailsafeScenarios
 
     public:
         CommunicationLost(IExecutable* failsafeAction) : FailsafeScenario(failsafeAction) {}
-        bool hasFailOccurred() override;
+        bool hasFailOccurred() override {
+            using Instance::pilotPacketComm;
+            return pilotPacketComm.getConnectionStability() < ConnectionStabilityThreshold;
+        };
     };
 }
 
