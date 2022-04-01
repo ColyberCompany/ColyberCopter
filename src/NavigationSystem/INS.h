@@ -49,12 +49,7 @@ public:
     }
 
     Common::vector3Float getAngles_rad() {
-        using Common::Consts::DegToRad;
-        return {
-            angles_deg.x * DegToRad,
-            angles_deg.y * DegToRad,
-            angles_deg.z * DegToRad
-        };
+        return angles_deg * Common::Consts::DegToRad;
     }
 
     Common::vector3Float getAngles_deg() {
