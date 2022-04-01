@@ -221,7 +221,7 @@ void initializeSensors()
     // TODO: make a list from sensors and add enum with sensor types
     initSensor(&Instance::acc);
     initSensor(&Instance::gyro);
-    initSensor(&Instance::magn);
+    //initSensor(&Instance::magn); // TODO: calibrate magnetometer and initialize it
     initSensor(&Instance::baro);
     //initSensor(&Instance::gps);
     //initSensor(&Instance::btmRangefinder);
