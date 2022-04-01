@@ -7,21 +7,23 @@
 #include "INS.h"
 #include "Instances/SensorInstances.h"
 #include "Common/Utils.h"
+#include "Common/Constants.h"
 #include "config.h"
+
+static FusionVector3 vector3FloatToFusion(const Common::vector3Float& vector3Float);
 
 
 INS::INS()
-    : ahrs(Config::MainInterval_s)
 {
+    FusionBiasInitialise(&fusionBias, 0.5f, Config::MainInterval_s);
+    FusionAhrsInitialise(&fusionAhrs, 0.5f); // TODO: test different settings
 }
 
 
 void INS::execute()
 {
     // order is important
-    updateQuaternion();
-    updateAngles();
-    updateEarthAcceleration();
+    updateAHRS();
     udpateAltitude();
     updateLatLong();
 }
@@ -29,69 +31,53 @@ void INS::execute()
 
 bool INS::resetAltitude()
 {
-    bool isBaroOperating = Instance::baro.isOperating();
-    if (isBaroOperating)
+    if (Instance::baro.isOperating())
+    {
         refPressure = Instance::baro.getPressure_hPa();
+        return true;
+    }
 
-    return isBaroOperating;
+    return false;
 }
 
 
-void INS::updateQuaternion()
+void INS::updateAHRS()
 {
-    MadgwickAHRS::Quaternion q;
-    auto acc = Instance::acc.getAcc_norm();
-    auto gyro = Instance::gyro.getGyro_rps();
+    FusionVector3 acc = vector3FloatToFusion(Instance::acc.getAcc_norm());
+    FusionVector3 gyro = vector3FloatToFusion(Instance::gyro.getGyro_dps());
 
+    // Update gyroscope bias correction algorithm
+    gyro = FusionBiasUpdate(&fusionBias, gyro);
+
+    // Update AHRS algorithm
     if (Instance::magn.isOperating())
     {
-        auto magn = Instance::magn.getMagn_norm();
-
-        q = ahrs.madgwickAHRSUpdate(
-            gyro.x, gyro.y, gyro.z,
-            acc.x, acc.y, acc.z,
-            magn.x, magn.y, magn.z
-        );
+        FusionVector3 magn = vector3FloatToFusion(Instance::magn.getMagn_norm());
+        FusionAhrsUpdate(&fusionAhrs, gyro, acc, magn, Config::MainInterval_s);
     }
     else
     {
-        q = ahrs.madgwickAHRSUpdateIMU(
-            gyro.x, gyro.y, gyro.z,
-            acc.x, acc.y, acc.z
-        );
+        FusionAhrsUpdateWithoutMagnetometer(&fusionAhrs, gyro, acc, Config::MainInterval_s);
     }
 
-    quaternion = {q.r, q.i, q.j, q.k};
-}
+    // Update quaternions
+    FusionQuaternion fusionQuaternion = FusionAhrsGetQuaternion(&fusionAhrs);
+    quaternion.r = fusionQuaternion.element.w;
+    quaternion.i = fusionQuaternion.element.x;
+    quaternion.j = fusionQuaternion.element.y;
+    quaternion.k = fusionQuaternion.element.z;
 
+    // Update Euler angles
+    FusionEulerAngles eulerAngles = FusionQuaternionToEulerAngles(fusionQuaternion);
+    angles_deg.x = eulerAngles.angle.pitch;
+    angles_deg.y = eulerAngles.angle.roll;
+    angles_deg.z = eulerAngles.angle.yaw;
 
-void INS::updateAngles()
-{
-#define q0 quaternion.r
-#define q1 quaternion.i
-#define q2 quaternion.j
-#define q3 quaternion.k
-    angles_rad.y = atan2f(q0 * q1 + q2 * q3, 0.5f - q1 * q1 - q2 * q2);		// roll
-    angles_rad.x = asinf(-2.0f * (q1 * q3 - q0 * q2));						// pitch
-    angles_rad.z = atan2f(q1 * q2 + q0 * q3, 0.5f - q2 * q2 - q3 * q3);		// roll (heading)
-#undef q0
-#undef q1
-#undef q2
-#undef q3
-}
-
-
-void INS::updateEarthAcceleration()
-{
-    using Common::Consts::GravitationalAcceleration;
-
-    auto acc = Instance::acc.getAcc_norm();
-    earthAcceleration_mps2 = quaternion.rotate3DVector(acc);
-    earthAcceleration_mps2 = {
-        earthAcceleration_mps2.x * GravitationalAcceleration,
-        earthAcceleration_mps2.y * GravitationalAcceleration,
-        (earthAcceleration_mps2.z - 1.f) * GravitationalAcceleration
-    };
+    // Update Earth acceleration
+    FusionVector3 fusionEarthAcc = FusionAhrsGetEarthAcceleration(&fusionAhrs);
+    earthAcceleration_mps2.x = fusionEarthAcc.axis.x * Common::Consts::GravitationalAcceleration;
+    earthAcceleration_mps2.y = fusionEarthAcc.axis.y * Common::Consts::GravitationalAcceleration;
+    earthAcceleration_mps2.z = fusionEarthAcc.axis.z * Common::Consts::GravitationalAcceleration;
 }
 
 
@@ -120,4 +106,16 @@ void INS::udpateAltitude()
 void INS::updateLatLong()
 {
     // TODO: update latitude and longitude
+}
+
+
+
+
+inline FusionVector3 vector3FloatToFusion(const Common::vector3Float& vector3Float)
+{
+    return {
+        vector3Float.x,
+        vector3Float.y,
+        vector3Float.z
+    };
 }
