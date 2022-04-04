@@ -25,7 +25,7 @@ namespace FailsafeScenarios
 
             return (abs(Instance::ins.getPitch_deg()) > TiltExceedingAngleThreshold ||
                     abs(Instance::ins.getRoll_deg()) > TiltExceedingAngleThreshold);
-        };
+        }
     };
 }
 

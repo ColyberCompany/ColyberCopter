@@ -26,7 +26,7 @@ namespace FailsafeScenarios
         bool hasFailOccurred() override {
             using Instance::pilotPacketComm;
             return pilotPacketComm.getConnectionStability() < ConnectionStabilityThreshold;
-        };
+        }
     };
 }
 
