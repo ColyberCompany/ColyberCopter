@@ -21,7 +21,7 @@ namespace FailsafeActions
         void execute() override {
             Instance::motors.setState(Enums::StateType::Disabled);
             Instance::virtualPilot.setFlightMode(Enums::FlightModeTypes::UNARMED);
-        };
+        }
     };
 }
 
