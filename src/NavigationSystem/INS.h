@@ -10,6 +10,8 @@
 
 #include "Common/Quaternion.h"
 #include "Common/Constants.h"
+#include "KalmanFilter.h"
+#include "config.h"
 #include <Fusion.h>
 #include <IExecutable.h>
 
