@@ -49,6 +49,7 @@
 #include "Sensors/SimpleMPU6050Handler.h"
 #include "Sensors/SimpleHMC5883LHandler.h"
 #include "Sensors/SimpleMS5611Handler.h"
+#include "Sensors/VL53L1XHandler.h"
 
 using namespace Interfaces;
 
@@ -101,6 +102,7 @@ namespace Assemble
         SimpleMPU6050Handler simpleMPU6050Handler;
         SimpleHMC5883LHandler simpleHMC5883LHandler;
         SimpleMS5611Handler simpleMS5611Handler;
+        VL53L1XHandler vl53l1xHandler;
         // other sensors..
         NoSensor noSensor;
     }
@@ -137,9 +139,9 @@ namespace Instance
     Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
     Barometer& baro = Assemble::Sensors::simpleMS5611Handler;
     TemperatureSensor& temperature = Assemble::Sensors::simpleMS5611Handler;
+    Rangefinder& btmRangefinder = Assemble::Sensors::vl53l1xHandler;
 
     // Sensor& gps = noSensor;
-    // Sensor& btmRangefinder = noSensor;
 
 // MotorsInstance:
     Motors& motors = Assemble::Motors::quadXMotors;
@@ -224,7 +226,7 @@ void initializeSensors()
     //initSensor(&Instance::magn); // TODO: calibrate magnetometer and initialize it
     initSensor(&Instance::baro);
     //initSensor(&Instance::gps);
-    //initSensor(&Instance::btmRangefinder);
+    initSensor(&Instance::btmRangefinder);
     // new sensors goes here...
     
 
@@ -260,6 +262,7 @@ void addTasksToTasker()
     tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
     tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
+    tasker.addTask_us(&Assemble::Sensors::vl53l1xHandler, VL53L1XHandler::UpdatePeriod_us, TaskType::NO_CATCHING_UP);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
     tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
     tasker.addTask_Hz(&debugTask, 50);
