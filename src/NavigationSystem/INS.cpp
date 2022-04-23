@@ -50,15 +50,13 @@ void INS::updateAHRS()
     gyro = FusionBiasUpdate(&fusionBias, gyro);
 
     // Update AHRS algorithm
-    if (Instance::magn.isOperating())
-    {
-        FusionVector3 magn = vector3FloatToFusion(Instance::magn.getMagn_norm());
-        FusionAhrsUpdate(&fusionAhrs, gyro, acc, magn, Config::MainInterval_s);
-    }
-    else
-    {
-        FusionAhrsUpdateWithoutMagnetometer(&fusionAhrs, gyro, acc, Config::MainInterval_s);
-    }
+    #ifdef COLYBER_USE_MAGN
+    FusionVector3 magn = vector3FloatToFusion(Instance::magn.getMagn_norm());
+    FusionAhrsUpdate(&fusionAhrs, gyro, acc, magn, Config::MainInterval_s);
+    #else
+    FusionAhrsUpdateWithoutMagnetometer(&fusionAhrs, gyro, acc, Config::MainInterval_s);
+    #endif
+    // FusionAhrsUpdateWithoutMagnetometer(&fusionAhrs, gyro, acc, Config::MainInterval_s);
 
     // Update quaternions
     FusionQuaternion fusionQuaternion = FusionAhrsGetQuaternion(&fusionAhrs);
