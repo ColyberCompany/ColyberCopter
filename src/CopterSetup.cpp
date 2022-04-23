@@ -44,7 +44,6 @@
 #include "Sensors/Base/GPS.h"
 #include "Sensors/Base/Rangefinder.h"
 #include "Sensors/Base/TemperatureSensor.h"
-#include "Sensors/NoSensor.h"
 // Sensors:
 #include "Sensors/SimpleMPU6050Handler.h"
 #include "Sensors/SimpleHMC5883LHandler.h"
@@ -76,8 +75,11 @@ namespace Assemble
     SerialDebugMessenger serialDebugMessenger(Serial1);
 
     namespace Motors {
-        QuadXMotors quadXMotors;
+        #ifdef COLYBER_DEACTIVATE_MOTORS
         NoMotors noMotors;
+        #else
+        QuadXMotors quadXMotors;
+        #endif
     }
 
     namespace NavigationSystem {
@@ -99,10 +101,11 @@ namespace Assemble
 
     namespace Sensors {
         SimpleMPU6050Handler simpleMPU6050Handler;
+        #ifdef COLYBER_USE_MAGN
         SimpleHMC5883LHandler simpleHMC5883LHandler;
+        #endif
         SimpleMS5611Handler simpleMS5611Handler;
         // other sensors..
-        NoSensor noSensor;
     }
 
     namespace Failsafe { // TODO: try to improve names of objects inside
@@ -131,18 +134,21 @@ namespace Instance
 
 
 // SensorInstances:
-    using Assemble::Sensors::noSensor;
     Accelerometer& acc = Assemble::Sensors::simpleMPU6050Handler;
     Gyroscope& gyro = Assemble::Sensors::simpleMPU6050Handler;
+    #ifdef COLYBER_USE_MAGN
     Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
+    #endif
     Barometer& baro = Assemble::Sensors::simpleMS5611Handler;
     TemperatureSensor& temperature = Assemble::Sensors::simpleMS5611Handler;
 
-    // Sensor& gps = noSensor;
-    // Sensor& btmRangefinder = noSensor;
 
 // MotorsInstance:
+    #ifdef COLYBER_DEACTIVATE_MOTORS
+    Motors& motors = Assemble::Motors::noMotors;
+    #else
     Motors& motors = Assemble::Motors::quadXMotors;
+    #endif
 }
 
 
@@ -212,6 +218,7 @@ void setupFailsafe()
 }
 
 
+// TODO: [#86] stop program if at least one sensor wasn't successfully initialized (all non-disabled sensors by macro)
 void initializeSensors()
 {
     Wire.begin();
@@ -221,7 +228,9 @@ void initializeSensors()
     // TODO: make a list from sensors and add enum with sensor types
     initSensor(&Instance::acc);
     initSensor(&Instance::gyro);
-    //initSensor(&Instance::magn); // TODO: calibrate magnetometer and initialize it
+    #ifdef COLYBER_USE_MAGN
+    initSensor(&Instance::magn);
+    #endif
     initSensor(&Instance::baro);
     //initSensor(&Instance::gps);
     //initSensor(&Instance::btmRangefinder);
@@ -251,14 +260,18 @@ void addTasksToTasker()
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::NavigationSystem::ins);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
+    #ifndef COLYBER_DEACTIVATE_MOTORS
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Motors::quadXMotors);
+    #endif
     tasker.addTask_us(&Assemble::TaskGroups::mainFrequency, Config::MainInterval_us);
 
     Assemble::TaskGroups::oneHertz.addTask(&Tasks::builtinDiodeBlink);
     tasker.addTask_Hz(&Assemble::TaskGroups::oneHertz, 1.f);
 
     tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
+    #ifdef COLYBER_USE_MAGN
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
+    #endif
     tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
     tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
