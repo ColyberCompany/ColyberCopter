@@ -56,7 +56,6 @@ void INS::updateAHRS()
     #else
     FusionAhrsUpdateWithoutMagnetometer(&fusionAhrs, gyro, acc, Config::MainInterval_s);
     #endif
-    // FusionAhrsUpdateWithoutMagnetometer(&fusionAhrs, gyro, acc, Config::MainInterval_s);
 
     // Update quaternions
     FusionQuaternion fusionQuaternion = FusionAhrsGetQuaternion(&fusionAhrs);
