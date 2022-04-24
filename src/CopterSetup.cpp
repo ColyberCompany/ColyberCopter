@@ -101,7 +101,7 @@ namespace Assemble
 
     namespace Sensors {
         SimpleMPU6050Handler simpleMPU6050Handler;
-        #ifdef COLYBER_USE_MAGN
+        #if COLYBER_MAGN == COLYBER_SENSOR_HMC5883L
         SimpleHMC5883LHandler simpleHMC5883LHandler;
         #endif
         SimpleMS5611Handler simpleMS5611Handler;
@@ -137,7 +137,10 @@ namespace Instance
     Accelerometer& acc = Assemble::Sensors::simpleMPU6050Handler;
     Gyroscope& gyro = Assemble::Sensors::simpleMPU6050Handler;
     #ifdef COLYBER_USE_MAGN
-    Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
+    Magnetometer& magn =
+        #if COLYBER_MAGN == COLYBER_SENSOR_HMC5883L
+        Assemble::Sensors::simpleHMC5883LHandler;
+        #endif
     #endif
     Barometer& baro = Assemble::Sensors::simpleMS5611Handler;
     TemperatureSensor& temperature = Assemble::Sensors::simpleMS5611Handler;
@@ -269,7 +272,7 @@ void addTasksToTasker()
     tasker.addTask_Hz(&Assemble::TaskGroups::oneHertz, 1.f);
 
     tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
-    #ifdef COLYBER_USE_MAGN
+    #if COLYBER_MAGN == COLYBER_SENSOR_HMC5883L
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
     #endif
     tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
