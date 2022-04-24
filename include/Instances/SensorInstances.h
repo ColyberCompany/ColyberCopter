@@ -27,7 +27,9 @@ namespace Instance
     #endif
     extern Barometer& baro;
     extern TemperatureSensor& temperature;
+    #ifdef COLYBER_USE_BTM_RANGEFINDER
     extern Rangefinder& btmRangefinder;
+    #endif
     // extern other sensors...
 }
 

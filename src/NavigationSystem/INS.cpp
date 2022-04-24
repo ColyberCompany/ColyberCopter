@@ -85,6 +85,8 @@ void INS::udpateAltitude()
 
     altitude_m = Common::Utils::calculateAltitude(refPressure, curPressure, curTemperature);
 
+    // TODO: [#91] update altitude fusing baro and bottom rangefinder
+
 
 // // temp altitude calculation: (instead of Kalman)
 //     float baroAlt = Common::Utils::calculateAltitude(refPressure, curPressure, curTemperature);
