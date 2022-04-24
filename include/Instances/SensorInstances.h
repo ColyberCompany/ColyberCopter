@@ -22,7 +22,9 @@ namespace Instance
 {
     extern Accelerometer& acc;
     extern Gyroscope& gyro;
+    #ifdef COLYBER_USE_MAGN
     extern Magnetometer& magn;
+    #endif
     extern Barometer& baro;
     extern TemperatureSensor& temperature;
     extern Rangefinder& btmRangefinder;
