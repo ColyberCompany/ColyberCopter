@@ -46,6 +46,7 @@
 #include "Sensors/Base/TemperatureSensor.h"
 // Sensors:
 #include "Sensors/SimpleMPU6050Handler.h"
+#include "Sensors/MPU6500SPIHandler.h"
 #include "Sensors/SimpleHMC5883LHandler.h"
 #include "Sensors/SimpleMS5611Handler.h"
 
@@ -101,6 +102,9 @@ namespace Assemble
 
     namespace Sensors {
         SimpleMPU6050Handler simpleMPU6050Handler;
+        #if COLYBER_2ND_ACC == COLYBER_SENSOR_MPU6500SPI || COLYBER_2ND_GYRO == COLYBER_SENSOR_MPU6500SPI
+        MPU6500SPIHandler mpu6500spiHandler;
+        #endif
         #if COLYBER_MAGN == COLYBER_SENSOR_HMC5883L
         SimpleHMC5883LHandler simpleHMC5883LHandler;
         #endif
@@ -261,6 +265,9 @@ void addTasksToTasker()
     using Instance::tasker;
 
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
+    #if COLYBER_2ND_ACC == COLYBER_SENSOR_MPU6500SPI || COLYBER_2ND_GYRO == COLYBER_SENSOR_MPU6500SPI
+    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::mpu6500spiHandler);
+    #endif
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::NavigationSystem::ins);
     Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
     #ifndef COLYBER_DEACTIVATE_MOTORS
