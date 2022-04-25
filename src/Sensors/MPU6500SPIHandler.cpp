@@ -17,8 +17,10 @@ MPU6500SPIHandler::MPU6500SPIHandler(SPIClass& bus, uint8_t csPin):
 
 bool MPU6500SPIHandler::init_priv()
 {
-    bool initStatus = mpu.initialize();
-    if (!initStatus)
+    if (Accelerometer::isInitialized() || Gyroscope::isInitialized())
+        return true;
+
+    if (!mpu.initialize())
         return false;
 
     mpu.setAccRange(MPU6500SPI::AccRange::Range_8G);
