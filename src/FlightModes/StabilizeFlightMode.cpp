@@ -92,7 +92,7 @@ void StabilizeFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
 void StabilizeFlightMode::throttleTiltCompensation(Common::ControlSticks& inputOutputSticks)
 {
     vector3Float angles_rad = Instance::ins.getAngles_rad();
-    float tiltCompThrMult = 1.f / ( cos(angles_rad.x) * cos(angles_rad.y) ); // tilt compensation throttle multiplier
+    float tiltCompThrMult = 1.f / ( cosf(angles_rad.x) * cosf(angles_rad.y) ); // tilt compensation throttle multiplier
     if (tiltCompThrMult > Config::MaxTiltCompThrMult)
         tiltCompThrMult = Config::MaxTiltCompThrMult;
 
