@@ -103,8 +103,8 @@ void StabilizeFlightMode::throttleTiltCompensation(Common::ControlSticks& inputO
 
 void StabilizeFlightMode::updateLeveling(ControlSticks& inputOutputSticks)
 {
-    float finalPitch = inputOutputSticks.getPitch() / 10.f; // TODO: make that max tilt angle can be set
-    float finalRoll = inputOutputSticks.getRoll() / 10.f;
+    float finalPitch = inputOutputSticks.getPitch() * StickToAngle;
+    float finalRoll = inputOutputSticks.getRoll() * StickToAngle;
     vector3Float angles = Instance::ins.getAngles_deg();
 
     inputOutputSticks.setPitch(levelingXPID.update(finalPitch, angles.x) + 0.5f);

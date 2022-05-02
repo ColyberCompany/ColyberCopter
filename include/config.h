@@ -26,7 +26,7 @@ namespace Config
 
     inline constexpr uint8_t MaxTaskerTasks = 25;
 
-    inline constexpr float TiltExceedingAngleThreshold = 67;
+    inline constexpr float StickMaxTiltAngle_deg = 50; // setpoint angle for maximum stick position (pitch, roll)
 
     inline constexpr float AccLPFCutOffFreq = 10.f;
     // inline constexpr float GyroLPFCutOffFreq = 10.f;

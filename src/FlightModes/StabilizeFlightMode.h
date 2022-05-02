@@ -15,13 +15,14 @@
 
 class StabilizeFlightMode : public FlightMode
 {
+    static constexpr uint16_t StickToAngle = Config::StickMaxTiltAngle_deg / 500; // MaxTiltAngle / MaxStickValue
+
     PID levelingXPID;
     PID levelingYPID;
     PID headingHoldPID;
 
     float headingToHold = 0;
     float headingError = 0; // [deg] (-180 : 180)
-
 
 public:
     StabilizeFlightMode();
