@@ -22,7 +22,7 @@
 #define COLYBER_MAGN			COLYBER_SENSOR_NO_SENSOR			// TODO: calibrate magnetometer
 #define COLYBER_2ND_ACC			COLYBER_SENSOR_NO_SENSOR			// TODO: not implemented yet
 #define COLYBER_2ND_GYRO		COLYBER_SENSOR_NO_SENSOR			// TODO: not implemented yet
-#define COLYBER_BTM_RANGEFINDER	COLYBER_SENSOR_NO_SENSOR				// bottom rangefinder
+#define COLYBER_BTM_RANGEFINDER	COLYBER_SENSOR_VL53L1X				// bottom rangefinder
 
 
 	// Other flags (comment if want to deactivate)

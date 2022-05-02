@@ -16,9 +16,10 @@ class VL53L1XHandler : public Rangefinder, public IExecutable
 {
     VL53L1X vl53l1x;
     float distance_m = 0;
+    VL53L1X::RangeStatus rangeStatus = VL53L1X::RangeStatus::None;
 
 public:
-    static const uint32_t UpdatePeriod_us = 50000; // bigger -> more accurate readings
+    static const uint32_t UpdatePeriod_us = 100000; // bigger -> more accurate readings
 
     VL53L1XHandler();
 
@@ -28,6 +29,10 @@ public:
 
     float getDistance_m() override {
         return distance_m;
+    }
+
+    bool isRangeValid() const override {
+        return rangeStatus == VL53L1X::RangeStatus::RangeValid;
     }
 
 private:

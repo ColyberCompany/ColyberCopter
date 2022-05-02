@@ -10,8 +10,10 @@
 
 #include "Common/Quaternion.h"
 #include "Common/Constants.h"
+#include "config.h"
 #include <Fusion.h>
 #include <IExecutable.h>
+#include <AverageFilter.h>
 
 
 /**
@@ -31,8 +33,12 @@ class INS : public IExecutable
     float altitude_m = 0.f;
     Common::vector3Float earthAcceleration_mps2 = {};
 
-// helper variables:
+// helper stuff:
     float refPressure = 1023.f; // reference pressure (pressure from which altitude is calculated)
+    float baroRangefinderAltDiff = 0.f;
+    static const uint8_t rangefinderUpdateFrequency = 6;
+    static const uint16_t rfdrSmplsToAvg = Config::MainFrequency_Hz / rangefinderUpdateFrequency;
+    AverageFilter<float, rfdrSmplsToAvg> rangefinderHeightFilter;
 
 // temp altitude calc:
     float verticalVelocity_mps = 0.f;
@@ -111,7 +117,7 @@ private:
      * @brief Set reference pressure to current pressure reading.
      * Altitude for current position will equal 0.
      */
-    bool resetAltitude();
+    bool resetBaroAltitude();
 
 
 // Values update:

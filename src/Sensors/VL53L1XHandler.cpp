@@ -30,5 +30,11 @@ bool VL53L1XHandler::init_priv()
 
 void VL53L1XHandler::execute()
 {
-    distance_m = vl53l1x.read(false) * 0.001f;
+    if (vl53l1x.dataReady())
+    {
+        uint16_t distance_mm = vl53l1x.read(false);
+        distance_m = distance_mm * 0.001f;
+    }
+
+    rangeStatus = vl53l1x.ranging_data.range_status; // update range status
 }
