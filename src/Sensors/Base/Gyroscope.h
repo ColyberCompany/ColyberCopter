@@ -41,53 +41,10 @@ public:
     }
 
     /**
-     * @brief Get angular rotation on X axis in deg/sec.
-     */
-    float getGyroX_dps() {
-        return getGyro_dps_priv().x - offset.x;
-    }
-
-    /**
-     * @brief Get angular rotation on X axis in deg/sec.
-     */
-    float getGyroY_dps() {
-        return getGyro_dps_priv().y - offset.y;
-    }
-
-    /**
-     * @brief Get angular rotation on X axis in deg/sec.
-     */
-    float getGyroZ_dps() {
-        return getGyro_dps_priv().z - offset.z;
-    }
-
-
-    /**
      * @brief Get angular rotation in rad/sec.
      */
     Common::vector3Float getGyro_rps() {
         return getGyro_dps() * Common::Consts::DegToRad;
-    }
-
-    /**
-     * @brief Get angular rotation on X axis in rad/sec.
-     */
-    float getGyroX_rps() {
-        return getGyroX_dps() * Common::Consts::DegToRad;
-    }
-
-    /**
-     * @brief Get angular rotation on Y axis in rad/sec.
-     */
-    float getGyroY_rps() {
-        return getGyroY_dps() * Common::Consts::DegToRad;
-    }
-
-    /**
-     * @brief Get angular rotation on Z axis in rad/sec.
-     */
-    float getGyroZ_rps() {
-        return getGyroZ_dps() * Common::Consts::DegToRad;
     }
 
 private:
