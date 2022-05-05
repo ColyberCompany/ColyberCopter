@@ -11,6 +11,8 @@
 #include "Sensor.h"
 #include "Common/Vector3.h"
 
+// Calibration: https://thecavepearlproject.org/2015/05/22/calibrating-any-compass-or-accelerometer-for-arduino/
+
 
 class Magnetometer : public Sensor
 {

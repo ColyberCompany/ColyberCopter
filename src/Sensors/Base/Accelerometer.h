@@ -12,6 +12,9 @@
 #include "Common/Vector3.h"
 #include "Common/Constants.h"
 
+// Calibration: https://thecavepearlproject.org/2015/05/22/calibrating-any-compass-or-accelerometer-for-arduino/
+
+
 class Accelerometer : public Sensor
 {
     Common::vector3Float offset;
