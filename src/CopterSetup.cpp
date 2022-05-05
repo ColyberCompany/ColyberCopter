@@ -13,6 +13,7 @@
 #include "Tasks.h"
 #include "Common/Constants.h"
 #include "Common/Utils.h"
+#include <SPI.h>
 // Failsafe:
 #include "Failsafe/FailsafeManager.h"
 #include "Failsafe/FailsafeActions/DisarmMotors.h"
@@ -69,6 +70,8 @@ bool initSensor(Sensor* sensorToInit);
 HardwareSerial Serial2(PA3, PA2);
 //HardwareSerial Serial3(PB11, PB10);
 
+SPIClass SPI_2(PB15, PB14, PB13, PB12);
+
 
 namespace Assemble
 {
@@ -102,6 +105,7 @@ namespace Assemble
 
     namespace Sensors {
         SimpleMPU6050Handler simpleMPU6050Handler;
+        // MPU6500SPIHandler mpu6500spiHandler(SPI_2, PB12);
         #if COLYBER_MAGN == COLYBER_SENSOR_HMC5883L
         SimpleHMC5883LHandler simpleHMC5883LHandler;
         #endif
@@ -227,6 +231,8 @@ void initializeSensors()
 {
     Wire.begin();
     delay(100);
+    SPI_2.begin();
+    delay(50);
 
 
     // TODO: make a list from sensors and add enum with sensor types
@@ -310,7 +316,7 @@ bool initSensor(Sensor* sensorToInit)
     if (sensorInitResult == false)
     {
         Instance::debMes.showMessage("failed");
-        Instance::debMes.showError(478792);
+        Instance::debMes.showErrorAndAbort(478792);
     }
     else
         Instance::debMes.showMessage("success");
