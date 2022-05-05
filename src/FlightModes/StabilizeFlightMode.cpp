@@ -6,6 +6,7 @@
  */
 
 #include "StabilizeFlightMode.h"
+#include "Common/ControlSticks.h"
 #include "Common/Constants.h"
 #include "Instances/MainInstances.h"
 #include "config.h"
@@ -103,8 +104,8 @@ void StabilizeFlightMode::throttleTiltCompensation(Common::ControlSticks& inputO
 
 void StabilizeFlightMode::updateLeveling(ControlSticks& inputOutputSticks)
 {
-    float finalPitch = inputOutputSticks.getPitch() * StickToAngle;
-    float finalRoll = inputOutputSticks.getRoll() * StickToAngle;
+    float finalPitch = stickToAngle(inputOutputSticks.getPitch());
+    float finalRoll = stickToAngle(inputOutputSticks.getRoll());
     vector3Float angles = Instance::ins.getAngles_deg();
 
     inputOutputSticks.setPitch(levelingXPID.update(finalPitch, angles.x) + 0.5f);
@@ -154,4 +155,10 @@ float StabilizeFlightMode::correctHeading(float headingToCorrect)
         headingToCorrect += RoundAngle;
     
     return headingToCorrect;
+}
+
+
+constexpr float StabilizeFlightMode::stickToAngle(int16_t stickValue)
+{
+    return stickValue * (Config::StabilizeMaxTiltAngle_deg / ControlSticks::MaxPitchRollYaw); // stickValue * (MaxTiltAngle / MaxStickValue)
 }

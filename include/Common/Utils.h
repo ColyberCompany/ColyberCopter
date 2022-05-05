@@ -44,7 +44,7 @@ namespace Common
          * @param temperature_degC temperature in degrees celsius.
          * @return calculated altitude above ground level.
          */
-        inline float calculateAltitude(float pressure0, float currentPressure, float temperature_degC)
+        inline constexpr float calculateAltitude(float pressure0, float currentPressure, float temperature_degC)
         {
             return (pow(currentPressure / pressure0, -0.19f) - 1) * (temperature_degC + 273.15f)  * 153.846f;
         }

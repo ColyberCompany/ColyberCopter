@@ -15,8 +15,6 @@
 
 class StabilizeFlightMode : public FlightMode
 {
-    static constexpr uint16_t StickToAngle = Config::StickMaxTiltAngle_deg / 500; // MaxTiltAngle / MaxStickValue
-
     PID levelingXPID;
     PID levelingYPID;
     PID headingHoldPID;
@@ -55,6 +53,13 @@ private:
      * @return Heading from range 0 - 360 deg.
      */
     static float correctHeading(float headingToCorrect);
+
+    /**
+     * @brief Calculate angle corresponding to given control stick value (pitch or roll).
+     * @param stickValue Value of the pitch or roll stick.
+     * @return Proportional angle for given stick value.
+     */
+    static constexpr float stickToAngle(int16_t stickValue);
 };
 
 

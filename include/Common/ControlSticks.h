@@ -26,7 +26,13 @@ namespace Common
 
 
     public:
-        ControlSticks() { set(0, 0, 0, 0); }
+        static constexpr uint16_t MaxPitchRollYaw = 500;
+        static constexpr uint16_t MaxThrottle = 1000;
+
+        ControlSticks()
+        {
+            set(0, 0, 0, 0);
+        }
 
 
         ControlSticks(uint16_t throttle, int16_t yaw, int16_t pitch, int16_t roll)
@@ -67,7 +73,7 @@ namespace Common
          */
         void setThrottle(uint16_t value)
         {
-            throttle = constrain(value, 0, 1000);
+            throttle = constrain(value, 0, MaxThrottle);
         }
         
 
@@ -79,7 +85,7 @@ namespace Common
          */
         void setYaw(int16_t value)
         {
-            yaw = constrain(value, -500, 500);
+            yaw = constrain(value, -MaxPitchRollYaw, MaxPitchRollYaw);
         }
 
 
@@ -91,7 +97,7 @@ namespace Common
          */
         void setPitch(int16_t value)
         {
-            pitch = constrain(value, -500, 500);
+            pitch = constrain(value, -MaxPitchRollYaw, MaxPitchRollYaw);
         }
 
 
@@ -103,7 +109,7 @@ namespace Common
          */
         void setRoll(int16_t value)
         {
-            roll = constrain(value, -500, 500);
+            roll = constrain(value, -MaxPitchRollYaw, MaxPitchRollYaw);
         }
 
 
