@@ -55,9 +55,12 @@ public:
 
     void showErrorAndAbort(int errorCode) override
     {
-        showError(errorCode);
-        serial.println("PROGRAM IS ABORTED!");
-        while (true); // TODO: think about posibility to force program execution by sending some special message on serial monitor
+        while (true)
+        {
+            showError(errorCode);
+            serial.println("PROGRAM IS ABORTED!");
+            delay(1000);
+        } // TODO: think about posibility to force program execution by sending some special message on serial monitor
         // TODO: you can blink diode in a specific way that will indicate program stop
     }
 };

@@ -34,23 +34,25 @@ public:
         return "mpu6050";
     }
 
+    float getTemperature_degC() override {
+        return mpu.getTemperature();
+    }
+
 private:
     bool init_priv() override;
 
     Common::vector3Float getAcc_norm_priv() override {
         return accFiltered;
     }
+
     Common::vector3Float getGyro_dps_priv() override {
         return gyroFiltered;
-    }
-    float getTemperature_degC() override {
-        return mpu.getTemperature();
     }
 
     /**
      * @brief Reads new data from MPU6050 and perform filtering.
      */
-    void execute();
+    void execute() override;
 
     /**
      * @brief Setup three low-pass filters.

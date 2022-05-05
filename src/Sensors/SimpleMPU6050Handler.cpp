@@ -21,11 +21,13 @@ bool SimpleMPU6050Handler::init_priv()
     if (Accelerometer::isInitialized() || Gyroscope::isInitialized())
         return true;
 
-    bool initResult = mpu.initialize();
+    if (!mpu.initialize())
+        return false;
+        
     config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
     mpu.enableCompassBypass();
 
-    return initResult;
+    return true;
 }
 
 
