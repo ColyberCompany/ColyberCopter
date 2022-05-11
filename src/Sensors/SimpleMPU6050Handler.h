@@ -53,13 +53,6 @@ private:
      * @brief Reads new data from MPU6050 and perform filtering.
      */
     void execute() override;
-
-    /**
-     * @brief Setup three low-pass filters.
-     * @param lpf Vector of filters to setup.
-     * @param cutoffFreq It's cutoff frequency.
-     */
-    static void config3AxisLPF(ThreeAxesLPF& lpf, float cutoffFreq);
 };
 
 

@@ -9,7 +9,7 @@ namespace Common
     namespace Utils
     {
         template <typename T>
-        inline void printVector3(const vector3<T>& toShow, Stream& stream = Serial, const char* separator = "\t")
+        inline void printVector3(const T& toShow, Stream& stream = Serial, const char* separator = "\t")
         {
             stream.print(toShow.x);
             stream.print(separator);
