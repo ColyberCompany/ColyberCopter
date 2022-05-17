@@ -8,12 +8,15 @@
 #include "config.h"
 #include "calibration.h"
 
+constexpr float AccLPFCutOffFreq = 7.f;
+// constexpr float GyroLPFCutOffFreq = 10.f;
+
 
 SimpleMPU6050Handler::SimpleMPU6050Handler()
     : accLPF(
-        {Config::AccLPFCutOffFreq, Config::MainInterval_s},
-        {Config::AccLPFCutOffFreq, Config::MainInterval_s},
-        {Config::AccLPFCutOffFreq, Config::MainInterval_s}
+        {AccLPFCutOffFreq, Config::MainInterval_s},
+        {AccLPFCutOffFreq, Config::MainInterval_s},
+        {AccLPFCutOffFreq, Config::MainInterval_s}
     )
 {
     setAccCalibration(Calibration::AccOffset, Calibration::AccScale);
