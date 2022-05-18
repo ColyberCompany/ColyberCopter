@@ -48,6 +48,37 @@ namespace Common
         {
             return (pow(currentPressure / pressure0, -0.19f) - 1) * (temperature_degC + 273.15f)  * 153.846f;
         }
+
+
+        class
+        {
+            Stream* stream = &Serial;
+            char separator = '\t';
+
+        public:
+            template <class T>
+            void operator()(T value) const {
+                stream->println(value);
+            }
+
+            template <class T, class... Args>
+            void operator()(T value, Args... args) const
+            {
+                stream->print(value);
+                stream->print(separator);
+                operator()(args...);
+            }
+
+            void setStream(Stream* stream)
+            {
+                this->stream = stream;
+            }
+
+            void setSeparator(char separator)
+            {
+                this->separator = separator;
+            }
+        } print;
     }
 }
 
