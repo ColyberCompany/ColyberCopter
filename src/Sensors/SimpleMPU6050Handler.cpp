@@ -8,7 +8,7 @@
 #include "config.h"
 #include "calibration.h"
 
-constexpr float AccLPFCutOffFreq = 7.f;
+constexpr float AccLPFCutOffFreq = 8.f;
 // constexpr float GyroLPFCutOffFreq = 10.f;
 
 
