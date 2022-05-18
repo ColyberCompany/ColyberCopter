@@ -16,7 +16,7 @@ using SimpleDataStructures::ArrayIterator;
 using Common::ControlSticks;
 
 static constexpr uint8_t StickSamplesToAverage =
-    Config::MainFrequency_Hz / Config::RmtCtrlReceivingFrequency_Hz + 0.5f; // <main freq> / <stick value receiving freq> : 250/30
+    Config::MainFrequency_Hz / (float)Config::RmtCtrlReceivingFrequency_Hz + 0.5f; // <main freq> / <stick value receiving freq> : 250/30
 
 VirtualPilot::VirtualPilot(FlightMode& initialFlightMode) :
     throttleStickAverage(StickSamplesToAverage),

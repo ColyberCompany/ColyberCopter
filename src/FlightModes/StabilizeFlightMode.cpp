@@ -37,7 +37,8 @@ StabilizeFlightMode::StabilizeFlightMode()
     levelingYPID.setGains(LevelingPID_kP, LevelingPID_kI, LevelingPID_kD, LevelingPID_IMax);
     headingHoldPID.setGains(HeadHoldPID_kP, HeadHoldPID_kI, HeadHoldPID_kD, HeadHoldPID_IMax);
 
-    // TODO: setup D low-pass filters
+    levelingXPID.set_derivCutoffFreq(8);
+    levelingYPID.set_derivCutoffFreq(8);
 }
 
 

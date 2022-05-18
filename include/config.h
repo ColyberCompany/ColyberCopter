@@ -16,7 +16,7 @@
 
 namespace Config
 {
-    inline constexpr float MainFrequency_Hz = 250.f;
+    inline constexpr uint16_t MainFrequency_Hz = 250;
     inline constexpr uint32_t MainInterval_us = 4000; // = 1000000 / MainFrequency_Hz;
     inline constexpr float MainInterval_s = 0.004f; // = 1.f / MainFrequency_Hz; // delta time between next main loop executions
 
