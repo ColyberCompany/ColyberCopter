@@ -28,10 +28,10 @@ namespace Config
 
     inline constexpr float StabilizeMaxTiltAngle_deg = 50; // setpoint angle for maximum stick position (pitch, roll) (maximum tilt angle in stabilize flight mode)
 
-    inline constexpr float LevelingPID_kP = 2.85f;
-    inline constexpr float LevelingPID_kI = 1.4f;
-    inline constexpr float LevelingPID_kD = 0.67f;
-    inline constexpr uint16_t LevelingPID_IMax = 90;
+    inline constexpr float LevelingPID_kP = 2.6f;
+    inline constexpr float LevelingPID_kI = 0.37f;
+    inline constexpr float LevelingPID_kD = 0.91f;
+    inline constexpr uint16_t LevelingPID_IMax = 100;
 
     inline constexpr float HeadHoldPID_kP = 2.24f;
     inline constexpr float HeadHoldPID_kI = 1.11f;
