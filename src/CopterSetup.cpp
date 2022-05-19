@@ -50,6 +50,7 @@
 #include "Sensors/MPU6500SPIHandler.h"
 #include "Sensors/SimpleHMC5883LHandler.h"
 #include "Sensors/SimpleMS5611Handler.h"
+#include "Sensors/VL53L1XHandler.h"
 
 using namespace Interfaces;
 
@@ -110,6 +111,9 @@ namespace Assemble
         SimpleHMC5883LHandler simpleHMC5883LHandler;
         #endif
         SimpleMS5611Handler simpleMS5611Handler;
+        #if COLYBER_BTM_RANGEFINDER == COLYBER_SENSOR_VL53L1X
+        VL53L1XHandler vl53l1xHandler;
+        #endif
         // other sensors..
     }
 
@@ -145,10 +149,18 @@ namespace Instance
     Magnetometer& magn =
         #if COLYBER_MAGN == COLYBER_SENSOR_HMC5883L
         Assemble::Sensors::simpleHMC5883LHandler;
+        // #elif COLYBER_MAGN == other_sensor
         #endif
     #endif
     Barometer& baro = Assemble::Sensors::simpleMS5611Handler;
     TemperatureSensor& temperature = Assemble::Sensors::simpleMS5611Handler;
+    #ifdef COLYBER_USE_BTM_RANGEFINDER
+    Rangefinder& btmRangefinder =
+        #if COLYBER_BTM_RANGEFINDER == COLYBER_SENSOR_VL53L1X
+        Assemble::Sensors::vl53l1xHandler;
+        // #elif COLYBER_BTM_RANGEFINDER == other_sensor
+        #endif
+    #endif
 
 
 // MotorsInstance:
@@ -243,7 +255,9 @@ void initializeSensors()
     #endif
     initSensor(&Instance::baro);
     //initSensor(&Instance::gps);
-    //initSensor(&Instance::btmRangefinder);
+    #ifdef COLYBER_USE_BTM_RANGEFINDER
+    initSensor(&Instance::btmRangefinder);
+    #endif
     // new sensors goes here...
     
 
@@ -283,6 +297,9 @@ void addTasksToTasker()
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
     #endif
     tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
+    #if COLYBER_BTM_RANGEFINDER == COLYBER_SENSOR_VL53L1X
+    tasker.addTask_us(&Assemble::Sensors::vl53l1xHandler, VL53L1XHandler::UpdatePeriod_us, TaskType::NO_CATCHING_UP);
+    #endif
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
     tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
     tasker.addTask_Hz(&debugTask, 50);

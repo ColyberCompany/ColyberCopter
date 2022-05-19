@@ -10,6 +10,7 @@
 #define CONFIG_H
 
 #include "Enums/BaudRateTypes.h"
+#include "Common/Constants.h"
 #include <cstdint>
 #include <cstddef>
 
@@ -49,6 +50,7 @@ namespace Config
     
 
     inline constexpr float MaxTiltCompThrMult = 1.5f;
+    inline constexpr float MaxRfdrTiltCorrectionAngle_rad = 55.f * Common::Consts::DegToRad; // max rangefinder tilt correction angle
 }
 
 

@@ -22,6 +22,11 @@ public:
     virtual ~Rangefinder() {}
 
     virtual float getDistance_m() = 0;
+    virtual bool isRangeValid() const = 0;
+
+    bool isOperating() const override {
+        return isRangeValid();
+    }
 };
 
 

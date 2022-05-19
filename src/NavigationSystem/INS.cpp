@@ -8,7 +8,7 @@
 #include "Instances/SensorInstances.h"
 #include "Common/Utils.h"
 #include "Common/Constants.h"
-#include "config.h"
+#include <cmath>
 
 // TODO: use this calibration
 // const FusionMatrix accMisalignment = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
@@ -48,15 +48,14 @@ void INS::execute()
 }
 
 
-bool INS::resetAltitude()
+bool INS::resetBaroAltitude()
 {
-    if (Instance::baro.isOperating())
-    {
-        refPressure = Instance::baro.getPressure_hPa();
-        return true;
-    }
+    if (!Instance::baro.isOperating())
+        return false;
 
-    return false;
+    refPressure = Instance::baro.getPressure_hPa();
+    return true;
+
 }
 
 
@@ -104,10 +103,34 @@ void INS::updateAHRS()
 
 void INS::updateAltitude()
 {
+    static const float MinRangefinderTiltCompMultiplayer = cosf(Config::MaxRfdrTiltCorrectionAngle_rad);
+    using Instance::btmRangefinder;
+
     float curPressure = Instance::baro.getPressure_hPa();
     float curTemperature = Instance::temperature.getTemperature_degC();
 
-    altitude_m = Common::Utils::calculateAltitude(refPressure, curPressure, curTemperature);
+    float baroAltitude_m = Common::Utils::calculateAltitude(refPressure, curPressure, curTemperature);
+
+    #ifdef COLYBER_USE_BTM_RANGEFINDER
+    // Baro and rangefinder altitude fusion (use rangefinder always when available)
+    auto angles_rad = getAngles_rad();
+    float tiltCompMult = cosf(angles_rad.x) * cosf(angles_rad.y);
+    if (btmRangefinder.isRangeValid() && tiltCompMult > MinRangefinderTiltCompMultiplayer)
+    {
+        // compensate rangefinder measurement with vehicle tilt angle
+        float heightRangefinder_m = Instance::btmRangefinder.getDistance_m() * tiltCompMult;
+
+        baroRangefinderAltDiff = heightRangefinder_m - baroAltitude_m;
+        altitude_m = heightRangefinder_m;
+    }
+    else
+    {
+        altitude_m = baroAltitude_m + baroRangefinderAltDiff;
+    }
+    altitude_m = rangefinderHeightFilter.update(altitude_m); // TODO: smooth value in better way
+    #else // baro only
+    altitude_m = baroAltitude_m;
+    #endif // COLYBER_USE_BTM_RANGEFINDER
 
 
 // // temp altitude calculation: (instead of Kalman)
