@@ -9,7 +9,7 @@ namespace Common
     namespace Utils
     {
         template <typename T>
-        inline void printVector3(const vector3<T>& toShow, Stream& stream = Serial, const char* separator = "\t")
+        inline void printVector3(const T& toShow, Stream& stream = Serial, const char* separator = "\t")
         {
             stream.print(toShow.x);
             stream.print(separator);
@@ -44,10 +44,41 @@ namespace Common
          * @param temperature_degC temperature in degrees celsius.
          * @return calculated altitude above ground level.
          */
-        inline float calculateAltitude(float pressure0, float currentPressure, float temperature_degC)
+        inline constexpr float calculateAltitude(float pressure0, float currentPressure, float temperature_degC)
         {
             return (pow(currentPressure / pressure0, -0.19f) - 1) * (temperature_degC + 273.15f)  * 153.846f;
         }
+
+
+        class
+        {
+            Stream* stream = &Serial;
+            char separator = '\t';
+
+        public:
+            template <class T>
+            void operator()(T value) const {
+                stream->println(value);
+            }
+
+            template <class T, class... Args>
+            void operator()(T value, Args... args) const
+            {
+                stream->print(value);
+                stream->print(separator);
+                operator()(args...);
+            }
+
+            void setStream(Stream* stream)
+            {
+                this->stream = stream;
+            }
+
+            void setSeparator(char separator)
+            {
+                this->separator = separator;
+            }
+        } print;
     }
 }
 
