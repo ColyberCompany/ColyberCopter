@@ -39,6 +39,7 @@ StabilizeFlightMode::StabilizeFlightMode()
 
     levelingXPID.set_derivCutoffFreq(8);
     levelingYPID.set_derivCutoffFreq(8);
+    headingHoldPID.set_derivCutoffFreq(8);
 }
 
 
