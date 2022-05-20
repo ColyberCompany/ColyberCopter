@@ -12,6 +12,7 @@
 
 #include "Interfaces/IVirtualPilot.h"
 #include "FlightModes/FlightMode.h"
+#include "config.h"
 #include <IExecutable.h>
 #include <GrowingArray.h>
 #include <AverageFilter.h>
@@ -24,10 +25,12 @@ private:
     SimpleDataStructures::GrowingArray<FlightMode*> flightModesArray;
 
     // average filters for lower frequency pilot sticks values
-    AverageFilter<uint16_t> throttleStickAverage;
-    AverageFilter<int16_t> yawStickAverage;
-    AverageFilter<int16_t> pitchStickAverage;
-    AverageFilter<int16_t> rollStickAverage;
+    static constexpr uint8_t StickSamplesToAverage =
+        Config::MainFrequency_Hz / (float)Config::RmtCtrlReceivingFrequency_Hz + 0.5f; // <main freq> / <stick value receiving freq> : 250/30
+    AverageFilter<uint16_t, StickSamplesToAverage> throttleStickAverage;
+    AverageFilter<int16_t, StickSamplesToAverage> yawStickAverage;
+    AverageFilter<int16_t, StickSamplesToAverage> pitchStickAverage;
+    AverageFilter<int16_t, StickSamplesToAverage> rollStickAverage;
 
 public:
     VirtualPilot(FlightMode& initialFlightMode);

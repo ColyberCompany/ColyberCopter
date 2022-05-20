@@ -8,7 +8,6 @@
 
 
 SimpleMS5611Handler::SimpleMS5611Handler()
-    : pressureFilter(PressurePerTemperatureRequests + 1)
 {
     // Initialize average filter with initial averate of 1000 mbar
     for (uint8_t i = 0; i < PressurePerTemperatureRequests + 1; ++i)
