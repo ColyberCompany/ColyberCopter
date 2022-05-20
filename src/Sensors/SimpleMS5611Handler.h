@@ -17,11 +17,11 @@
 
 class SimpleMS5611Handler : private SimpleMS5611, public Barometer, public TemperatureSensor, public IExecutable
 {
-    AverageFilter<float> pressureFilter;
+    static const uint8_t PressurePerTemperatureRequests = 19; // How many pressure requests are per one temperature request
+    
     float smoothPressure_mbar = 1000.f;
     uint8_t pressureReadingsCounter = 0; // used to get temperature every 20th measurement, from 1 to PressurePerTemperatureRequests, 0 indicates first pressure request
-    
-    static const uint8_t PressurePerTemperatureRequests = 19; // How many pressure requests are per one temperature request
+    AverageFilter<float, PressurePerTemperatureRequests+1> pressureFilter;
 
 
 public:
