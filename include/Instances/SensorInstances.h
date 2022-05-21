@@ -27,6 +27,7 @@ namespace Instance
     #endif
     extern Barometer& baro;
     extern TemperatureSensor& temperature;
+    extern GPS& gps;
     // extern other sensors...
 }
 

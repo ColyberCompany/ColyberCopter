@@ -14,6 +14,7 @@
 #define COLYBER_SENSOR_MPU6050			1	// Acc + Gyro + Temperature
 #define COLYBER_SENSOR_MPU6500SPI		2	// Acc + Gyro + Temperature
 #define COLYBER_SENSOR_HMC5883L			3	// Magn
+#define COLYBER_SENSOR_TINY_GPS_PLUS	4	// Gps
 // add new sensor here...
 
 
@@ -21,6 +22,7 @@
 #define COLYBER_MAGN			COLYBER_SENSOR_NO_SENSOR			// TODO: calibrate magnetometer
 #define COLYBER_2ND_ACC			COLYBER_SENSOR_NO_SENSOR			// TODO: not implemented yet
 #define COLYBER_2ND_GYRO		COLYBER_SENSOR_NO_SENSOR			// TODO: not implemented yet
+#define COLYBER_GPS				COLYBER_SENSOR_TINY_GPS_PLUS
 
 
 	// Other flags (comment if want to deactivate)
@@ -40,6 +42,9 @@
 #endif
 #if COLYBER_2ND_GYRO != COLYBER_SENSOR_NO_SENSOR
 	#define COLYBER_USE_2ND_GYRO
+#endif
+#if COLYBER_GPS != COLYBER_SENSOR_NO_SENSOR
+	#define COLYBER_USE_GPS
 #endif
 
 
@@ -63,6 +68,12 @@
 	COLYBER_MAGN == COLYBER_SENSOR_HMC5883L \
 	/* other magnetometers... */ )
 	#error "Invalid magnetometer"
+#endif
+#if !( \
+	COLYBER_GPS == COLYBER_SENSOR_NO_SENSOR || \
+	COLYBER_GPS == COLYBER_SENSOR_TINY_GPS_PLUS \
+	/* other gps sensors... */ )
+	#error "Invalid gps sensor"
 #endif
 
 
