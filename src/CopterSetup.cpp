@@ -279,6 +279,9 @@ void setupFlightModes()
     // 10Hz:
     group10Hz.addTask(&Tasks::rmtCtrlSendingDroneData);
     group10Hz.addTask(&Assemble::Failsafe::failsafeManager);
+    #if COLYBER_GPS == COLYBER_SENSOR_TINY_GPS_PLUS
+    group10Hz.addTask(&Assemble::Sensors::tinyGPSPlusAdapter);
+    #endif
     // 1Hz:
     group1Hz.addTask(&Tasks::builtinDiodeBlink);
 
