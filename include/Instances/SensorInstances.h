@@ -5,7 +5,6 @@
  * @date 2021-03-29
  */
 
-
 #ifndef SENSORINSTANCES_H
 #define SENSORINSTANCES_H
 
@@ -27,7 +26,9 @@ namespace Instance
     #endif
     extern Barometer& baro;
     extern TemperatureSensor& temperature;
+    #ifdef COLYBER_USE_GPS
     extern GPS& gps;
+    #endif
     // extern other sensors...
 }
 
