@@ -125,8 +125,9 @@ namespace Assemble
     }
 
     namespace TaskGroups {
-        Common::TasksGroup mainFrequency(5);
-        Common::TasksGroup oneHertz(4);
+        Common::TasksGroup groupMainFreq(7);
+        Common::TasksGroup group10Hz(6);
+        Common::TasksGroup group1Hz(4);
     }
 }
 
@@ -264,37 +265,32 @@ void initializeSensors()
 
 void setupFlightModes()
 {
-    Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::unarmedFlightMode);
-    Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::stabilizeFlightMode); // TODO: think whether to pass flight modes by reference
-    Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::altHoldFlightMode);
-    // add other flight modes...
-
-    Instance::virtualPilot.initializeFlightModes(); // TODO: this method returns false if not all flight modes were initialized. This should be checked!
-}
-
-
-void addTasksToTasker()
-{
     using Instance::tasker;
+    using namespace Assemble::TaskGroups;
 
-    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
-    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::NavigationSystem::ins);
-    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
+    // GROUPS:
+    // Main frequency:
+    groupMainFreq.addTask(&Assemble::Sensors::simpleMPU6050Handler);
+    groupMainFreq.addTask(&Assemble::NavigationSystem::ins);
+    groupMainFreq.addTask(&Assemble::virtualPilotInstance);
     #ifndef COLYBER_DEACTIVATE_MOTORS
-    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Motors::quadXMotors);
+    groupMainFreq.addTask(&Assemble::Motors::quadXMotors);
     #endif
-    tasker.addTask_us(&Assemble::TaskGroups::mainFrequency, Config::MainInterval_us);
+    // 10Hz:
+    group10Hz.addTask(&Tasks::rmtCtrlSendingDroneData);
+    group10Hz.addTask(&Assemble::Failsafe::failsafeManager);
+    // 1Hz:
+    group1Hz.addTask(&Tasks::builtinDiodeBlink);
 
-    Assemble::TaskGroups::oneHertz.addTask(&Tasks::builtinDiodeBlink);
-    tasker.addTask_Hz(&Assemble::TaskGroups::oneHertz, 1.f);
-
-    tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
+    // DIRECT TASKER TASKS:
+    tasker.addTask_us(&groupMainFreq, Config::MainInterval_us);
+    tasker.addTask_Hz(&group10Hz, 10.f);
+    tasker.addTask_Hz(&group1Hz, 1.f);
     #if COLYBER_MAGN == COLYBER_SENSOR_HMC5883L
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
     #endif
     tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
-    tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
     tasker.addTask_Hz(&debugTask, 50);
 }
 
