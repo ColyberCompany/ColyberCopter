@@ -255,6 +255,17 @@ void initializeSensors()
 
 void setupFlightModes()
 {
+    Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::unarmedFlightMode);
+    Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::stabilizeFlightMode); // TODO: think whether to pass flight modes by reference
+    Instance::virtualPilot.addFlightMode(&Assemble::FlightModes::altHoldFlightMode);
+    // add other flight modes...
+
+    Instance::virtualPilot.initializeFlightModes(); // TODO: this method returns false if not all flight modes were initialized. This should be checked!
+}
+
+
+void addTasksToTasker()
+{
     using Instance::tasker;
     using namespace Assemble::TaskGroups;
 
