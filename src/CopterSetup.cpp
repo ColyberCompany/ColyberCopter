@@ -50,6 +50,7 @@
 #include "Sensors/MPU6500SPIHandler.h"
 #include "Sensors/SimpleHMC5883LHandler.h"
 #include "Sensors/SimpleMS5611Handler.h"
+#include "Sensors/TinyGPSPlusAdapter.h"
 
 using namespace Interfaces;
 
@@ -68,7 +69,7 @@ bool initSensor(Sensor* sensorToInit);
 // https://github.com/stm32duino/wiki/wiki/API#hardwareserial
 //HardwareSerial Serial1(PA10, PA9); // Serial1 is compiling, but I don't know on which pins
 HardwareSerial Serial2(PA3, PA2);
-//HardwareSerial Serial3(PB11, PB10);
+HardwareSerial Serial3(PB11, PB10);
 
 SPIClass SPI_2(PB15, PB14, PB13, PB12);
 
@@ -110,6 +111,9 @@ namespace Assemble
         SimpleHMC5883LHandler simpleHMC5883LHandler;
         #endif
         SimpleMS5611Handler simpleMS5611Handler;
+        #if COLYBER_GPS == COLYBER_SENSOR_TINY_GPS_PLUS
+        TinyGPSPlusAdapter tinyGPSPlusAdapter(Serial3);
+        #endif
         // other sensors..
     }
 
@@ -150,6 +154,9 @@ namespace Instance
     #endif
     Barometer& baro = Assemble::Sensors::simpleMS5611Handler;
     TemperatureSensor& temperature = Assemble::Sensors::simpleMS5611Handler;
+    #ifdef COLYBER_USE_GPS
+    GPS& gps = Assemble::Sensors::tinyGPSPlusAdapter;
+    #endif
 
 
 // MotorsInstance:
@@ -234,6 +241,7 @@ void initializeSensors()
     delay(100);
     SPI_2.begin();
     delay(50);
+    // Serial3.begin(Enums::BAUD_9600); // Init by GPS sensor
 
 
     // TODO: make a list from sensors and add enum with sensor types
@@ -243,7 +251,9 @@ void initializeSensors()
     initSensor(&Instance::magn);
     #endif
     initSensor(&Instance::baro);
-    //initSensor(&Instance::gps);
+    #ifdef COLYBER_USE_GPS
+    initSensor(&Instance::gps);
+    #endif
     //initSensor(&Instance::btmRangefinder);
     // new sensors goes here...
     
@@ -280,6 +290,9 @@ void addTasksToTasker()
     // 10Hz:
     group10Hz.addTask(&Tasks::rmtCtrlSendingDroneData);
     group10Hz.addTask(&Assemble::Failsafe::failsafeManager);
+    #if COLYBER_GPS == COLYBER_SENSOR_TINY_GPS_PLUS
+    group10Hz.addTask(&Assemble::Sensors::tinyGPSPlusAdapter);
+    #endif
     // 1Hz:
     group1Hz.addTask(&Tasks::builtinDiodeBlink);
 
