@@ -16,17 +16,17 @@
 class TinyGPSPlusAdapter : public GPS, public IExecutable
 {
     TinyGPSPlus gps;
-    Stream& stream;
+    HardwareSerial& serial;
 
 public:
-    TinyGPSPlusAdapter(Stream& stream);
+    TinyGPSPlusAdapter(HardwareSerial& serial);
 
     bool init_priv() override;
     bool isOperating() const override;
     const char* getName() override;
     double getLatitude_deg() override;
     double getLongitude_deg() override;
-    uint16_t getSattelitesAmt() override;
+    uint32_t getSattelitesAmt() override;
     float getSpeed_kmph() override;
 
 private:
