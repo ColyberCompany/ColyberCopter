@@ -241,7 +241,7 @@ void initializeSensors()
     delay(100);
     SPI_2.begin();
     delay(50);
-    Serial3.begin(Enums::BAUD_9600);
+    // Serial3.begin(Enums::BAUD_9600); // Init by GPS sensor
 
 
     // TODO: make a list from sensors and add enum with sensor types
