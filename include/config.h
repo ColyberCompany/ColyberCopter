@@ -16,7 +16,7 @@
 
 namespace Config
 {
-    inline constexpr float MainFrequency_Hz = 250.f;
+    inline constexpr uint16_t MainFrequency_Hz = 250;
     inline constexpr uint32_t MainInterval_us = 4000; // = 1000000 / MainFrequency_Hz;
     inline constexpr float MainInterval_s = 0.004f; // = 1.f / MainFrequency_Hz; // delta time between next main loop executions
 
@@ -26,15 +26,12 @@ namespace Config
 
     inline constexpr uint8_t MaxTaskerTasks = 25;
 
-    inline constexpr float TiltExceedingAngleThreshold = 67;
+    inline constexpr float StabilizeMaxTiltAngle_deg = 50; // setpoint angle for maximum stick position (pitch, roll) (maximum tilt angle in stabilize flight mode)
 
-    inline constexpr float AccLPFCutOffFreq = 10.f;
-    // inline constexpr float GyroLPFCutOffFreq = 10.f;
-
-    inline constexpr float LevelingPID_kP = 2.85f;
-    inline constexpr float LevelingPID_kI = 1.4f;
-    inline constexpr float LevelingPID_kD = 0.67f;
-    inline constexpr uint16_t LevelingPID_IMax = 90;
+    inline constexpr float LevelingPID_kP = 2.6f;
+    inline constexpr float LevelingPID_kI = 0.37f;
+    inline constexpr float LevelingPID_kD = 0.91f;
+    inline constexpr uint16_t LevelingPID_IMax = 100;
 
     inline constexpr float HeadHoldPID_kP = 2.24f;
     inline constexpr float HeadHoldPID_kI = 1.11f;

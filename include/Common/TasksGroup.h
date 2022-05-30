@@ -25,16 +25,16 @@ namespace Common
         TasksGroup(uint8_t maxTasksAmount)
             : MaxTasksAmount(maxTasksAmount)
         {
-            if (MaxTasksAmount > 0)
-                tasksArray = new IExecutable* [maxTasksAmount];
+            tasksArray = new IExecutable* [MaxTasksAmount];
         }
+
+        TasksGroup(const TasksGroup&) = delete;
+        TasksGroup& operator=(const TasksGroup&) = delete;
 
         ~TasksGroup()
         {
-            if (MaxTasksAmount > 0)
-                delete[] tasksArray;
+            delete[] tasksArray;
         }
-
 
         bool addTask(IExecutable* task)
         {
@@ -43,7 +43,6 @@ namespace Common
 
             tasksArray[tasksAmount] = task;
             tasksAmount++;
-
             return true;
         }
 

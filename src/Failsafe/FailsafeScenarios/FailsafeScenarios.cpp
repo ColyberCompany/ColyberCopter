@@ -24,10 +24,10 @@ bool CommunicationLost::hasFailOccurred()
 
 bool TiltExceeding::hasFailOccurred()
 {
-    using Config::TiltExceedingAngleThreshold;
+    static constexpr float TiltExceedingAngleThreshold_deg = 67;
 
-    return (abs(Instance::ins.getPitch_deg()) > TiltExceedingAngleThreshold ||
-            abs(Instance::ins.getRoll_deg()) > TiltExceedingAngleThreshold);
+    return (abs(Instance::ins.getPitch_deg()) > TiltExceedingAngleThreshold_deg ||
+            abs(Instance::ins.getRoll_deg()) > TiltExceedingAngleThreshold_deg);
 }
 
 

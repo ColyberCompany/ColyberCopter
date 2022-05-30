@@ -6,6 +6,7 @@
  */
 
 #include "StabilizeFlightMode.h"
+#include "Common/ControlSticks.h"
 #include "Common/Constants.h"
 #include "Instances/MainInstances.h"
 #include "config.h"
@@ -36,7 +37,9 @@ StabilizeFlightMode::StabilizeFlightMode()
     levelingYPID.setGains(LevelingPID_kP, LevelingPID_kI, LevelingPID_kD, LevelingPID_IMax);
     headingHoldPID.setGains(HeadHoldPID_kP, HeadHoldPID_kI, HeadHoldPID_kD, HeadHoldPID_IMax);
 
-    // TODO: setup D low-pass filters
+    levelingXPID.set_derivCutoffFreq(8);
+    levelingYPID.set_derivCutoffFreq(8);
+    headingHoldPID.set_derivCutoffFreq(8);
 }
 
 
@@ -92,7 +95,7 @@ void StabilizeFlightMode::flightModeLoop(ControlSticks& inputOutputSticks)
 void StabilizeFlightMode::throttleTiltCompensation(Common::ControlSticks& inputOutputSticks)
 {
     vector3Float angles_rad = Instance::ins.getAngles_rad();
-    float tiltCompThrMult = 1.f / ( cos(angles_rad.x) * cos(angles_rad.y) ); // tilt compensation throttle multiplier
+    float tiltCompThrMult = 1.f / ( cosf(angles_rad.x) * cosf(angles_rad.y) ); // tilt compensation throttle multiplier
     if (tiltCompThrMult > Config::MaxTiltCompThrMult)
         tiltCompThrMult = Config::MaxTiltCompThrMult;
 
@@ -103,8 +106,8 @@ void StabilizeFlightMode::throttleTiltCompensation(Common::ControlSticks& inputO
 
 void StabilizeFlightMode::updateLeveling(ControlSticks& inputOutputSticks)
 {
-    float finalPitch = inputOutputSticks.getPitch() / 10.f; // TODO: make that max tilt angle can be set
-    float finalRoll = inputOutputSticks.getRoll() / 10.f;
+    float finalPitch = stickToAngle(inputOutputSticks.getPitch());
+    float finalRoll = stickToAngle(inputOutputSticks.getRoll());
     vector3Float angles = Instance::ins.getAngles_deg();
 
     inputOutputSticks.setPitch(levelingXPID.update(finalPitch, angles.x) + 0.5f);
@@ -154,4 +157,10 @@ float StabilizeFlightMode::correctHeading(float headingToCorrect)
         headingToCorrect += RoundAngle;
     
     return headingToCorrect;
+}
+
+
+constexpr float StabilizeFlightMode::stickToAngle(int16_t stickValue)
+{
+    return stickValue * (Config::StabilizeMaxTiltAngle_deg / ControlSticks::MaxPitchRollYaw); // stickValue * (MaxTiltAngle / MaxStickValue)
 }

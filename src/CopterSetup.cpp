@@ -13,6 +13,7 @@
 #include "Tasks.h"
 #include "Common/Constants.h"
 #include "Common/Utils.h"
+#include <SPI.h>
 // Failsafe:
 #include "Failsafe/FailsafeManager.h"
 #include "Failsafe/FailsafeActions/DisarmMotors.h"
@@ -44,11 +45,12 @@
 #include "Sensors/Base/GPS.h"
 #include "Sensors/Base/Rangefinder.h"
 #include "Sensors/Base/TemperatureSensor.h"
-#include "Sensors/NoSensor.h"
 // Sensors:
 #include "Sensors/SimpleMPU6050Handler.h"
+#include "Sensors/MPU6500SPIHandler.h"
 #include "Sensors/SimpleHMC5883LHandler.h"
 #include "Sensors/SimpleMS5611Handler.h"
+#include "Sensors/TinyGPSPlusAdapter.h"
 
 #include "KalmanFilter.h"
 
@@ -69,7 +71,9 @@ bool initSensor(Sensor* sensorToInit);
 // https://github.com/stm32duino/wiki/wiki/API#hardwareserial
 //HardwareSerial Serial1(PA10, PA9); // Serial1 is compiling, but I don't know on which pins
 HardwareSerial Serial2(PA3, PA2);
-//HardwareSerial Serial3(PB11, PB10);
+HardwareSerial Serial3(PB11, PB10);
+
+SPIClass SPI_2(PB15, PB14, PB13, PB12);
 
 
 namespace Assemble
@@ -78,8 +82,11 @@ namespace Assemble
     SerialDebugMessenger serialDebugMessenger(Serial1);
 
     namespace Motors {
-        QuadXMotors quadXMotors;
+        #ifdef COLYBER_DEACTIVATE_MOTORS
         NoMotors noMotors;
+        #else
+        QuadXMotors quadXMotors;
+        #endif
     }
 
     namespace NavigationSystem {
@@ -101,10 +108,15 @@ namespace Assemble
 
     namespace Sensors {
         SimpleMPU6050Handler simpleMPU6050Handler;
+        // MPU6500SPIHandler mpu6500spiHandler(SPI_2, PB12);
+        #if COLYBER_MAGN == COLYBER_SENSOR_HMC5883L
         SimpleHMC5883LHandler simpleHMC5883LHandler;
+        #endif
         SimpleMS5611Handler simpleMS5611Handler;
+        #if COLYBER_GPS == COLYBER_SENSOR_TINY_GPS_PLUS
+        TinyGPSPlusAdapter tinyGPSPlusAdapter(Serial3);
+        #endif
         // other sensors..
-        NoSensor noSensor;
     }
 
     namespace Failsafe { // TODO: try to improve names of objects inside
@@ -115,8 +127,9 @@ namespace Assemble
     }
 
     namespace TaskGroups {
-        Common::TasksGroup mainFrequency(5);
-        Common::TasksGroup oneHertz(4);
+        Common::TasksGroup groupMainFreq(7);
+        Common::TasksGroup group10Hz(6);
+        Common::TasksGroup group1Hz(4);
     }
 }
 
@@ -133,18 +146,27 @@ namespace Instance
 
 
 // SensorInstances:
-    using Assemble::Sensors::noSensor;
     Accelerometer& acc = Assemble::Sensors::simpleMPU6050Handler;
     Gyroscope& gyro = Assemble::Sensors::simpleMPU6050Handler;
-    Magnetometer& magn = Assemble::Sensors::simpleHMC5883LHandler;
+    #ifdef COLYBER_USE_MAGN
+    Magnetometer& magn =
+        #if COLYBER_MAGN == COLYBER_SENSOR_HMC5883L
+        Assemble::Sensors::simpleHMC5883LHandler;
+        #endif
+    #endif
     Barometer& baro = Assemble::Sensors::simpleMS5611Handler;
     TemperatureSensor& temperature = Assemble::Sensors::simpleMS5611Handler;
+    #ifdef COLYBER_USE_GPS
+    GPS& gps = Assemble::Sensors::tinyGPSPlusAdapter;
+    #endif
 
-    // Sensor& gps = noSensor;
-    // Sensor& btmRangefinder = noSensor;
 
 // MotorsInstance:
+    #ifdef COLYBER_DEACTIVATE_MOTORS
+    Motors& motors = Assemble::Motors::noMotors;
+    #else
     Motors& motors = Assemble::Motors::quadXMotors;
+    #endif
 }
 
 
@@ -215,18 +237,26 @@ void setupFailsafe()
 }
 
 
+// TODO: [#86] stop program if at least one sensor wasn't successfully initialized (all non-disabled sensors by macro)
 void initializeSensors()
 {
     Wire.begin();
     delay(100);
+    SPI_2.begin();
+    delay(50);
+    // Serial3.begin(Enums::BAUD_9600); // Init by GPS sensor
 
 
     // TODO: make a list from sensors and add enum with sensor types
     initSensor(&Instance::acc);
     initSensor(&Instance::gyro);
-    //initSensor(&Instance::magn); // TODO: calibrate magnetometer and initialize it
+    #ifdef COLYBER_USE_MAGN
+    initSensor(&Instance::magn);
+    #endif
     initSensor(&Instance::baro);
-    //initSensor(&Instance::gps);
+    #ifdef COLYBER_USE_GPS
+    initSensor(&Instance::gps);
+    #endif
     //initSensor(&Instance::btmRangefinder);
     // new sensors goes here...
     
@@ -250,21 +280,34 @@ void setupFlightModes()
 void addTasksToTasker()
 {
     using Instance::tasker;
+    using namespace Assemble::TaskGroups;
 
-    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Sensors::simpleMPU6050Handler);
-    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::NavigationSystem::ins);
-    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::virtualPilotInstance);
-    Assemble::TaskGroups::mainFrequency.addTask(&Assemble::Motors::quadXMotors);
-    tasker.addTask_us(&Assemble::TaskGroups::mainFrequency, Config::MainInterval_us);
+    // GROUPS:
+    // Main frequency:
+    groupMainFreq.addTask(&Assemble::Sensors::simpleMPU6050Handler);
+    groupMainFreq.addTask(&Assemble::NavigationSystem::ins);
+    groupMainFreq.addTask(&Assemble::virtualPilotInstance);
+    #ifndef COLYBER_DEACTIVATE_MOTORS
+    groupMainFreq.addTask(&Assemble::Motors::quadXMotors);
+    #endif
+    // 10Hz:
+    group10Hz.addTask(&Tasks::rmtCtrlSendingDroneData);
+    group10Hz.addTask(&Assemble::Failsafe::failsafeManager);
+    #if COLYBER_GPS == COLYBER_SENSOR_TINY_GPS_PLUS
+    group10Hz.addTask(&Assemble::Sensors::tinyGPSPlusAdapter);
+    #endif
+    // 1Hz:
+    group1Hz.addTask(&Tasks::builtinDiodeBlink);
 
-    Assemble::TaskGroups::oneHertz.addTask(&Tasks::builtinDiodeBlink);
-    tasker.addTask_Hz(&Assemble::TaskGroups::oneHertz, 1.f);
-
-    tasker.addTask_Hz(&Assemble::Failsafe::failsafeManager, 10);
+    // DIRECT TASKER TASKS:
+    tasker.addTask_us(&groupMainFreq, Config::MainInterval_us);
+    tasker.addTask_Hz(&group10Hz, 10.f);
+    tasker.addTask_Hz(&group1Hz, 1.f);
+    #if COLYBER_MAGN == COLYBER_SENSOR_HMC5883L
     tasker.addTask_Hz(&Assemble::Sensors::simpleHMC5883LHandler, 75);
+    #endif
     tasker.addTask_us(&Assemble::Sensors::simpleMS5611Handler, SimpleMS5611Handler::RequestWaitTime_us, TaskType::NO_CATCHING_UP);
     tasker.addTask_Hz(&Tasks::rmtCtrlReceiving, Config::RmtCtrlReceivingFrequency_Hz);
-    tasker.addTask_Hz(&Tasks::rmtCtrlSendingDroneData, 10);
     tasker.addTask_Hz(&debugTask, 50);
 }
 
@@ -296,7 +339,7 @@ bool initSensor(Sensor* sensorToInit)
     if (sensorInitResult == false)
     {
         Instance::debMes.showMessage("failed");
-        Instance::debMes.showError(478792);
+        Instance::debMes.showErrorAndAbort(478792);
     }
     else
         Instance::debMes.showMessage("success");

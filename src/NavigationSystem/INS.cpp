@@ -10,13 +10,32 @@
 #include "Common/Constants.h"
 #include "config.h"
 
-static FusionVector3 vector3FloatToFusion(const Common::vector3Float& vector3Float);
+// TODO: use this calibration
+// const FusionMatrix accMisalignment = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+// const FusionVector accSensitivity = {1.0f, 1.0f, 1.0f};
+// const FusionVector accOffset = {0.0f, 0.0f, 0.0f};
+// const FusionMatrix gyroMisalignment = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+// const FusionVector gyroSensitivity = {1.0f, 1.0f, 1.0f};
+// const FusionVector gyroOffset = {0.0f, 0.0f, 0.0f};
+// const FusionMatrix softIronMatrix = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+// const FusionVector hardIronOffset = {0.0f, 0.0f, 0.0f};
+
+static FusionVector vector3FloatToFusion(const Common::vector3Float& vector3Float);
 
 
 INS::INS()
 {
-    FusionBiasInitialise(&fusionBias, 0.5f, Config::MainInterval_s);
-    FusionAhrsInitialise(&fusionAhrs, 0.5f); // TODO: test different settings
+    FusionOffsetInitialise(&fusionOffset, Config::MainFrequency_Hz);
+    FusionAhrsInitialise(&fusionAhrs);
+
+    // Set AHRS algorithm settings
+    const FusionAhrsSettings settings = { // TODO: test different settings
+        .gain = 0.5f,
+        .accelerationRejection = 10.0f,
+        .magneticRejection = 20.0f,
+        .rejectionTimeout = 5 * Config::MainFrequency_Hz, /* 5 seconds */
+    };
+    FusionAhrsSetSettings(&fusionAhrs, &settings);
 }
 
 
@@ -24,7 +43,7 @@ void INS::execute()
 {
     // order is important
     updateAHRS();
-    udpateAltitude();
+    updateAltitude();
     updateLatLong();
 }
 
@@ -43,22 +62,24 @@ bool INS::resetAltitude()
 
 void INS::updateAHRS()
 {
-    FusionVector3 acc = vector3FloatToFusion(Instance::acc.getAcc_norm());
-    FusionVector3 gyro = vector3FloatToFusion(Instance::gyro.getGyro_dps());
+    FusionVector acc = vector3FloatToFusion(Instance::acc.getAcc_norm());
+    FusionVector gyro = vector3FloatToFusion(Instance::gyro.getGyro_dps());
 
-    // Update gyroscope bias correction algorithm
-    gyro = FusionBiasUpdate(&fusionBias, gyro);
+    // Apply calibration 
+    // acc = FusionCalibrationInertial(acc, accMisalignment, accSensitivity, accOffset);  // TODO: use this calibration (maybe not here, but in a sensor handler)
+    // gyro = FusionCalibrationInertial(gyro, gyroMisalignment, gyroSensitivity, gyroOffset);  // TODO: use this calibration (maybe not here, but in a sensor handler)
+
+    // Update gyroscope offset correction algorithm
+    gyro = FusionOffsetUpdate(&fusionOffset, gyro);
 
     // Update AHRS algorithm
-    if (Instance::magn.isOperating())
-    {
-        FusionVector3 magn = vector3FloatToFusion(Instance::magn.getMagn_norm());
-        FusionAhrsUpdate(&fusionAhrs, gyro, acc, magn, Config::MainInterval_s);
-    }
-    else
-    {
-        FusionAhrsUpdateWithoutMagnetometer(&fusionAhrs, gyro, acc, Config::MainInterval_s);
-    }
+    #ifdef COLYBER_USE_MAGN
+    FusionVector magn = vector3FloatToFusion(Instance::magn.getMagn_norm());
+    // magn = FusionCalibrationMagnetic(magn, softIronMatrix, hardIronOffset); // TODO: use this calibration (maybe not here, but in a sensor handler)
+    FusionAhrsUpdate(&fusionAhrs, gyro, acc, magn, Config::MainInterval_s);
+    #else
+    FusionAhrsUpdateNoMagnetometer(&fusionAhrs, gyro, acc, Config::MainInterval_s);
+    #endif
 
     // Update quaternions
     FusionQuaternion fusionQuaternion = FusionAhrsGetQuaternion(&fusionAhrs);
@@ -68,20 +89,20 @@ void INS::updateAHRS()
     quaternion.k = fusionQuaternion.element.z;
 
     // Update Euler angles
-    FusionEulerAngles eulerAngles = FusionQuaternionToEulerAngles(fusionQuaternion);
+    FusionEuler eulerAngles = FusionQuaternionToEuler(fusionQuaternion);
     angles_deg.x = eulerAngles.angle.pitch;
     angles_deg.y = eulerAngles.angle.roll;
     angles_deg.z = eulerAngles.angle.yaw;
 
     // Update Earth acceleration
-    FusionVector3 fusionEarthAcc = FusionAhrsGetEarthAcceleration(&fusionAhrs);
+    FusionVector fusionEarthAcc = FusionAhrsGetEarthAcceleration(&fusionAhrs);
     earthAcceleration_mps2.x = fusionEarthAcc.axis.x * Common::Consts::GravitationalAcceleration;
     earthAcceleration_mps2.y = fusionEarthAcc.axis.y * Common::Consts::GravitationalAcceleration;
     earthAcceleration_mps2.z = fusionEarthAcc.axis.z * Common::Consts::GravitationalAcceleration;
 }
 
 
-void INS::udpateAltitude()
+void INS::updateAltitude()
 {
     float curPressure = Instance::baro.getPressure_hPa();
     float curTemperature = Instance::temperature.getTemperature_degC();
@@ -134,7 +155,7 @@ void INS::updateLatLong()
 
 
 
-inline FusionVector3 vector3FloatToFusion(const Common::vector3Float& vector3Float)
+inline FusionVector vector3FloatToFusion(const Common::vector3Float& vector3Float)
 {
     return {
         vector3Float.x,

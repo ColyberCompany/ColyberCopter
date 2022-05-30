@@ -8,8 +8,16 @@
 #include "config.h"
 #include "calibration.h"
 
+constexpr float AccLPFCutOffFreq = 8.f;
+// constexpr float GyroLPFCutOffFreq = 10.f;
+
 
 SimpleMPU6050Handler::SimpleMPU6050Handler()
+    : accLPF(
+        {AccLPFCutOffFreq, Config::MainInterval_s},
+        {AccLPFCutOffFreq, Config::MainInterval_s},
+        {AccLPFCutOffFreq, Config::MainInterval_s}
+    )
 {
     setAccCalibration(Calibration::AccOffset, Calibration::AccScale);
     setGyroOffset(Calibration::GyroOffset);
@@ -21,11 +29,12 @@ bool SimpleMPU6050Handler::init_priv()
     if (Accelerometer::isInitialized() || Gyroscope::isInitialized())
         return true;
 
-    bool initResult = mpu.initialize();
-    config3AxisLPF(accLPF, Config::AccLPFCutOffFreq);
+    if (!mpu.initialize())
+        return false;
+        
     mpu.enableCompassBypass();
 
-    return initResult;
+    return true;
 }
 
 
@@ -42,12 +51,4 @@ void SimpleMPU6050Handler::execute()
     );
 
     gyroFiltered = Common::vector3Float(mpu.getNormalizedRotation());
-}
-
-
-void SimpleMPU6050Handler::config3AxisLPF(ThreeAxesLPF& lpf, float cutoffFreq)
-{
-    lpf.x.reconfigureFilter(cutoffFreq, Config::MainInterval_s);
-    lpf.y.reconfigureFilter(cutoffFreq, Config::MainInterval_s);
-    lpf.z.reconfigureFilter(cutoffFreq, Config::MainInterval_s);
 }

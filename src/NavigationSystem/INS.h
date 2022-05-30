@@ -12,7 +12,7 @@
 #include "Common/Constants.h"
 #include "KalmanFilter.h"
 #include "config.h"
-#include <Fusion.h>
+#include <Fusion/Fusion.h>
 #include <IExecutable.h>
 
 
@@ -22,7 +22,7 @@
  */
 class INS : public IExecutable
 {
-    FusionBias fusionBias;
+    FusionOffset fusionOffset;
     FusionAhrs fusionAhrs;
 
 // measurements:
@@ -127,7 +127,7 @@ public:
 private:
 // Values update:
     void updateAHRS();
-    void udpateAltitude();
+    void updateAltitude();
     void updateLatLong();
 };
 
