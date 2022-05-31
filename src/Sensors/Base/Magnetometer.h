@@ -10,15 +10,11 @@
 
 #include "Sensor.h"
 #include "Common/Vector3.h"
+#include "CalibrationMagnetic.h"
 
-// Calibration: https://thecavepearlproject.org/2015/05/22/calibrating-any-compass-or-accelerometer-for-arduino/
 
-
-class Magnetometer : public Sensor
+class Magnetometer : public Sensor, public CalibrationMagnetic
 {
-    Common::vector3Float offset = {0, 0, 0};
-    Common::vector3Float scale = {1.f, 1.f, 1.f};
-
 public:
     Magnetometer()
         : Sensor(Sensor::SensorTypes::MAGNETOMETER)
@@ -27,21 +23,15 @@ public:
 
     virtual ~Magnetometer() {}
 
-    Common::vector3Float getMagnOffset() {
-        return offset;
-    }
-
-    Common::vector3Float getMagnScale() {
-        return scale;
-    }
-
-    void setMagnCalibration(const Common::vector3Float& offset, const Common::vector3Float& scale) {
-        this->offset = offset;
-        this->scale = scale;
+    /**
+     * @brief Current instance as magnetometer.
+     */
+    Magnetometer& magnometer() {
+        return *this;
     }
 
     Common::vector3Float getMagn_norm() {
-        return (getMagn_norm_priv() - offset) * scale;
+        return applyCalibration(getMagn_norm_priv());
     }
 
 private:
