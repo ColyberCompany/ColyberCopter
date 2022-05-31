@@ -11,15 +11,11 @@
 #include "Sensor.h"
 #include "Common/Vector3.h"
 #include "Common/Constants.h"
+#include "CalibrationIntertial.h"
 
-// Calibration: https://thecavepearlproject.org/2015/05/22/calibrating-any-compass-or-accelerometer-for-arduino/
 
-
-class Accelerometer : public Sensor
+class Accelerometer : public Sensor, public CalibrationIntertial
 {
-    Common::vector3Float offset = {0, 0, 0};
-    Common::vector3Float scale = {1.f, 1.f, 1.f};
-
 public:
     Accelerometer()
         : Sensor(Sensor::SensorTypes::ACCELEROMETER)
@@ -28,24 +24,18 @@ public:
     
     virtual ~Accelerometer() {}
 
-    Common::vector3Float getAccOffset() {
-        return offset;
-    }
-
-    Common::vector3Float getAccScale() {
-        return scale;
-    }
-
-    void setAccCalibration(const Common::vector3Float& offset, const Common::vector3Float& scale) {
-        this->offset = offset;
-        this->scale = scale;
+    /**
+     * @brief Current instance as accelerometer.
+     */
+    Accelerometer& accelerometer() {
+        return *this;
     }
 
     /**
      * @brief Get normalized accelerometer data (1 for 1g).  
      */
     Common::vector3Float getAcc_norm() {
-        return (getAcc_norm_priv() - offset) * scale;
+        return applyCalibration(getAcc_norm_priv());
     }
 
     /**
