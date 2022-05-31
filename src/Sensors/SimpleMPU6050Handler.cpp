@@ -5,11 +5,16 @@
  */
 
 #include "SimpleMPU6050Handler.h"
+#include "Common/Vector3.h"
 #include "config.h"
-#include "calibration.h"
 
 constexpr float AccLPFCutOffFreq = 8.f;
 // constexpr float GyroLPFCutOffFreq = 10.f;
+
+// TODO: perform full calibration (instructions in video; link in Accelerometer.h)
+constexpr FusionVector AccOffset = {0.017505502, 0.004973429, 0.026660183};
+constexpr FusionVector AccScale = {0.99603490, 0.99502618, 0.98504321};
+constexpr FusionVector GyroOffset = {-2.0812696,  1.9969787, -0.2270786};
 
 
 SimpleMPU6050Handler::SimpleMPU6050Handler()
@@ -19,8 +24,13 @@ SimpleMPU6050Handler::SimpleMPU6050Handler()
         {AccLPFCutOffFreq, Config::MainInterval_s}
     )
 {
-    setAccCalibration(Calibration::AccOffset, Calibration::AccScale);
-    setGyroOffset(Calibration::GyroOffset);
+    accelerometer().setCalibration(CalibrationIntertial::Calibration{
+        .sensitivity = AccScale,
+        .offset = AccOffset
+    });
+    gyroscope().setCalibration(CalibrationIntertial::Calibration{
+        .offset = GyroOffset
+    });
 }
 
 
