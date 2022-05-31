@@ -21,6 +21,13 @@ public:
 
     virtual ~TemperatureSensor() {}
 
+    /**
+     * @brief Current instance as temperature sensor.
+     */
+    TemperatureSensor& temperatureSensor() {
+        return *this;
+    }
+
     virtual float getTemperature_degC() = 0;
 
     float getTemperature_K() {
