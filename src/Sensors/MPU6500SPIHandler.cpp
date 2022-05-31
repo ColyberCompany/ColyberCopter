@@ -11,12 +11,12 @@ static const uint32_t SpiClock = 8000000l; // 8MHz clock (not tried 20MHz)
 constexpr float AccLPFCutOffFreq = 8.f;
 
 // TODO: figure out place for calibration values (for specific hardware)
-const FusionMatrix accMisalignment = {0.997712, -0.003394, 0.001708, -0.003394, 0.996472, 0.000751, 0.001708, 0.000751, 0.984676};
+const FusionMatrix accMisalignment = {0.997712f, -0.003394f, 0.001708f, -0.003394f, 0.996472f, 0.000751f, 0.001708f, 0.000751f, 0.984676f};
 const FusionVector accSensitivity = {1.0f, 1.0f, 1.0f};
-const FusionVector accOffset = {0.013689, 0.009321, -0.102916};
+const FusionVector accOffset = {0.013689f, 0.009321f, -0.102916f};
 const FusionMatrix gyroMisalignment = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 const FusionVector gyroSensitivity = {1.0f, 1.0f, 1.0f};
-const FusionVector gyroOffset = {0.0f, 0.0f, 0.0f};
+const FusionVector gyroOffset = {-0.9055204f, 0.9203771f, -0.0984093f};
 
 
 MPU6500SPIHandler::MPU6500SPIHandler(SPIClass& bus, uint8_t csPin):
