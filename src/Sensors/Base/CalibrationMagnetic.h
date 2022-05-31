@@ -46,11 +46,12 @@ public:
 protected:
     Common::vector3Float applyCalibration(Common::vector3Float vector)
     {
-        return Common::vector3Float(FusionCalibrationMagnetic(
+        auto calibrated = FusionCalibrationMagnetic(
             {vector.x, vector.y, vector.z},
             calibration.softIronMatrix,
             calibration.hardIronOffset
-        ));
+        );
+        return {calibrated.axis.x, calibrated.axis.y, calibrated.axis.z};
     }
 };
 

@@ -48,12 +48,13 @@ public:
 protected:
     Common::vector3Float applyCalibration(Common::vector3Float vector)
     {
-        return Common::vector3Float(FusionCalibrationInertial(
+        auto calibrated = FusionCalibrationInertial(
             {vector.x, vector.y, vector.z},
             calibration.misalignment,
             calibration.sensitivity,
             calibration.offset
-        ));
+        );
+        return {calibrated.axis.x, calibrated.axis.y, calibrated.axis.z};
     }
 };
 
