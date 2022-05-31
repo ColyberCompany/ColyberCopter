@@ -21,6 +21,13 @@ public:
 
     virtual ~Rangefinder() {}
 
+    /**
+     * @brief Current instance as rangefinder.
+     */
+    Rangefinder& rangefinder() {
+        return *this;
+    }
+
     virtual float getDistance_m() = 0;
 };
 

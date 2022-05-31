@@ -21,6 +21,13 @@ public:
 
     virtual ~Barometer() {}
 
+    /**
+     * @brief Current instance as barometer.
+     */
+    Barometer& barometer() {
+        return *this;
+    }
+
     virtual float getPressure_hPa() = 0;
 };
 

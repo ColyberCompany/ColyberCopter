@@ -13,6 +13,7 @@
 #include <MPU6500SPI.h>
 #include <IExecutable.h>
 #include <SPI.h>
+#include <LowPassFilter.h>
 
 // TODO: add filtering
 
@@ -20,6 +21,9 @@
 class MPU6500SPIHandler : public Accelerometer, public Gyroscope, public TemperatureSensor, public IExecutable
 {
     MPU6500SPI mpu;
+
+    Common::vector3<LowPassFilter<float>> accLPF; // accelerometer low-pass filter
+    Common::vector3Float accFiltered;
 
 public:
     MPU6500SPIHandler(SPIClass& bus, uint8_t csPin);
@@ -36,7 +40,8 @@ private:
     bool init_priv() override;
 
     Common::vector3Float getAcc_norm_priv() override {
-        return Common::vector3Float(mpu.getNormalizedAcceleration());
+        // return Common::vector3Float(mpu.getNormalizedAcceleration());
+        return accFiltered;
     }
 
     Common::vector3Float getGyro_dps_priv() override {

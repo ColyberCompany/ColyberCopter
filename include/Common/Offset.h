@@ -36,13 +36,13 @@ public:
      * @param sampleRate Offset update sample rate in Hz.
      * @param cutoffFreq Larger makes value faster converge to 0 (more aggressive offset calculation)
      * (offset is updated only when value is in threshold).
-     * @param timeout How much time value have to be within threshold to enable offset update.
+     * @param timeout_s How much time value have to be within threshold to enable offset update.
      * @param threshold Maximum and minimum value at which after timeout offset is updated.
      */
-    Offset(uint16_t sampleRate, float cutoffFreq, float timeout, float threshold)
+    Offset(uint16_t sampleRate, float cutoffFreq, float timeout_s, float threshold)
     {
         CutoffFrequency_Hz = cutoffFreq;
-        Timeout_s = timeout;
+        Timeout_s = timeout_s;
         Threshold = threshold;
 
         filterCoefficient = 2.0f * (float) M_PI * CutoffFrequency_Hz * (1.0f / (float) sampleRate);
