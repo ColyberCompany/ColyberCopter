@@ -38,7 +38,7 @@ class INS : public IExecutable
 // kalman filter
     float dt = Config::MainInterval_s;
     uint16_t cnt = 5 * Config::MainFrequency_Hz;        // po 5s reset p0
-    KalmanFilter kalman = KalmanFilter(0.003f, // błąd pomiaru wysokości - +- 10cm
+    KalmanFilter kalman = KalmanFilter(0.01f, // błąd pomiaru wysokości - +- 10cm
                         0.03f,  // błąd pomiaru przyspieszenie bezwzględnego 
                         0.0167 * dt * dt * dt, 0.05 * dt * dt, 0.1 * dt, // trzy parametry na pałe
                         dt);
