@@ -5,12 +5,15 @@
  */
 
 #include "SimpleHMC5883LHandler.h"
-#include "calibration.h"
 
 
 SimpleHMC5883LHandler::SimpleHMC5883LHandler()
 {
-    setMagnCalibration(Calibration::MagnOffset, Calibration::MagnScale);
+    // TODO: calibrate magnetometer
+    // magnometer().setCalibration(CalibrationMagnetic::Calibration{
+    //     .hardIronOffset = ,
+    //     .softIronMatrix = 
+    // })
 }
 
 
