@@ -103,11 +103,12 @@ void INS::updateAltitude()
 //     lastBaroAlt = baroAlt;
 
 //     verticalVelocity_mps += earthAcceleration_mps2.z * Config::MainInterval_s;
-//     altitude_m += verticalVelocity_mps * Config::MainInterval_s;
-
-//     float oneMinusBeta = 1.f - complementaryBeta;
 //     verticalVelocity_mps = verticalVelocity_mps * complementaryBeta + baroVel * oneMinusBeta;
+//     altitude_m += verticalVelocity_mps * Config::MainInterval_s;
 //     altitude_m = altitude_m * complementaryBeta + baroAlt * oneMinusBeta;
+//     Serial.print(baroAlt*10);
+//     Serial.print('\t');
+//     Serial.println(altitude_m*10);
 }
 
 

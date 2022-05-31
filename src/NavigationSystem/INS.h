@@ -40,6 +40,7 @@ class INS : public IExecutable
     float verticalVelocity_mps = 0.f;
     float lastBaroAlt = 0.f;
     float complementaryBeta = 0.997f;
+    float oneMinusBeta = 1.f - complementaryBeta;
 
 public:
     INS();
