@@ -10,6 +10,7 @@
 
 #include "Common/Quaternion.h"
 #include "Common/Constants.h"
+#include "Common/Offset.h"
 #include <Fusion/Fusion.h>
 #include <IExecutable.h>
 
@@ -22,6 +23,7 @@ class INS : public IExecutable
 {
     FusionOffset fusionOffset;
     FusionAhrs fusionAhrs;
+    Offset earthAccOffset;
 
 // measurements:
     Common::Quaternion quaternion = {};

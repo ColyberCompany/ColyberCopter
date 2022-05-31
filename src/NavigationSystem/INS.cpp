@@ -23,7 +23,8 @@
 static FusionVector vector3FloatToFusion(const Common::vector3Float& vector3Float);
 
 
-INS::INS()
+INS::INS() :
+    earthAccOffset(Config::MainFrequency_Hz, 0.02f, 5, 0.05f) // TODO: adjust those values
 {
     FusionOffsetInitialise(&fusionOffset, Config::MainFrequency_Hz);
     FusionAhrsInitialise(&fusionAhrs);
@@ -99,6 +100,7 @@ void INS::updateAHRS()
     earthAcceleration_mps2.x = fusionEarthAcc.axis.x * Common::Consts::GravitationalAcceleration;
     earthAcceleration_mps2.y = fusionEarthAcc.axis.y * Common::Consts::GravitationalAcceleration;
     earthAcceleration_mps2.z = fusionEarthAcc.axis.z * Common::Consts::GravitationalAcceleration;
+    earthAcceleration_mps2 = earthAccOffset.update(earthAcceleration_mps2);
 }
 
 
