@@ -10,16 +10,6 @@
 #include "Common/Constants.h"
 #include "config.h"
 
-// TODO: use this calibration
-// const FusionMatrix accMisalignment = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-// const FusionVector accSensitivity = {1.0f, 1.0f, 1.0f};
-// const FusionVector accOffset = {0.0f, 0.0f, 0.0f};
-// const FusionMatrix gyroMisalignment = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-// const FusionVector gyroSensitivity = {1.0f, 1.0f, 1.0f};
-// const FusionVector gyroOffset = {0.0f, 0.0f, 0.0f};
-// const FusionMatrix softIronMatrix = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-// const FusionVector hardIronOffset = {0.0f, 0.0f, 0.0f};
-
 static FusionVector vector3FloatToFusion(const Common::vector3Float& vector3Float);
 
 
@@ -66,17 +56,12 @@ void INS::updateAHRS()
     FusionVector acc = vector3FloatToFusion(Instance::acc.getAcc_norm());
     FusionVector gyro = vector3FloatToFusion(Instance::gyro.getGyro_dps());
 
-    // Apply calibration 
-    // acc = FusionCalibrationInertial(acc, accMisalignment, accSensitivity, accOffset);  // TODO: use this calibration (maybe not here, but in a sensor handler)
-    // gyro = FusionCalibrationInertial(gyro, gyroMisalignment, gyroSensitivity, gyroOffset);  // TODO: use this calibration (maybe not here, but in a sensor handler)
-
     // Update gyroscope offset correction algorithm
     gyro = FusionOffsetUpdate(&fusionOffset, gyro);
 
     // Update AHRS algorithm
     #ifdef COLYBER_USE_MAGN
     FusionVector magn = vector3FloatToFusion(Instance::magn.getMagn_norm());
-    // magn = FusionCalibrationMagnetic(magn, softIronMatrix, hardIronOffset); // TODO: use this calibration (maybe not here, but in a sensor handler)
     FusionAhrsUpdate(&fusionAhrs, gyro, acc, magn, Config::MainInterval_s);
     #else
     FusionAhrsUpdateNoMagnetometer(&fusionAhrs, gyro, acc, Config::MainInterval_s);
