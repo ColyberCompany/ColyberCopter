@@ -105,8 +105,8 @@ namespace Assemble
     VirtualPilot virtualPilotInstance(FlightModes::unarmedFlightMode);
 
     namespace Sensors {
-        SimpleMPU6050Handler simpleMPU6050Handler;
-        // MPU6500SPIHandler mpu6500spiHandler(SPI_2, PB12);
+        // SimpleMPU6050Handler simpleMPU6050Handler;
+        MPU6500SPIHandler mpu6500spiHandler(SPI_2, PB12);
         #if COLYBER_MAGN == COLYBER_SENSOR_HMC5883L
         SimpleHMC5883LHandler simpleHMC5883LHandler;
         #endif
@@ -144,8 +144,8 @@ namespace Instance
 
 
 // SensorInstances:
-    Accelerometer& acc = Assemble::Sensors::simpleMPU6050Handler;
-    Gyroscope& gyro = Assemble::Sensors::simpleMPU6050Handler;
+    Accelerometer& acc = Assemble::Sensors::mpu6500spiHandler;
+    Gyroscope& gyro = Assemble::Sensors::mpu6500spiHandler;
     #ifdef COLYBER_USE_MAGN
     Magnetometer& magn =
         #if COLYBER_MAGN == COLYBER_SENSOR_HMC5883L
@@ -281,7 +281,7 @@ void addTasksToTasker()
 
     // GROUPS:
     // Main frequency:
-    groupMainFreq.addTask(&Assemble::Sensors::simpleMPU6050Handler);
+    groupMainFreq.addTask(&Assemble::Sensors::mpu6500spiHandler);
     groupMainFreq.addTask(&Assemble::NavigationSystem::ins);
     groupMainFreq.addTask(&Assemble::virtualPilotInstance);
     #ifndef COLYBER_DEACTIVATE_MOTORS
