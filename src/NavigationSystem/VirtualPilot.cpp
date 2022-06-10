@@ -68,10 +68,12 @@ bool VirtualPilot::setFlightMode(FlightMode::FlightModeTypes flightModeType)
 
 void VirtualPilot::runVirtualPilot()
 {
-    ControlSticks virtualSticks(throttleStickAverage.update(commData.pilot.stick.throttle),
-                                yawStickAverage.update(commData.pilot.stick.yaw),
-                                pitchStickAverage.update(commData.pilot.stick.pitch),
-                                rollStickAverage.update(commData.pilot.stick.roll) );
+    ControlSticks virtualSticks(
+        throttleStickAverage.update(commData.steering.throttle),
+        yawStickAverage.update(commData.steering.yaw),
+        pitchStickAverage.update(commData.steering.pitch),
+        rollStickAverage.update(commData.steering.roll)
+    );
     
     currentFlightMode->executeFlightModeLoop(virtualSticks);
     Instance::motors.setPower(virtualSticks);

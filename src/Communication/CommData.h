@@ -9,42 +9,41 @@
 #ifndef COMMDATA_H
 #define COMMDATA_H
 
-#include <byteType.h>
+#include <cstdint>
+
 
 struct CommData
 {
     struct {
-        int8Byte pitchAngle_deg;
-        int8Byte rollAngle_deg;
-        int16Byte heading_deg;
-        int16Byte altitude_cm;
-        int32Byte longitude; // TODO: add unit (same in drone code)
-        int32Byte latitude; // TODO: add unit (same in drone code)
-        uint8Byte connectionStability;
-    } drone;
+        int8_t pitchAngle_deg;
+        int8_t rollAngle_deg;
+        int16_t heading_deg;
+        int16_t altitude_cm;
+        int32_t longitude; // TODO: add unit (same in drone code)
+        int32_t latitude; // TODO: add unit (same in drone code)
+        uint8_t connectionStability;
+    } droneMeasurementsAndState;
 
     struct {
-        struct {
-            uint16Byte throttle;
-            int16Byte yaw;
-            int16Byte pitch;
-            int16Byte roll;
-        } stick;
-
-        // TODO: consider adding pilot coordinates (polar or rectangular)
-    } pilot;
-
+        uint16_t throttle;
+        int16_t yaw;
+        int16_t pitch;
+        int16_t roll;
+    } steering;
+    // TODO: consider adding pilot coordinates (polar or rectangular)
+    
     struct {
-        uint8Byte tunedController_ID;
-        floatByte kP;
-        floatByte kI;
-        floatByte kD;
-        floatByte iMax;
+        uint8_t tunedController_ID;
+        float kP;
+        float kI;
+        float kD;
+        float iMax;
     } pidTuning;
 
-
-    uint8Byte flightMode;
-    //uint8Byte signalLostScenario; // read todo below (probably in a drone code)
+    struct {
+        uint8_t flightMode;
+    } flightModeChange;
+    //uint8_t signalLostScenario; // read todo below (probably in a drone code)
 };
 
 extern CommData commData;

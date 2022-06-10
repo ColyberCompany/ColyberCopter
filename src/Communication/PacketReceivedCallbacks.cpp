@@ -21,7 +21,7 @@ void PacketReceivedCallbacks::steeringCallback()
 
 void PacketReceivedCallbacks::flightModeChangeCallback()
 {
-    uint8_t newFlightModeType = commData.flightMode;
+    uint8_t newFlightModeType = commData.flightModeChange.flightMode;
     Instance::virtualPilot.setFlightMode((FlightMode::FlightModeTypes)newFlightModeType);
     // TODO: show result of setting the flight mode in a debug message (maybe show debug message in VirtualPilot)
 
@@ -35,41 +35,51 @@ void PacketReceivedCallbacks::pidTuningCallback()
     using Assemble::FlightModes::altHoldFlightMode;
     using Instance::debMes;
 
+    auto& data = commData.pidTuning;
+
     debMes.showMessage("Got new PID. ID:");
-    debMes.showMessage(commData.pidTuning.tunedController_ID);
+    debMes.showMessage(data.tunedController_ID);
     debMes.showMessage("kP, kI, kD, iMax:");
-    debMes.showMessage(commData.pidTuning.kP * 100);
-    debMes.showMessage(commData.pidTuning.kI * 100);
-    debMes.showMessage(commData.pidTuning.kD * 100);
-    debMes.showMessage(commData.pidTuning.iMax);
+    debMes.showMessage(data.kP * 100);
+    debMes.showMessage(data.kI * 100);
+    debMes.showMessage(data.kD * 100);
+    debMes.showMessage(data.iMax);
     
 
-    switch (commData.pidTuning.tunedController_ID)
+    switch (data.tunedController_ID)
     {
         case 0: // leveling
-            stabilizeFlightMode.setLevelingXPIDGains(commData.pidTuning.kP,
-                                                     commData.pidTuning.kI,
-                                                     commData.pidTuning.kD,
-                                                     commData.pidTuning.iMax);
+            stabilizeFlightMode.setLevelingXPIDGains(
+                data.kP,
+                data.kI,
+                data.kD,
+                data.iMax
+            );
 
-            stabilizeFlightMode.setLevelingYPIDGains(commData.pidTuning.kP,
-                                                     commData.pidTuning.kI,
-                                                     commData.pidTuning.kD,
-                                                     commData.pidTuning.iMax);
+            stabilizeFlightMode.setLevelingYPIDGains(
+                data.kP,
+                data.kI,
+                data.kD,
+                data.iMax
+            );
             break;
         
         case 1: // yaw  
-            stabilizeFlightMode.setHeadingHoldPIDGains(commData.pidTuning.kP,
-                                                       commData.pidTuning.kI,
-                                                       commData.pidTuning.kD,
-                                                       commData.pidTuning.iMax);
+            stabilizeFlightMode.setHeadingHoldPIDGains(
+                data.kP,
+                data.kI,
+                data.kD,
+                data.iMax
+            );
             break;
 
         case 2: // altHold
-            altHoldFlightMode.setAltHoldPIDGains(commData.pidTuning.kP,
-                                                 commData.pidTuning.kI,
-                                                 commData.pidTuning.kD,
-                                                 commData.pidTuning.iMax);
+            altHoldFlightMode.setAltHoldPIDGains(
+                data.kP,
+                data.kI,
+                data.kD,
+                data.iMax
+            );
             break;
 }
 }

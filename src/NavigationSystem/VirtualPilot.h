@@ -27,10 +27,10 @@ private:
     // average filters for lower frequency pilot sticks values
     static constexpr uint8_t StickSamplesToAverage =
         Config::MainFrequency_Hz / (float)Config::RmtCtrlReceivingFrequency_Hz + 0.5f; // <main freq> / <stick value receiving freq> : 250/30
-    AverageFilter<uint16_t, StickSamplesToAverage> throttleStickAverage;
-    AverageFilter<int16_t, StickSamplesToAverage> yawStickAverage;
-    AverageFilter<int16_t, StickSamplesToAverage> pitchStickAverage;
-    AverageFilter<int16_t, StickSamplesToAverage> rollStickAverage;
+    FL::AverageFilter<uint16_t, StickSamplesToAverage> throttleStickAverage;
+    FL::AverageFilter<int16_t, StickSamplesToAverage> yawStickAverage;
+    FL::AverageFilter<int16_t, StickSamplesToAverage> pitchStickAverage;
+    FL::AverageFilter<int16_t, StickSamplesToAverage> rollStickAverage;
 
 public:
     VirtualPilot(FlightMode& initialFlightMode);

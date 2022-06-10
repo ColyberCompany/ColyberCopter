@@ -42,13 +42,15 @@ namespace Tasks
         void execute() override
         {
             auto angles = Instance::ins.getAngles_deg();
-            commData.drone.pitchAngle_deg = angles.x;
-            commData.drone.rollAngle_deg = angles.y;
-            commData.drone.heading_deg = angles.z;
-            commData.drone.altitude_cm = Instance::ins.getAltitude_m();
-            commData.drone.longitude = Instance::ins.getLongitude_deg();
-            commData.drone.latitude = Instance::ins.getLatitude_deg();
-            commData.drone.connectionStability = Instance::pilotPacketComm.getConnectionStability();
+
+            auto& data = commData.droneMeasurementsAndState;
+            data.pitchAngle_deg = angles.x;
+            data.rollAngle_deg = angles.y;
+            data.heading_deg = angles.z;
+            data.altitude_cm = Instance::ins.getAltitude_m();
+            data.longitude = Instance::ins.getLongitude_deg();
+            data.latitude = Instance::ins.getLatitude_deg();
+            data.connectionStability = Instance::pilotPacketComm.getConnectionStability();
 
             Instance::pilotPacketComm.send(&DataPackets::droneMeasurementsAndState);
         }
