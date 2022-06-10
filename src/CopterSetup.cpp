@@ -31,7 +31,7 @@
 #include "Motors/QuadXMotors.h"
 #include "Motors/NoMotors.h"
 // Communication:
-#include <StreamComm.h>
+#include <LowLevelImpl/StreamComm.h>
 #include <PacketCommunication.h>
 #include "Debug/SerialDebugMessenger.h"
 #include "Communication/CommData.h"

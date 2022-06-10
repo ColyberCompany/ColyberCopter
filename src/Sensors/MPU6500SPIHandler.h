@@ -22,7 +22,7 @@ class MPU6500SPIHandler : public Accelerometer, public Gyroscope, public Tempera
 {
     MPU6500SPI mpu;
 
-    Common::vector3<LowPassFilter<float>> accLPF; // accelerometer low-pass filter
+    Common::vector3<FL::LowPassFilter<float>> accLPF; // accelerometer low-pass filter
     Common::vector3Float accFiltered;
 
 public:

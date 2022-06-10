@@ -21,7 +21,7 @@ class SimpleMS5611Handler : private SimpleMS5611, public Barometer, public Tempe
     
     float smoothPressure_mbar = 1000.f;
     uint8_t pressureReadingsCounter = 0; // used to get temperature every 20th measurement, from 1 to PressurePerTemperatureRequests, 0 indicates first pressure request
-    AverageFilter<float, PressurePerTemperatureRequests+1> pressureFilter;
+    FL::AverageFilter<float, PressurePerTemperatureRequests+1> pressureFilter;
 
 
 public:

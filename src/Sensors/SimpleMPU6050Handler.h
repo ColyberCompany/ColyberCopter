@@ -23,7 +23,7 @@ class SimpleMPU6050Handler : public Accelerometer, public Gyroscope, public Temp
     Common::vector3Float accFiltered;
     Common::vector3Float gyroFiltered;
 
-    typedef Common::vector3<LowPassFilter<float>> ThreeAxesLPF;
+    typedef Common::vector3<FL::LowPassFilter<float>> ThreeAxesLPF;
     ThreeAxesLPF accLPF; // accelerometer low-pass filter
 
 
