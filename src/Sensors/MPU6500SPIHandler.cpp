@@ -8,7 +8,7 @@
 #include "config.h"
 
 static const uint32_t SpiClock = 8000000l; // 8MHz clock (not tried 20MHz)
-constexpr float AccLPFCutOffFreq = 8.f;
+constexpr float AccLPFCutOffFreq = 15.f;
 
 // TODO: figure out place for calibration values (for specific hardware)
 const FusionMatrix accMisalignment = {0.997712f, -0.003394f, 0.001708f, -0.003394f, 0.996472f, 0.000751f, 0.001708f, 0.000751f, 0.984676f};
@@ -21,7 +21,7 @@ const FusionVector gyroOffset = {-0.9055204f, 0.9203771f, -0.0984093f};
 
 MPU6500SPIHandler::MPU6500SPIHandler(SPIClass& bus, uint8_t csPin):
     mpu(bus, SpiClock, csPin),
-    accLPF(
+    accLowPassFilter(
         {AccLPFCutOffFreq, Config::MainInterval_s},
         {AccLPFCutOffFreq, Config::MainInterval_s},
         {AccLPFCutOffFreq, Config::MainInterval_s}
@@ -58,11 +58,18 @@ bool MPU6500SPIHandler::init_priv()
 void MPU6500SPIHandler::execute()
 {
     mpu.readAll();
-
-    auto acc = mpu.getNormalizedAcceleration();
-    accFiltered = Common::vector3Float(
-        accLPF.x.update(acc.x),
-        accLPF.y.update(acc.y),
-        accLPF.z.update(acc.z)
+    accVal = Common::vector3Float(mpu.getNormalizedAcceleration());
+    
+    // Apply Median Filter
+    accVal = Common::vector3Float(
+        accMedianFilter.x.update(accVal.x),
+        accMedianFilter.y.update(accVal.y),
+        accMedianFilter.z.update(accVal.z)
+    );
+    // Apply Low-pass Filter
+    accVal = Common::vector3Float(
+        accLowPassFilter.x.update(accVal.x),
+        accLowPassFilter.y.update(accVal.y),
+        accLowPassFilter.z.update(accVal.z)
     );
 }
