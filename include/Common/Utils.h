@@ -79,6 +79,34 @@ namespace Common
                 this->separator = separator;
             }
         } print;
+
+
+        /**
+         * @brief Bubble sorting algorithm from https://www.geeksforgeeks.org/bubble-sort/.
+         * @tparam T Type
+         * @param array Array to be sorted in place.
+         * @param size Number of elements in the array.
+         */
+        template <class T>
+        void bubbleSort(T* array, size_t size)
+        {
+            int i, j;
+            for (i = 0; i < size - 1; i++)
+            {
+                // Last i elements are already 
+                // in place
+                for (j = 0; j < size - i - 1; j++)
+                {
+                    if (array[j] > array[j + 1])
+                    {
+                        // swap
+                        T temp = array[j];
+                        array[j] = array[j + 1];
+                        array[j + 1] = temp;
+                    }
+                }
+            }
+        }
     }
 }
 
