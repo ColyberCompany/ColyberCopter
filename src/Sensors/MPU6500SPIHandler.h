@@ -13,7 +13,6 @@
 #include <MPU6500SPI.h>
 #include <IExecutable.h>
 #include <SPI.h>
-#include <LowPassFilter.h>
 #include <MedianFilter.h>
 #include <AverageFilter.h>
 #include <config.h>
