@@ -24,7 +24,7 @@ INS::INS() :
         .gain = 0.5f,
         .accelerationRejection = 10.0f,
         .magneticRejection = 20.0f,
-        .rejectionTimeout = 5 * Config::MainFrequency_Hz, /* 5 seconds */
+        .rejectionTimeout = (uint16_t)(5 * Config::MainFrequency_Hz), /* 5 seconds */
     };
     FusionAhrsSetSettings(&fusionAhrs, &settings);
 }

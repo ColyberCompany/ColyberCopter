@@ -3,7 +3,6 @@
  * @author Jan Wielgus
  * @brief This is the configuraiton file.
  * @date 2020-11-09
- * 
  */
 
 #ifndef CONFIG_H
@@ -17,9 +16,9 @@
 
 namespace Config
 {
-    CI uint16_t MainFrequency_Hz = 250;
-    CI uint32_t MainInterval_us = 4000; // = 1000000 / MainFrequency_Hz;
-    CI float MainInterval_s = 0.004f; // = 1.f / MainFrequency_Hz; // delta time between next main loop executions
+    CI float MainFrequency_Hz = 390.625f;
+    CI uint32_t MainInterval_us = 2560; // = 1000000 / MainFrequency_Hz;
+    CI float MainInterval_s = 0.00256f; // = 1.f / MainFrequency_Hz; // delta time between next main loop executions
 
     CI Enums::BaudRateTypes RmtCtrlSerialBaudRate = Enums::BaudRateTypes::BAUD_115200;
     CI size_t RmtCtrlMaxComBufferSize = 40;

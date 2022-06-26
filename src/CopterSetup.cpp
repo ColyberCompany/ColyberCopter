@@ -281,7 +281,6 @@ void addTasksToTasker()
 
     // GROUPS:
     // Main frequency:
-    groupMainFreq.addTask(&Assemble::Sensors::mpu6500spiHandler);
     groupMainFreq.addTask(&Assemble::NavigationSystem::ins);
     groupMainFreq.addTask(&Assemble::virtualPilotInstance);
     #ifndef COLYBER_DEACTIVATE_MOTORS
@@ -297,6 +296,7 @@ void addTasksToTasker()
     group1Hz.addTask(&Tasks::builtinDiodeBlink);
 
     // DIRECT TASKER TASKS:
+    tasker.addTask_Hz(&Assemble::Sensors::mpu6500spiHandler, MPU6500SPIHandler::UpdateFrequency_Hz);
     tasker.addTask_us(&groupMainFreq, Config::MainInterval_us);
     tasker.addTask_Hz(&group10Hz, 10.f);
     tasker.addTask_Hz(&group1Hz, 1.f);
