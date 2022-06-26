@@ -2,7 +2,6 @@
  * @file StabilizeFlightMode.cpp
  * @author Jan Wielgus
  * @date 2020-08-02
- * 
  */
 
 #include "StabilizeFlightMode.h"
@@ -37,9 +36,9 @@ StabilizeFlightMode::StabilizeFlightMode()
     levelingYPID.setGains(LevelingPID_kP, LevelingPID_kI, LevelingPID_kD, LevelingPID_IMax);
     headingHoldPID.setGains(HeadHoldPID_kP, HeadHoldPID_kI, HeadHoldPID_kD, HeadHoldPID_IMax);
 
-    levelingXPID.set_derivCutoffFreq(8);
-    levelingYPID.set_derivCutoffFreq(8);
-    headingHoldPID.set_derivCutoffFreq(8);
+    levelingXPID.set_derivCutoffFreq(16);
+    levelingYPID.set_derivCutoffFreq(16);
+    headingHoldPID.set_derivCutoffFreq(16);
 }
 
 
