@@ -3,7 +3,6 @@
  * @author Jan Wielgus (jan.wielgus12@gmail.com)
  * @brief All communication variables.
  * @date 2021-03-28
- * 
  */
 
 #ifndef COMMDATA_H
@@ -15,22 +14,39 @@
 struct CommData
 {
     struct {
-        int8_t pitchAngle_deg;
-        int8_t rollAngle_deg;
-        int16_t heading_deg;
-        int16_t altitude_cm;
-        int32_t longitude; // TODO: add unit (same in drone code)
-        int32_t latitude; // TODO: add unit (same in drone code)
-        uint8_t connectionStability;
-    } droneMeasurementsAndState;
+        int16_t anglePitch;     // centi deg (deg*100)
+        int16_t angleRoll;      // centi deg (deg*100)
+        int16_t heading;        // centi deg (deg*100)
+        int16_t altitude;       // cm
+        float longitude;        // deg
+        float latitude;         // deg
+    } droneMeasurements;
+
+    // struct {
+    //     int8_t accX;
+    //     int8_t accY;
+    //     int8_t accZ;
+    //     int8_t gyroX;
+    //     int8_t gyroY;
+    //     int8_t gyroZ;
+    //     int8_t magnX;
+    //     int8_t magnY;
+    //     int8_t magnZ;
+    //     uint16_t pressure;          // daPa (deca Pascal) (hPa/10)
+    //     uint16_t btmRangefinder;    // mm
+    //     int8_t temperature;         // degC
+    // } droneReadings;
 
     struct {
-        uint16_t throttle;
-        int16_t yaw;
-        int16_t pitch;
-        int16_t roll;
+        uint8_t connectionStability;    // 0:100
+    } droneState;
+
+    struct {
+        int16_t throttle;   // 0:1000
+        int16_t yaw;        // -500:500
+        int16_t pitch;      // -500:500
+        int16_t roll;       // -500:500
     } steering;
-    // TODO: consider adding pilot coordinates (polar or rectangular)
     
     struct {
         uint8_t tunedController_ID;
@@ -43,7 +59,8 @@ struct CommData
     struct {
         uint8_t flightMode;
     } flightModeChange;
-    //uint8_t signalLostScenario; // read todo below (probably in a drone code)
+
+    // uint8_t signalLostScenario; // read todo below (probably in a drone code)
 };
 
 extern CommData commData;
@@ -59,4 +76,3 @@ extern CommData commData;
 // (for example drone don't have to check each time if flight mode has changed).
 // Make also something like confirmation packet.
 // It would be good if this packets will be inside the library.
-// Maybe make two types of config packets: one with config id and float value and second with config id and two float values.

@@ -3,7 +3,6 @@
  * @author Jan Wielgus (jan.wielgus12@gmail.com)
  * @brief This class contains instances of all data packets.
  * @date 2021-03-28
- * 
  */
 
 #ifndef DATAPACKETS_H
@@ -16,10 +15,15 @@
 
 namespace DataPackets
 {
-    extern PacketComm::DataPacket steering;
-    extern PacketComm::DataPacket flightModeChange;
-    extern PacketComm::DataPacket droneMeasurementsAndState;
-    extern PacketComm::DataPacket pidTuning;
+    using PacketComm::DataPacket;
+
+    // received:
+    extern DataPacket steering;
+    extern DataPacket flightModeChange;
+    extern DataPacket pidTuning;
+    // sent:
+    extern DataPacket droneMeasurements;
+    extern DataPacket droneState;
 }
 
 
