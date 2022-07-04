@@ -1,7 +1,7 @@
 /**
  * @file CommunicationGlobals.cpp
  * @author Jan Wielgus (jan.wielgus12@gmail.com)
- * @brief Instantiation of communication global variables.
+ * @brief Instantiation of communication data packets.
  * @date 2021-03-28
  */
 
@@ -25,10 +25,6 @@ CommData commData;
 namespace DataPackets
 {
     using namespace PacketReceivedCallbacks;
-
-    // -------
-    // Remember that each data packet should have different ID!
-    // -------
 
     // received:
     DATA_PACKET_RECEIVING(steering, steeringCallback);

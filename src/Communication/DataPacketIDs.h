@@ -14,6 +14,10 @@
 namespace DataPacketIDs {
     #define PacketIDType constexpr inline uint16_t
 
+    // -------
+    // Remember that each data packet should have different ID!
+    // -------
+
     PacketIDType steering               = 0;
     PacketIDType flightModeChange       = 1;
     PacketIDType pidTuning              = 2;
