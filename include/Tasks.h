@@ -46,8 +46,8 @@ namespace Tasks
             auto& data = commData.droneMeasurements;
             data.anglePitch = angles.x * 100;
             data.angleRoll = angles.y * 100;
-            data.heading = angles.z;
-            data.altitude = Instance::ins.getAltitude_m();
+            data.heading = angles.z * 100;
+            data.altitude = Instance::ins.getAltitude_m() * 100;
             data.longitude = Instance::ins.getLongitude_deg();
             data.latitude = Instance::ins.getLatitude_deg();
             Instance::pilotPacketComm.send(&DataPackets::droneMeasurements);
