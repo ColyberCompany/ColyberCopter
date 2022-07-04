@@ -23,6 +23,7 @@ namespace DataPackets
     extern DataPacket pidTuning;
     // sent:
     extern DataPacket droneMeasurements;
+    extern DataPacket droneState;
 }
 
 

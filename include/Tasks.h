@@ -43,16 +43,18 @@ namespace Tasks
         {
             auto angles = Instance::ins.getAngles_deg();
 
-            auto& data = commData.droneMeasurementsAndState;
-            data.pitchAngle_deg = angles.x;
-            data.rollAngle_deg = angles.y;
-            data.heading_deg = angles.z;
-            data.altitude_cm = Instance::ins.getAltitude_m();
+            auto& data = commData.droneMeasurements;
+            data.anglePitch = angles.x * 100;
+            data.angleRoll = angles.y * 100;
+            data.heading = angles.z;
+            data.altitude = Instance::ins.getAltitude_m();
             data.longitude = Instance::ins.getLongitude_deg();
             data.latitude = Instance::ins.getLatitude_deg();
-            data.connectionStability = Instance::pilotPacketComm.getConnectionStability();
+            Instance::pilotPacketComm.send(&DataPackets::droneMeasurements);
 
-            Instance::pilotPacketComm.send(&DataPackets::droneMeasurementsAndState);
+            auto& data2 = commData.droneState;
+            data2.connectionStability = Instance::pilotPacketComm.getConnectionStability();
+            Instance::pilotPacketComm.send(&DataPackets::droneState);
         }
     } rmtCtrlSendingDroneData;
     
