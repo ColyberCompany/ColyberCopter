@@ -52,6 +52,8 @@
 #include "Sensors/SimpleMS5611Handler.h"
 #include "Sensors/TinyGPSPlusAdapter.h"
 
+#include "KalmanFilter.h"
+
 using namespace Interfaces;
 
 
@@ -168,14 +170,15 @@ namespace Instance
 }
 
 
-
 class : public IExecutable
 {
+    
     void execute() override {
         using Common::Utils::printVector3;
 
         //printVector3(Instance::ins.getAngles_deg());
     }
+
 } debugTask;
 
 
